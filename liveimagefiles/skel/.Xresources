@@ -1,0 +1,10 @@
+! prefer anthy-elisp on Emacs
+Emacs.UseXIM:			false
+
+! kterm settings
+KTerm*reversewraparound:	true
+KTerm*reverseautowraparound:	true
+KTerm*scrollBar:		true
+KTerm*SaveLines:		250
+!KTerm*visualBell:		true
+KTerm*VT100*OpenIm:		true
