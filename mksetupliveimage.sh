@@ -57,7 +57,6 @@ FRAGSIZE=2048
 DENSITY=8192
 
 echo Creating rootfs...
-cp ${INSTSH} ${FILESDIR}
 ${MAKEFS} -M ${FSSIZE} -B ${TARGET_ENDIAN} \
 	-o bsize=${BLOCKSIZE},fsize=${FRAGSIZE},density=${DENSITY} \
 	${IMAGE} ${FILESDIR}
