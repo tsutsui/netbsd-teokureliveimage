@@ -35,6 +35,9 @@ export EDITOR=vi
 # Set LANG; using ja_JP.UTF-8 on this liveimage
 export LANG=ja_JP.UTF-8
 
+# Set PERL_BADLANG to appease perl warnings on LANG=ja_JP.UTF-8 environment
+export PERL_BADLANG=0
+
 # Set XAPPLRESDIR for some pkgsrc binaries
 export XAPPLRESDIR=/usr/pkg/lib/X11/app-defaults
 
