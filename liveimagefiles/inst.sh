@@ -42,6 +42,9 @@ mount -o async ${ROOTFSDEV} /
 echo "copying local /etc settings..."
 cp ${FILEDIR}/etc.${MACHINE}/ttys /etc
 
+# copy typical mk.conf file
+cp ${FILEDIR}/etc/mk.conf /etc
+
 echo "installing packages..."
 PACKAGESDIR=${FILEDIR}/packages/${MACHINE_ARCH}
 (cd ${PACKAGESDIR}; PKG_RCD_SCRIPTS=YES pkg_add $PACKAGES)
