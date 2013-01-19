@@ -1,7 +1,5 @@
 #! /bin/sh
 #
-# $Id: mksetupliveimage.sh,v 1.14 2012/10/17 14:40:37 tsutsui Exp tsutsui $
-#
 # Copyright (c) 2012 Izumi Tsutsui.  All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without

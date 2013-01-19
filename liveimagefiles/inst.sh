@@ -1,5 +1,4 @@
 #! /bin/sh
-# $Id: inst.sh,v 1.16 2012/10/17 14:41:37 tsutsui Exp tsutsui $
 
 MACHINE_ARCH=`uname -p`
 MACHINE=`uname -m`

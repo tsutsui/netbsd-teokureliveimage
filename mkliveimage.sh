@@ -1,7 +1,5 @@
 #! /bin/sh
 #
-# $Id: mkliveimage.sh,v 1.29 2012/10/17 14:40:53 tsutsui Exp tsutsui $
-#
 # Copyright (c) 2009, 2010, 2011, 2012 Izumi Tsutsui.  All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
