@@ -28,8 +28,9 @@ PACKAGES=" \
 	vlgothic-ttf ipafont \
 	kterm mlterm \
 	jwm \
-	anthy anthy-elisp \
-	ibus ibus-anthy \
+	ibus \
+	anthy ibus-anthy anthy-elisp \
+	mozc-server mozc-tool ibus-mozc mozc-elisp \
 	alsa-utils alsa-plugins-oss \
 	subversion-base scmgit-base \
 	ruby193-mikutter \
@@ -52,7 +53,7 @@ PACKAGESDIR=${FILEDIR}/packages/${MACHINE_ARCH}
 /usr/pkg/bin/gconftool-2 --direct \
     --config-source xml:write:/usr/pkg/etc/gconf/gconf.xml.defaults \
     --type=list --list-type=string \
-    --set /desktop/ibus/general/preload_engines "[anthy]"
+    --set /desktop/ibus/general/preload_engines "[mozc-jp,anthy]"
 
 # copy firefox addons settings
 # XXX: this would make future pkg_delete(1) complain about extra file
