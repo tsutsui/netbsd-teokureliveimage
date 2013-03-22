@@ -26,7 +26,7 @@ BOOTDISK=sd0		# liveimage for USB disk
 
 echo Start expanding fs size upto the actual disk size...
 
-# make sure we are on sd0 on root
+# make sure we are on ${BOOTDISK} on root
 ROOTDEV=`sysctl -n kern.root_device`
 if [ "${ROOTDEV}"X != ${BOOTDISK}X ] ; then
 	echo Error: root file system device is not ${BOOTDISK}
@@ -49,7 +49,7 @@ disklabel -r ${BOOTDISK} > /tmp/disklabel.${BOOTDISK}
 
 # check disk name in disklabel
 DISKNAME=`sed -n -e '/^disk: /s/.*: //p' /tmp/disklabel.${BOOTDISK}`
-if [ ${DISKNAME}X != "TeokureLiveImageX" ]; then
+if [ "${DISKNAME}"X != "TeokureLiveImage"X ]; then
 	echo Error: unexpected disk name: ${DISKNAME}
 	exit 1
 fi
@@ -89,7 +89,7 @@ if [ ${TOTALSECTORS} -ne ${ORIGIMAGESECTORS} ]; then
 fi
 
 # get actual disk size from dmesg
-BOOTDISKDMSG=`dmesg | grep ^${BOOTDISK}:' .* sectors$'`
+BOOTDISKDMSG=`dmesg | grep "^${BOOTDISK}: .* sectors$"`
 if [ "${BOOTDISKDMSG}"X = "X" ]; then
 	echo Error: cannot find ${BOOTDISK} in dmesg
 	exit 1
@@ -122,12 +122,12 @@ SWAPCYLINDERS=$((${SWAPSECTORS} / ( ${HEADS} * ${SECTORS} ) ))
 MBRCYLINDERS=$((${IMAGESECTORS} / ( ${BHEAD} * ${BSEC} ) ))
 
 # prepare new disklabel proto
-sed -e 's/^cylinders: [0-9]*$/cylinders: '${CYLINDERS}'/' \
-    -e 's/^total sectors: [0-9]*$/total sectors: '${IMAGESECTORS}/ \
-    -e 's/^ a:  *[0-9]* *[0-9]* / a: '${FSSECTORS}' '${FSOFFSET}' /' \
-    -e 's/^ b:  *[0-9]* *[0-9]* / b: '${SWAPSECTORS}' '${SWAPOFFSET}' /' \
-    -e 's/^ c:  *[0-9]* *[0-9]* / c: '${BSDPARTSECTORS}' '${FSOFFSET}' /' \
-    -e 's/^ d:  *[0-9]* / d: '${IMAGESECTORS}' /' \
+sed -e "s/^cylinders: [0-9]*$/cylinders: ${CYLINDERS}/" \
+    -e "s/^total sectors: [0-9]*$/total sectors: ${IMAGESECTORS}/" \
+    -e "s/^ a:  *[0-9]* *[0-9]* / a: ${FSSECTORS} ${FSOFFSET} /" \
+    -e "s/^ b:  *[0-9]* *[0-9]* / b: ${SWAPSECTORS} ${SWAPOFFSET} /" \
+    -e "s/^ c:  *[0-9]* *[0-9]* / c: ${BSDPARTSECTORS} ${FSOFFSET} /" \
+    -e "s/^ d:  *[0-9]* / d: ${IMAGESECTORS} /" \
     /tmp/disklabel.${BOOTDISK} > /tmp/disklabel.${BOOTDISK}.new
 
 # check original fs
