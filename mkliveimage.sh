@@ -30,6 +30,7 @@ if [ "${REVISION}"X = "X" ]; then
 	REVISION=`date +%C%y%m%d`
 fi
 
+DISKNAME=TeokureLiveImage
 HOSTNAME=teokure
 TIMEZONE=Japan
 
@@ -54,6 +55,11 @@ fi
 
 IMAGE_TYPE=$1
 MACHINE=$2
+
+if [ ${IMAGE_TYPE}x = "usbx" ]; then
+ HAVE_EXPANDFS_SCRIPT=yes	# put a script to expand image fssize
+ EXPANDFS_SH=expand-image-fssize.sh
+fi
 
 #
 # target dependent info
@@ -299,6 +305,19 @@ ${CAT} >> ${WORKDIR}/spec <<EOF
 ./tmp				type=dir  mode=1777
 EOF
 
+if [ ${HAVE_EXPANDFS_SCRIPT}x = "yesx" ]; then
+	echo Preparing ${EXPANDFS_SH} script...
+	${SED}  -e "s/@@BOOTDISK@@/${BOOTDISK}/"			\
+		-e "s/@@DISKNAME@@/${DISKNAME}/"			\
+		-e "s/@@MBRNETBSD@@/${MBRNETBSD}/"			\
+		-e "s/@@IMAGEMB@@/${IMAGEMB}/"				\
+		-e "s/@@SWAPMB@@/${SWAPMB}/"				\
+		-e "s/@@HEADS@@/${HEADS}/"				\
+		-e "s/@@SECTORS@@/${SECTORS}/"				\
+		< ./${EXPANDFS_SH}.in > ${TARGETROOTDIR}/${EXPANDFS_SH}
+	echo ./${EXPANDFS_SH}	type=file mode=755 >> ${WORKDIR}/spec
+fi
+
 echo Creating rootfs...
 ${TOOLDIR}/bin/nbmakefs -M ${FSSIZE} -B ${TARGET_ENDIAN} \
 	-F ${WORKDIR}/spec -N ${TARGETROOTDIR}/etc \
@@ -351,7 +370,7 @@ fi
 echo Creating disklabel...
 ${CAT} > ${WORKDIR}/labelproto <<EOF
 type: ESDI
-disk: TeokureLiveImage
+disk: ${DISKNAME}
 label: 
 flags:
 bytes/sector: 512
