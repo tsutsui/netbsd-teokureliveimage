@@ -1,6 +1,12 @@
 #! /bin/sh
 
-REVISION=20130320
+if [ -f REVISION ]; then
+	. ./REVISION
+fi
+if [ "${REVISION}"X = "X" ]; then
+	REVISION=`date +%C%y%m%d`
+fi
+
 USBMB=3308
 RELDIR=./images
 
