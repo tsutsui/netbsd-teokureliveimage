@@ -105,7 +105,7 @@ if [ ${ORIGIMAGESECTORS} -gt ${IMAGESECTORS} ]; then
 	exit 1
 fi
 
-# calculate new disk parameteres
+# calculate new disk parameters
 SWAPSECTORS=${ORIGSWAPSECTORS}
 
 FSOFFSET=${PART0START}
