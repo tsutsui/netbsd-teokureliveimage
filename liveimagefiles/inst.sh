@@ -49,7 +49,7 @@ echo "installing packages..."
 PACKAGESDIR=${FILEDIR}/packages/${MACHINE_ARCH}
 (cd ${PACKAGESDIR}; PKG_RCD_SCRIPTS=YES pkg_add $PACKAGES)
 
-# set ibus-anthy as system default
+# set mozc and anthy as system default of ibus
 /usr/pkg/bin/gconftool-2 --direct \
     --config-source xml:write:/usr/pkg/etc/gconf/gconf.xml.defaults \
     --type=list --list-type=string \
