@@ -67,7 +67,6 @@ echo dbus=YES				>> /etc/rc.conf
 echo hal=YES				>> /etc/rc.conf   
 echo avahidaemon=NO			>> /etc/rc.conf
 echo nasd=NO				>> /etc/rc.conf
-echo svnserve=NO			>> /etc/rc.conf
 
 # copy files for asound.conf
 cp ${FILEDIR}/etc/asound.conf /etc
