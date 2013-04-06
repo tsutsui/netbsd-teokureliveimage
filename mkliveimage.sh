@@ -188,8 +188,8 @@ IMAGE=${WORKDIR}/liveimage-${MACHINE}-${IMAGE_TYPE}-${REVISION}.img
 #
 IMAGEMB=3820			# for "4GB" USB memory (there is 3824MB one)
 SWAPMB=512			# 512MB
-IMAGESECTORS=`expr ${IMAGEMB} \* 1024 \* 1024 / 512`
-SWAPSECTORS=`expr ${SWAPMB} \* 1024 \* 1024 / 512`
+IMAGESECTORS=$((${IMAGEMB} * 1024 * 1024 / 512))
+SWAPSECTORS=$((${SWAPMB} * 1024 * 1024 / 512))
 
 LABELSECTORS=0
 if [ "${USE_MBR}" = "yes" ]; then
@@ -197,21 +197,21 @@ if [ "${USE_MBR}" = "yes" ]; then
 #	LABELSECTORS=32		# aligned
 	LABELSECTORS=2048	# align 1MiB for modern flash
 fi
-BSDPARTSECTORS=`expr ${IMAGESECTORS} - ${LABELSECTORS}`
-FSSECTORS=`expr ${IMAGESECTORS} - ${SWAPSECTORS} - ${LABELSECTORS}`
+BSDPARTSECTORS=$((${IMAGESECTORS} - ${LABELSECTORS}))
+FSSECTORS=$((${IMAGESECTORS} - ${SWAPSECTORS} - ${LABELSECTORS}))
 FSOFFSET=${LABELSECTORS}
-SWAPOFFSET=`expr ${LABELSECTORS} + ${FSSECTORS}`
-FSSIZE=`expr ${FSSECTORS} \* 512`
+SWAPOFFSET=$((${LABELSECTORS} + ${FSSECTORS}))
+FSSIZE=$((${FSSECTORS} * 512))
 HEADS=64
 SECTORS=32
-CYLINDERS=`expr ${IMAGESECTORS} / \( ${HEADS} \* ${SECTORS} \)`
-FSCYLINDERS=`expr ${FSSECTORS} / \( ${HEADS} \* ${SECTORS} \)`
-SWAPCYLINDERS=`expr ${SWAPSECTORS} / \( ${HEADS} \* ${SECTORS} \)`
+CYLINDERS=$((${IMAGESECTORS} / ( ${HEADS} * ${SECTORS} ) ))
+FSCYLINDERS=$((${FSSECTORS} / ( ${HEADS} * ${SECTORS} ) ))
+SWAPCYLINDERS=$((${SWAPSECTORS} / ( ${HEADS} * ${SECTORS} ) ))
 
 # fdisk(8) parameters
 MBRSECTORS=63
 MBRHEADS=255
-MBRCYLINDERS=`expr ${IMAGESECTORS} / \( ${MBRHEADS} \* ${MBRSECTORS} \)`
+MBRCYLINDERS=$((${IMAGESECTORS} / ( ${MBRHEADS} * ${MBRSECTORS} ) ))
 MBRNETBSD=169
 
 # makefs(8) parameters
@@ -376,7 +376,7 @@ flags:
 bytes/sector: 512
 sectors/track: ${SECTORS}
 tracks/cylinder: ${HEADS}
-sectors/cylinder: `expr ${HEADS} \* ${SECTORS}`
+sectors/cylinder: $((${HEADS} * ${SECTORS}))
 cylinders: ${CYLINDERS}
 total sectors: ${IMAGESECTORS}
 rpm: 3600
