@@ -3,3 +3,5 @@ download.*
 work.*
 targetroot.*
 setupliveimage-*.fs
+src
+vbox
