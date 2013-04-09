@@ -137,7 +137,7 @@ fsck_ffs -p /dev/r${BOOTDISK}a
 echo Updating partition size in MBR label...
 fdisk -f -u -b ${MBRCYLINDERS}/${BHEAD}/${BSEC} \
     -0 -s ${PART0ID}/${FSOFFSET}/${BSDPARTSECTORS} \
-    -i ${BOOTDISK}
+    ${BOOTDISK}
 
 # write updated disklabel
 echo Updating partition size in disklabel...
