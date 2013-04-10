@@ -12,6 +12,7 @@
 
       <Menu label="Applications">
          <Program label="emacs">emacs</Program>
+         <Program label="medit">medit</Program>
          <Program label="firefox">firefox</Program>
          <Program label="mikutter">mikutter</Program>
       </Menu>
