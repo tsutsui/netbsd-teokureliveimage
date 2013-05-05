@@ -1,4 +1,7 @@
 ISO8859_1=/usr/X11R7/lib/X11/fonts/misc/8x16.pcf.gz
 JISX0201_KATA=/usr/X11R7/lib/X11/fonts/misc/8x16rk.pcf.gz
-JISX0203_1978=/usr/X11R7/lib/X11/fonts/misc/8x16rk.pcf.gz
 JISX0208_1983=/usr/X11R7/lib/X11/fonts/misc/jiskan16.pcf.gz
+
+#ISO10646_UCS4_1=/usr/pkg/lib/X11/font/efont/h16.pcf.gz
+#ISO10646_UCS4_1_BIWIDTH=&ISO10646_UCS4_1
+
