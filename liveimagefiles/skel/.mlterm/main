@@ -10,4 +10,5 @@ use_dynamic_comb = true
 use_multi_column_char = true
 col_size_of_width_a = 2
 use_variable_column_width = false
-scrollbar_mode = left	# left, right, none
+scrollbar_mode = left
+#scrollbar_mode = none
