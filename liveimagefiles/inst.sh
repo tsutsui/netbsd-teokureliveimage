@@ -26,6 +26,8 @@ PACKAGES=" \
 	firefox firefox-l10n \
 	gnash \
 	vlgothic-ttf ipafont \
+	droid-ttf \
+	efont-unicode \
 	kterm mlterm \
 	jwm \
 	ibus \
