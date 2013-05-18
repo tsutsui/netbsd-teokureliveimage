@@ -3,7 +3,7 @@
 # copy necessary binary packages into setupliveimage per packages-YYYYMMDD.list
 #
 
-PKGSRC_VER=6.0.1_2013Q1
+PKGSRC_VER=6.1_2013Q1
 
 #PACKAGESDIR_I386=/usr/pkgsrc/packages/i386/${PKGSRC_VER}/All
 #PACKAGESDIR_X86_64=/usr/pkgsrc/packages/x86_64/${PKGSRC_VER}/All
