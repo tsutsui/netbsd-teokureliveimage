@@ -9,6 +9,7 @@ host=`hostname`
 
 xset s noblank
 xset fp+ /usr/pkg/lib/X11/fonts/TTF/
+xset fp+ /usr/pkg/lib/X11/fonts/efont/
 
 # X keymap settings
 #setxkbmap -layout jp
