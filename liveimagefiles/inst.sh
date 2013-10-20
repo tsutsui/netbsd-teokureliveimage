@@ -33,7 +33,7 @@ PACKAGES=" \
 	ibus \
 	mozc-server mozc-tool ibus-mozc mozc-elisp \
 	alsa-utils alsa-plugins-oss \
-	scmgit-base \
+	git-base \
 	ruby193-mikutter \
 	"
 
