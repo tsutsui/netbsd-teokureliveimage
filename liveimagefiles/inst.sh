@@ -35,6 +35,7 @@ PACKAGES=" \
 	alsa-utils alsa-plugins-oss \
 	git-base \
 	ruby193-mikutter \
+	ruby193-tw \
 	"
 
 echo "mounting target disk image..."
