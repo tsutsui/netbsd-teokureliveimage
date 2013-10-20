@@ -28,10 +28,10 @@ PACKAGES=" \
 	vlgothic-ttf ipafont \
 	droid-ttf \
 	efont-unicode \
-	kterm mlterm \
 	jwm \
 	ibus \
 	mozc-server mozc-tool ibus-mozc mozc-elisp \
+	kterm mlterm \
 	alsa-utils alsa-plugins-oss \
 	git-base \
 	ruby193-mikutter \
