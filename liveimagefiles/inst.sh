@@ -59,7 +59,8 @@ PACKAGESDIR=${FILEDIR}/packages/${MACHINE_ARCH}
 
 # copy firefox addons settings
 # XXX: this would make future pkg_delete(1) complain about extra file
-cp ${FILEDIR}/firefox/firefox-local.js /usr/pkg/lib/firefox/defaults/preferences
+cp ${FILEDIR}/firefox/firefox-local.js \
+    /usr/pkg/lib/firefox/browser/defaults/preferences
 
 # add rc.conf definitions for xdm
 echo wscons=YES				>> /etc/rc.conf
