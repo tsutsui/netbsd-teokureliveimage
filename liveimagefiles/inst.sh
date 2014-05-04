@@ -53,10 +53,10 @@ PACKAGESDIR=${FILEDIR}/packages/${MACHINE_ARCH}
 (cd ${PACKAGESDIR}; PKG_RCD_SCRIPTS=YES pkg_add $PACKAGES)
 
 # set mozc as system default of ibus
-/usr/pkg/bin/gconftool-2 --direct \
-    --config-source xml:write:/usr/pkg/etc/gconf/gconf.xml.defaults \
-    --type=list --list-type=string \
-    --set /desktop/ibus/general/preload_engines "[mozc-jp]"
+#  XXX:	ibus-1.5.x is configured to use dbus and dconf(1)
+#	requires running Xserver to write configurations,
+#	so mozc-jp will be configured on the first startup
+#	by gsettings(1) in .xsession and .xinitrc scripts.
 
 # copy firefox addons settings
 # XXX: this would make future pkg_delete(1) complain about extra file
