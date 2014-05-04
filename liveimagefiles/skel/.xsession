@@ -28,8 +28,9 @@ fi
 
 # iBus
 export XMODIFIERS="@im=ibus"
-export GTK_IM_MODULE=ibus
-ibus-daemon -d -x ; sleep 2
+export GTK_IM_MODULE="ibus"
+export QT_IM_MODULE="ibus"
+ibus-daemon --xim --daemonize --replace; sleep 2
 
 mlterm -ls -geometry 80x25+0+30 -title $host &
 jwm
