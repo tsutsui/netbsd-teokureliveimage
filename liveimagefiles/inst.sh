@@ -19,6 +19,7 @@ SHELL=/usr/pkg/bin/tcsh
 PASSWORD="Teokure-"
 
 # packages list
+RUBY_PKGPREFIX=ruby200
 PACKAGES=" \
 	bash tcsh zsh \
 	emacs \
@@ -34,8 +35,8 @@ PACKAGES=" \
 	kterm mlterm \
 	alsa-utils alsa-plugins-oss \
 	git-base \
-	ruby193-mikutter \
-	ruby193-tw \
+	${RUBY_PKGPREFIX}-mikutter \
+	${RUBY_PKGPREFIX}-tw \
 	"
 
 echo "mounting target disk image..."
