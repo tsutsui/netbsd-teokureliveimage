@@ -12,9 +12,11 @@ xset fp+ /usr/pkg/lib/X11/fonts/TTF/
 xset fp+ /usr/pkg/lib/X11/fonts/efont/
 
 # X keymap settings
-#setxkbmap -layout jp
 #setxkbmap -option ctrl:swapcaps
-#setxkbmap -layout jp -option ctrl:swapcaps
+#setxkbmap -model pc105 -layout us
+#setxkbmap -model pc105 -layout us -option ctrl:swapcaps
+#setxkbmap -model jp106 -layout jp
+#setxkbmap -model jp106 -layout jp -option ctrl:swapcaps
 
 # uncomment to use Yen key as backslash/bar on jp keyboard with us layout
 #xmodmap -e 'keycode 133 = backslash bar'
