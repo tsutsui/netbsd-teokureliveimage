@@ -3,12 +3,14 @@
 # copy necessary binary packages into setupliveimage per packages-YYYYMMDD.list
 #
 
-PKGSRC_VER=6.1.2_2013Q3
+PKGSRCDIR=/usr/pkgsrc
+RELEASE=6.1.4
+PKGSRC_VER=${RELEASE}_2014Q1
 
-#PACKAGESDIR_I386=/usr/pkgsrc/packages/i386/${PKGSRC_VER}/All
-#PACKAGESDIR_X86_64=/usr/pkgsrc/packages/x86_64/${PKGSRC_VER}/All
-PACKAGESDIR_I386=/usr/pkgsrc/packages/i386-${PKGSRC_VER}/All
-PACKAGESDIR_X86_64=/usr/pkgsrc/packages/x86_64-${PKGSRC_VER}/All
+#PACKAGESDIR_I386=${PKGSRCDIR}/packages/i386/${PKGSRC_VER}/All
+#PACKAGESDIR_X86_64=${PKGSRCDIR}/packages/x86_64/${PKGSRC_VER}/All
+PACKAGESDIR_I386=${PKGSRCDIR}/packages/i386-${PKGSRC_VER}/All
+PACKAGESDIR_X86_64=${PKGSRCDIR}/packages/x86_64-${PKGSRC_VER}/All
 
 if [ -f REVISION ]; then
 	. ./REVISION
@@ -23,9 +25,10 @@ if [ ! -f list/packages-${REVISION}.list ]; then
 fi
 
 PACKAGES=`cat list/packages-${REVISION}.list`
+IMAGE_PACKAGESDIR=liveimagefiles/packages
 
 echo Removing old binaries...
-rm -f liveimagefiles/packages/i386/*.tgz liveimagefiles/packages/x86_64/*.tgz
+rm -f ${IMAGE_PACKAGESDIR}/i386/*.tgz ${IMAGE_PACKAGESDIR}/x86_64/*.tgz
 
 for pkg in ${PACKAGES}; do
 	echo Copying ${pkg}.tgz
@@ -34,8 +37,8 @@ for pkg in ${PACKAGES}; do
 		echo Error: ${pkg} is not found.
 		exit 1
 	fi
-	cp ${PACKAGESDIR_I386}/${pkg}.tgz liveimagefiles/packages/i386
-	cp ${PACKAGESDIR_X86_64}/${pkg}.tgz liveimagefiles/packages/x86_64
+	cp ${PACKAGESDIR_I386}/${pkg}.tgz ${IMAGE_PACKAGESDIR}/i386
+	cp ${PACKAGESDIR_X86_64}/${pkg}.tgz ${IMAGE_PACKAGESDIR}/x86_64
 done
 
 echo Done!
