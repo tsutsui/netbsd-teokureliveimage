@@ -27,6 +27,9 @@ if [ -r "$resources" ]; then
 fi
 
 # iBus
+if [ ! -f ${HOME}/.config/dconf/user ]; then
+	gsettings set org.freedesktop.ibus.general preload-engines "['mozc-jp']"
+fi
 export XMODIFIERS="@im=ibus"
 export GTK_IM_MODULE="ibus"
 export QT_IM_MODULE="ibus"
