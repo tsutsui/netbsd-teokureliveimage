@@ -35,6 +35,7 @@ PACKAGES=" \
 	git-base \
 	${RUBY_PKGPREFIX}-mikutter \
 	${RUBY_PKGPREFIX}-tw \
+	mozilla-rootcerts \
 	"
 
 echo "mounting target disk image..."
@@ -73,6 +74,9 @@ echo nasd=NO				>> /etc/rc.conf
 
 # copy files for asound.conf
 cp ${FILEDIR}/etc/asound.conf /etc
+
+echo "installing mozilla CA root certificates..."
+/usr/pkg/sbin/mozilla-rootcerts install
 
 echo "updating fontconfig cache..."
 /usr/X11R7/bin/fc-cache
