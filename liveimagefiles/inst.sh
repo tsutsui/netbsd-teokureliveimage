@@ -25,7 +25,6 @@ PACKAGES=" \
 	emacs \
 	medit \
 	firefox firefox-l10n \
-	gnash \
 	vlgothic-ttf ipafont \
 	droid-ttf \
 	efont-unicode \
@@ -33,7 +32,6 @@ PACKAGES=" \
 	ibus \
 	mozc-server mozc-tool ibus-mozc mozc-elisp \
 	kterm mlterm \
-	alsa-utils alsa-plugins-oss \
 	git-base \
 	${RUBY_PKGPREFIX}-mikutter \
 	${RUBY_PKGPREFIX}-tw \
