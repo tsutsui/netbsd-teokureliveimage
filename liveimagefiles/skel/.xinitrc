@@ -29,6 +29,8 @@ fi
 # iBus
 if [ ! -f ${HOME}/.config/dconf/user ]; then
 	gsettings set org.freedesktop.ibus.general preload-engines "['mozc-jp']"
+	# XXX default "<Super>space" causes ibus-ui-gtk3 coredump
+	gsettings set org.freedesktop.ibus.general.hotkey triggers "[]"
 fi
 export XMODIFIERS="@im=ibus"
 export GTK_IM_MODULE="ibus"
