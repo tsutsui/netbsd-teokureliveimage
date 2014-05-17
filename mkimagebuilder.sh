@@ -252,8 +252,8 @@ ${CP} ${WORKDIR}/fstab  ${TARGETROOTDIR}/etc
 
 echo Preparing setup script...
 ${CAT} > ${WORKDIR}/etc.rc <<EOF
-PATH=/sbin:/bin:/usr/bin:/usr/sbin:/
-export PATH
+export PATH=/sbin:/usr/sbin:/bin:/usr/bin:/usr/pkg/sbin:/usr/pkg/bin
+export PATH=${PATH}:/usr/X11R7/bin:/usr/X11R6/bin:/usr/local/sbin:/usr/local/bin
 set -o emacs
 stty erase ^H
 mount -o async /dev/wd1a /targetroot
