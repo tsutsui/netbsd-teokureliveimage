@@ -81,7 +81,10 @@ LD_LIBRARY_PATH=${VBOXDIR}/usr/lib/virtualbox \
 # prepare compressed images (and omit swap for USB images) for distribution
 
 USBMB=3308
-IMAGEDIR=${CURDIR}/images
+IMAGEDIR=${CURDIR}/images/${REVISION}
+
+rm -rf ${IMAGEDIR}
+mkdir -p ${IMAGEDIR}
 
 (cd ${VDIDIR} && \
  ${ZIP} -9 ${IMAGEDIR}/liveimage-i386-vbox-${REVISION}.zip  \

@@ -8,7 +8,10 @@ if [ "${REVISION}"X = "X" ]; then
 fi
 
 USBMB=3308
-RELDIR=./images
+RELDIR=./images/${REVISION}
+
+rm -rf ${RELDIR}
+mkdir -p ${RELDIR}
 
 dd if=work.i386.usb/liveimage-i386-usb-${REVISION}.img count=${USBMB} bs=1m \
     | gzip -9c > ${RELDIR}/liveimage-i386-usb-${REVISION}.img.gz
