@@ -48,7 +48,7 @@ TOOLDIR=${TOOLDIR_AMD64} ${SH} mkliveimage.sh usb amd64
 ${QEMU_X86_64} -m 512 \
  -hda work.amd64.qemu/liveimage-amd64-qemu-${REVISION}.img \
  -hdb work.amd64.usb/liveimage-amd64-usb-${REVISION}.img \
- -hdc setupliveimage-${REVISION}.fs
+ -hdc work.setupliveimage/setupliveimage-${REVISION}.fs
 
 # build and setup i386 USB/emulator/virtualbox(with vesa xorg.conf)/vmdk images
 rm -f ${VDIDIR}/liveimage-i386-vbox-${REVISION}.vdi
@@ -60,18 +60,18 @@ cp work.i386.emu/liveimage-i386-emu-${REVISION}.img \
 ${QEMU_I386} -m 512 \
  -hda work.i386.qemu/liveimage-i386-qemu-${REVISION}.img \
  -hdb work.i386.usb/liveimage-i386-usb-${REVISION}.img \
- -hdc setupliveimage-${REVISION}.fs
+ -hdc work.setupliveimage/setupliveimage-${REVISION}.fs
 ${QEMU_I386} -m 512 \
  -hda work.i386.qemu/liveimage-i386-qemu-${REVISION}.img \
  -hdb work.i386.emu/liveimage-i386-emu-${REVISION}.img \
- -hdc setupliveimage-${REVISION}.fs
+ -hdc work.setupliveimage/setupliveimage-${REVISION}.fs
 ${QEMU_IMG} convert -O vmdk \
  work.i386.emu/liveimage-i386-emu-${REVISION}.img \
  ${VMDKDIR}/liveimage-i386-vmdk-${REVISION}.vmdk
 ${QEMU_I386} -m 512 \
  -hda work.i386.qemu/liveimage-i386-qemu-${REVISION}.img \
  -hdb work.i386.emu/liveimage-i386-vbox-${REVISION}.img \
- -hdc setupliveimage-${REVISION}.fs \
+ -hdc work.setupliveimage/setupliveimage-${REVISION}.fs \
  -net nic,model=virtio
 LD_LIBRARY_PATH=${VBOXDIR}/usr/lib/virtualbox \
  ${VBOXDIR}/usr/lib/virtualbox/VBoxManage convertfromraw --format VDI \
@@ -100,7 +100,7 @@ dd if=work.amd64.usb/liveimage-amd64-usb-${REVISION}.img count=${USBMB} bs=1m \
 ${GZIP} -9c work.i386.emu/liveimage-i386-emu-${REVISION}.img \
     > ${IMAGEDIR}/liveimage-i386-emu-${REVISION}.img.gz
 
-${GZIP} -9c ${CURDIR}/setupliveimage-${REVISION}.fs \
+${GZIP} -9c work.setupliveimage/setupliveimage-${REVISION}.fs \
     > ${IMAGEDIR}/setupliveimage-${REVISION}.fs.gz
 
 (cd ${IMAGEDIR} && ${MD5} \

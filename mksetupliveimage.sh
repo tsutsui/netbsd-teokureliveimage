@@ -32,14 +32,16 @@ fi
 # source and target
 INSTSH=inst.sh
 FILESDIR=liveimagefiles
-IMAGE=setupliveimage-${REVISION}.fs
-WORKDIR=/tmp
+WORKDIR=work.setupliveimage
+IMAGE=${WORKDIR}/setupliveimage-${REVISION}.fs
 
 # tools binaries
 MACHINE_ARCH=i386
 TOOLDIR=/usr/tools/${MACHINE_ARCH}
 DISKLABEL=${TOOLDIR}/bin/nbdisklabel-${MACHINE}
 MAKEFS=${TOOLDIR}/bin/nbmakefs
+MKDIR=mkdir
+RM=rm
 
 #
 # target image size settings
@@ -58,6 +60,10 @@ TARGET_ENDIAN=le
 BLOCKSIZE=16384
 FRAGSIZE=2048
 DENSITY=8192
+
+echo Removing ${WORKDIR}...
+${RM} -rf ${WORKDIR}
+${MKDIR} -p ${WORKDIR}
 
 echo Creating rootfs...
 ${MAKEFS} -M ${FSSIZE} -B ${TARGET_ENDIAN} \

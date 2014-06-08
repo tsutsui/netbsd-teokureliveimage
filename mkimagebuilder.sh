@@ -39,13 +39,13 @@
 # % qemu-system-i386 -m 512 \
 #   -hda work.i386.qemu/liveimage-i386-qemu-YYYYMMDD.img \
 #   -hdb work.i386.usb/liveimage-i386-usb-YYYYMMDD.img \
-#   -hdc setupliveimage-YYYYMMDD.fs
+#   -hdc work.setupliveimage/setupliveimage-YYYYMMDD.fs
 #
 # for VirtualBox image:
 # % qemu-system-i386 -m 512 \
 #   -hda work.i386.qemu/liveimage-i386-qemu-YYYYMMDD.img \
 #   -hdb liveimage-i386-vbox-YYYYMMDD.img \
-#   -hdc setupliveimage-YYYYMMDD.fs
+#   -hdc work.setupliveimage/setupliveimage-YYYYMMDD.fs
 #   -net nic,model=virtio
 #
 
