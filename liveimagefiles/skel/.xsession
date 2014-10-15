@@ -8,8 +8,8 @@ export XAPPLRESDIR=/usr/pkg/lib/X11/app-defaults
 host=`hostname`
 
 xset s noblank
-xset fp+ /usr/pkg/lib/X11/fonts/TTF/
-xset fp+ /usr/pkg/lib/X11/fonts/efont/
+xset fp+ /usr/pkg/share/fonts/X11/TTF/
+xset fp+ /usr/pkg/share/fonts/X11/efont/
 
 # X keymap settings
 #setxkbmap -option ctrl:swapcaps
