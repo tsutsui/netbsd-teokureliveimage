@@ -72,7 +72,7 @@ ORIGSWAPMB=512
 ORIGIMAGESECTORS=$((${ORIGIMAGEMB} * 1024 * 1024 / 512))
 ORIGSWAPSECTORS=$((${ORIGSWAPMB} * 1024 * 1024 / 512))
 
-# chekc fdisk partition size
+# check fdisk partition size
 PART0END=$((${PART0START} + ${PART0SIZE}))
 if [ ${PART0END} -ne ${ORIGIMAGESECTORS} ]; then
 	echo Error: unexpected MBR partition size: ${PART0END}
