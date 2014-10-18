@@ -68,9 +68,9 @@ echo xdm=YES				>> /etc/rc.conf
 
 # add rc.conf definitions for packages
 echo dbus=YES				>> /etc/rc.conf   
-echo hal=YES				>> /etc/rc.conf   
+#echo hal=YES				>> /etc/rc.conf   
 echo avahidaemon=NO			>> /etc/rc.conf
-echo nasd=NO				>> /etc/rc.conf
+#echo nasd=NO				>> /etc/rc.conf
 
 # copy local fontconfig settings for pkgsrc fonts
 cp ${FILEDIR}/etc/fonts/local.conf /etc/fonts
