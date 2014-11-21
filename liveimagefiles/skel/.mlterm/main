@@ -1,6 +1,7 @@
 ENCODING = UTF-8
 geometry = 80x25
 fontsize = 16
+type_engine = xcore
 use_xim = true
 input_method = xim
 xim_open_in_startup = true
