@@ -30,6 +30,7 @@ PACKAGES=" \
 	efont-unicode \
 	jwm \
 	ibus \
+	adwaita-icon-theme \
 	mozc-server mozc-tool ibus-mozc mozc-elisp \
 	kterm mlterm \
 	git-base \
