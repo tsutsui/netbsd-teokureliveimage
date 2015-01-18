@@ -28,6 +28,7 @@ PACKAGES=" \
 	vlgothic-ttf ipafont \
 	droid-ttf \
 	efont-unicode \
+	freefont-ttf \
 	jwm \
 	ibus \
 	adwaita-icon-theme \
