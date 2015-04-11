@@ -35,17 +35,36 @@ FILESDIR=liveimagefiles
 WORKDIR=work.setupliveimage
 IMAGE=${WORKDIR}/setupliveimage-${REVISION}.fs
 
-# tools binaries
-CURDIR=`pwd`
-NETBSDSRCDIR=${CURDIR}/src
+#
+# tooldir settings
+#
 MACHINE_ARCH=i386
 MACHINE=i386
-_HOST_OSNAME=`uname -s`
-_HOST_OSREL=`uname -r`
-_HOST_ARCH=`uname -p 2> /dev/null || uname -m`
-TOOLDIRNAME=tooldir.${_HOST_OSNAME}-${_HOST_OSREL}-${_HOST_ARCH}
-TOOLDIR=${NETBSDSRCDIR}/obj.${MACHINE_ARCH}/${TOOLDIRNAME}
+#NETBSDSRCDIR=/usr/src
 #TOOLDIR=/usr/tools/${MACHINE_ARCH}
+
+if [ -z ${NETBSDSRCDIR} ]; then
+	NETBSDSRCDIR=/usr/src
+fi
+
+if [ -z ${TOOLDIR} ]; then
+	_HOST_OSNAME=`uname -s`
+	_HOST_OSREL=`uname -r`
+	_HOST_ARCH=`uname -p 2> /dev/null || uname -m`
+	TOOLDIRNAME=tooldir.${_HOST_OSNAME}-${_HOST_OSREL}-${_HOST_ARCH}
+	TOOLDIR=${NETBSDSRCDIR}/obj.${MACHINE}/${TOOLDIRNAME}
+	if [ ! -d ${TOOLDIR} ]; then
+		TOOLDIR=${NETBSDSRCDIR}/${TOOLDIRNAME}
+	fi
+fi
+
+if [ ! -d ${TOOLDIR} ]; then
+	echo 'set TOOLDIR first'; exit 1
+fi
+if [ ! -x ${TOOLDIR}/bin/nbdisklabel-${MACHINE} ]; then
+	echo 'build tools in ${TOOLDIR} first'; exit 1
+fi
+
 DISKLABEL=${TOOLDIR}/bin/nbdisklabel-${MACHINE}
 MAKEFS=${TOOLDIR}/bin/nbmakefs
 MKDIR=mkdir
