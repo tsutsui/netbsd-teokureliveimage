@@ -36,8 +36,16 @@ WORKDIR=work.setupliveimage
 IMAGE=${WORKDIR}/setupliveimage-${REVISION}.fs
 
 # tools binaries
+CURDIR=`pwd`
+NETBSDSRCDIR=${CURDIR}/src
 MACHINE_ARCH=i386
-TOOLDIR=/usr/tools/${MACHINE_ARCH}
+MACHINE=i386
+_HOST_OSNAME=`uname -s`
+_HOST_OSREL=`uname -r`
+_HOST_ARCH=`uname -p 2> /dev/null || uname -m`
+TOOLDIRNAME=tooldir.${_HOST_OSNAME}-${_HOST_OSREL}-${_HOST_ARCH}
+TOOLDIR=${NETBSDSRCDIR}/obj.${MACHINE_ARCH}/${TOOLDIRNAME}
+#TOOLDIR=/usr/tools/${MACHINE_ARCH}
 DISKLABEL=${TOOLDIR}/bin/nbdisklabel-${MACHINE}
 MAKEFS=${TOOLDIR}/bin/nbmakefs
 MKDIR=mkdir
