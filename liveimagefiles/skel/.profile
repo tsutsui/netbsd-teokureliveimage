@@ -1,4 +1,4 @@
-#	$NetBSD: dot.profile,v 1.8.4.1 2012/04/12 17:12:06 riz Exp $
+#	$NetBSD: dot.profile,v 1.9 2012/04/10 19:02:30 dholland Exp $
 #
 # This is the default .profile file.
 # Users are expected to edit it to meet their own needs.
