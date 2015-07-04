@@ -1,6 +1,6 @@
 #! /bin/sh
 #
-# Copyright (c) 2012, 2013 Izumi Tsutsui.  All rights reserved.
+# Copyright (c) 2012, 2013, 2014, 2015 Izumi Tsutsui.  All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions
@@ -61,11 +61,11 @@ fi
 if [ ! -d ${TOOLDIR} ]; then
 	echo 'set TOOLDIR first'; exit 1
 fi
-if [ ! -x ${TOOLDIR}/bin/nbdisklabel-${MACHINE} ]; then
+if [ ! -x ${TOOLDIR}/bin/nbmake-${MACHINE} ]; then
 	echo 'build tools in ${TOOLDIR} first'; exit 1
 fi
 
-DISKLABEL=${TOOLDIR}/bin/nbdisklabel-${MACHINE}
+DISKLABEL=${TOOLDIR}/bin/nbdisklabel
 MAKEFS=${TOOLDIR}/bin/nbmakefs
 MKDIR=mkdir
 RM=rm
@@ -124,7 +124,7 @@ a:    ${FSSECTORS} ${FSOFFSET} 4.2BSD ${FRAGSIZE} ${BLOCKSIZE} 128
 c:    ${FSSECTORS} ${FSOFFSET} unused 0 0
 EOF
 
-${DISKLABEL} -R -F ${IMAGE} ${LABELPROTO}
+${DISKLABEL} -R -F -M ${MACHINE} ${IMAGE} ${LABELPROTO}
 rm -f ${LABELPROTO}
 
 echo Creating image \"${IMAGE}\" complete.

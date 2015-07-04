@@ -1,6 +1,6 @@
 #! /bin/sh
 #
-# Copyright (c) 2009, 2010, 2011, 2012, 2013, 2014 Izumi Tsutsui.
+# Copyright (c) 2009, 2010, 2011, 2012, 2013, 2014, 2015 Izumi Tsutsui.
 # All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
@@ -130,7 +130,7 @@ fi
 if [ ! -d ${TOOLDIR} ]; then
 	echo 'set TOOLDIR first'; exit 1
 fi
-if [ ! -x ${TOOLDIR}/bin/nbdisklabel-${MACHINE} ]; then
+if [ ! -x ${TOOLDIR}/bin/nbmake-${MACHINE} ]; then
 	echo 'build tools in ${TOOLDIR} first'; exit 1
 fi
 
@@ -141,19 +141,16 @@ fi
 #FTPHOST=ftp.jp.NetBSD.org
 FTPHOST=ftp7.jp.NetBSD.org
 #FTPHOST=nyftp.NetBSD.org
-#RELEASE=5.1.2
-RELEASE=6.1.5
+RELEASE=7.0_RC1
 RELEASEDIR=pub/NetBSD/NetBSD-${RELEASE}
-#RELEASEDIR=pub/NetBSD-daily/HEAD/201002020000Z
-#RELEASEDIR=pub/NetBSD-daily/netbsd-5/201205231830Z
-#RELEASEDIR=pub/NetBSD-daily/netbsd-6/201205310950Z
+#RELEASEDIR=pub/NetBSD-daily/netbsd-7/201507032200Z
 
 #
 # misc build settings
 #
 
 # tools binaries
-DISKLABEL=${TOOLDIR}/bin/nbdisklabel-${MACHINE}
+DISKLABEL=${TOOLDIR}/bin/nbdisklabel
 FDISK=${TOOLDIR}/bin/${MACHINE_GNU_PLATFORM}-fdisk
 SED=${TOOLDIR}/bin/nbsed
 
@@ -328,6 +325,6 @@ c:    ${BSDPARTSECTORS} ${FSOFFSET} unused 0 0
 d:    ${IMAGESECTORS} 0 unused 0 0
 EOF
 
-${DISKLABEL} -R -F ${IMAGE} ${WORKDIR}/labelproto
+${DISKLABEL} -R -F -M ${MACHINE} ${IMAGE} ${WORKDIR}/labelproto
 
 echo Creating image \"${IMAGE}\" complete.
