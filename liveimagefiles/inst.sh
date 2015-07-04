@@ -76,7 +76,7 @@ echo avahidaemon=NO			>> /etc/rc.conf
 #echo nasd=NO				>> /etc/rc.conf
 
 # copy local fontconfig settings for pkgsrc fonts
-cp ${FILEDIR}/etc/fonts/local.conf /etc/fonts
+#cp ${FILEDIR}/etc/fonts/local.conf /etc/fonts
 
 # copy files for asound.conf
 cp ${FILEDIR}/etc/asound.conf /etc
