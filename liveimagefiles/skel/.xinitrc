@@ -28,9 +28,12 @@ fi
 
 # iBus
 if [ ! -f ${HOME}/.config/dconf/user ]; then
+	# set mozc-jp as the default inputmethod
 	gsettings set org.freedesktop.ibus.general preload-engines "['mozc-jp']"
 	# mozc is always enabled and IME is turned on/off on it
 	gsettings set org.freedesktop.ibus.general.hotkey triggers "[]"
+	# set "hide automatically" for property panel
+	gsettings set org.freedesktop.ibus.panel show 1
 fi
 export XMODIFIERS="@im=ibus"
 export GTK_IM_MODULE="ibus"
