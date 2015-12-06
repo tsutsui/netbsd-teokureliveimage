@@ -80,7 +80,7 @@ echo avahidaemon=NO			>> /etc/rc.conf
 #cp ${FILEDIR}/etc/fonts/local.conf /etc/fonts
 
 # copy files for asound.conf
-cp ${FILEDIR}/etc/asound.conf /etc
+#cp ${FILEDIR}/etc/asound.conf /etc
 
 echo "installing mozilla CA root certificates..."
 /usr/pkg/sbin/mozilla-rootcerts install
