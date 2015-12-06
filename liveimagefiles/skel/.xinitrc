@@ -10,6 +10,8 @@ host=`hostname`
 xset s noblank
 xset fp+ /usr/pkg/share/fonts/X11/TTF/
 xset fp+ /usr/pkg/share/fonts/X11/efont/
+xset fp+ /usr/pkg/share/fonts/X11/misc/
+xset fp+ /usr/pkg/share/fonts/truetype/unifont/
 
 # X keymap settings
 #setxkbmap -option ctrl:swapcaps
