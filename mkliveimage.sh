@@ -266,10 +266,12 @@ echo Preparing /etc/fstab...
 ${CAT} > ${WORKDIR}/fstab <<EOF
 /dev/${BOOTDISK}a	/		ffs	rw,log		1 1
 /dev/${BOOTDISK}b	none		none	sw		0 0
-ptyfs		/dev/pts	ptyfs	rw		0 0
 kernfs		/kern		kernfs	rw		0 0
+ptyfs		/dev/pts	ptyfs	rw		0 0
 procfs		/proc		procfs	rw		0 0
+/dev/cd0a	/cdrom		cd9660	ro,noauto	0 0
 tmpfs		/tmp		tmpfs	rw,-s=128M	0 0
+tmpfs		/var/shm	tmpfs	rw,-sram%25	0 0
 EOF
 ${CP} ${WORKDIR}/fstab  ${TARGETROOTDIR}/etc
 
@@ -296,6 +298,7 @@ ${SH} ${TARGETROOTDIR}/dev/MAKEDEV -s all | \
 # spec for optional files/dirs
 ${CAT} >> ${WORKDIR}/spec <<EOF
 ./boot				type=file mode=0444
+./cdrom				type=dir  mode=0755
 ./kern				type=dir  mode=0755
 ./netbsd			type=file mode=0755
 ./proc				type=dir  mode=0755
