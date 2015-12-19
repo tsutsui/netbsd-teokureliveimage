@@ -1,211 +1,216 @@
-<?xml version="1.0"?>
-
+<?xml version="1.0" encoding="UTF-8"?>
 <JWM>
 
-   <!-- The root menu, if this is undefined you will not get a menu. -->
-   <!-- Additional RootMenu attributes: onroot, labeled, label -->
-   <!-- <RootMenu height="32" onroot="12"> -->
-   <RootMenu height="16" onroot="12">
-      <Program label="xterm">xterm</Program>
-      <Program label="kterm">kterm</Program>
-      <Program label="mlterm">mlterm</Program>
+    <!-- The root menu. -->
+    <RootMenu onroot="12">
+        <Program icon="terminal.png" label="xterm">xterm</Program>
+        <Program icon="terminal.png" label="kterm">kterm</Program>
+        <Program icon="terminal.png" label="mlterm">mlterm</Program>
+        <Menu icon="folder.png" label="Applications">
+            <Program icon="calculator.png" label="Calculator">xcalc</Program>
+            <Program icon="gimp.png" label="Gimp">gimp</Program>
+            <Program icon="editor.png" label="emacs">emacs</Program>
+            <Program icon="editor.png" label="medit">medit</Program>
+            <Program icon="www.png" label="Firefox">firefox</Program>
+            <Program label="mikutter">mikutter</Program>
+        </Menu>
+        <Menu icon="folder.png" label="Utilities">
+            <Program icon="font.png" label="Fonts">xfontsel</Program>
+            <Program icon="window.png" label="Window Properties">
+                xprop | xmessage -file -
+            </Program>
+            <Program icon="window.png" label="Window Information">
+                xwininfo | xmessage -file -
+            </Program>
+        </Menu>
+        <Separator/>
+        <Program icon="lock.png" label="Lock">
+            xlock -mode blank
+        </Program>
+        <Separator/>
+        <Restart label="Restart" icon="restart.png"/>
+        <Exit label="Exit" confirm="true" icon="quit.png"/>
+    </RootMenu>
 
-      <Menu label="Applications">
-         <Program label="emacs">emacs</Program>
-         <Program label="medit">medit</Program>
-         <Program label="firefox">firefox</Program>
-         <Program label="mikutter">mikutter</Program>
-      </Menu>
-      <Menu label="Utilities">
-         <Program label="Calculator">xcalc</Program>
-         <Program label="Fonts">xfontsel</Program>
-         <Program label="Magnify">xmag</Program>
-         <Program icon="window.png" label="Window Properties">
-            xprop | xmessage -file -
-         </Program>
-      </Menu>
-      <Separator/>
-      <Program icon="lock.png" label="Lock">
-         <!-- xscreensaver-command -activate -->
-         xlock
-      </Program>
-      <Separator/>
-      <Restart label="Restart" icon="restart.png"/>
-      <Exit label="Exit" confirm="true" icon="quit.png"/>
-   </RootMenu>
+    <!-- Options for program groups. -->
+    <Group>
+        <Class>Pidgin</Class>
+        <Option>sticky</Option>
+    </Group>
+    <Group>
+        <Name>xterm</Name>
+        <Option>vmax</Option>
+    </Group>
+    <Group>
+        <Name>xclock</Name>
+        <Option>drag</Option>
+        <Option>notitle</Option>
+    </Group>
 
-   <Group>
-      <Class>Pidgin</Class>
-      <Option>sticky</Option>
-   </Group>
+    <!-- Tray at the bottom. -->
+<!--
+    <Tray x="0" y="-1" autohide="off">
+ -->
+    <Tray x="0" y="-1" height="32" autohide="off">
 
-   <Group>
-      <Name>gkrellm</Name>
-      <Option>nolist</Option>
-      <Option>sticky</Option>
-   </Group>
+<!--
+        <TrayButton label="JWM">root:1</TrayButton>
+ -->
+        <TrayButton label="BSD">root:1</TrayButton>
+        <Spacer width="2"/>
+        <TrayButton label="_">showdesktop</TrayButton>
+        <Spacer width="2"/>
 
-   <Group>
-      <Name>xterm</Name>
-      <Option>vmax</Option>
-      <Option>icon:terminal.png</Option>
-   </Group>
+        <Pager labeled="true"/>
 
-   <!-- Additional tray attributes: autohide, width, border, layer, layout -->
-   <Tray  x="0" y="-1" height="32" autohide="false">
+        <TaskList maxwidth="256"/>
 
-      <!-- Additional TrayButton attribute: label -->
-      <TrayButton label="BSD">root:1</TrayButton>
+        <Dock/>
 
-      <TrayButton label="_">showdesktop</TrayButton>
+        <!-- Additional Swallow attribute: height -->
+        <Swallow name="xload" height="16" width="64">
+           xload -nolabel -bg black -fg red -hl white
+        </Swallow>
 
-      <!-- Additional Pager attribute: labeled -->
-      <Pager labeled="true"/>
+        <Clock><Button mask="123">exec:xclock</Button></Clock>
 
-      <TaskList maxwidth="256"/>
+    </Tray>
 
-      <Dock/>
+    <!-- Visual Styles -->
+    <WindowStyle>
+<!--
+        <Font>Sans-9:bold</Font>
+ -->
+        <Font>VL PGothic-12:bold</Font>
+        <Width>4</Width>
+        <Height>21</Height>
+        <Corner>3</Corner>
+        <Foreground>#FFFFFF</Foreground>
+        <Background>#555555</Background>
+        <Outline>#000000</Outline>
+        <Opacity>0.5:0.9:0.1</Opacity>
+        <Active>
+            <Foreground>#FFFFFF</Foreground>
+            <Background>#0077CC</Background>
+            <Outline>#000000</Outline>
+            <Opacity>1.0</Opacity>
+        </Active>
+    </WindowStyle>
+<!--
+    <TrayStyle group="true" list="all">
+ -->
+    <TrayStyle group="false" list="desktop">
+<!--
+        <Font>Sans-9</Font>
+ -->
+        <Font>VL PGothic-12:bold</Font>
+        <Background>#333333</Background>
+        <Foreground>#FFFFFF</Foreground>
+        <Outline>#000000</Outline>
+        <Opacity>0.75</Opacity>
+    </TrayStyle>
+    <PagerStyle>
+        <Outline>#000000</Outline>
+        <Foreground>#555555</Foreground>
+        <Background>#333333</Background>
+        <Text>#FFFFFF</Text>
+        <Active>
+            <Foreground>#0077CC</Foreground>
+            <Background>#555555</Background>
+        </Active>
+    </PagerStyle>
+    <MenuStyle>
+<!--
+        <Font>Sans-9</Font>
+ -->
+        <Font>VL PGothic-11:bold</Font>
+        <Foreground>#FFFFFF</Foreground>
+        <Background>#333333</Background>
+        <Outline>#000000</Outline>
+        <Active>
+            <Foreground>#FFFFFF</Foreground>
+            <Background>#0077CC</Background>
+        </Active>
+        <Opacity>0.85</Opacity>
+    </MenuStyle>
+    <PopupStyle>
+<!--
+        <Font>Sans-9</Font>
+ -->
+        <Font>VL PGothic-11</Font>
+        <Foreground>#000000</Foreground>
+        <Background>#999999</Background>
+    </PopupStyle>
 
-      <!-- Additional Swallow attribute: height -->
-      <Swallow name="xload" width="64">
-         xload -nolabel -bg black -fg red -hl white
-      </Swallow>
+    <!-- Path where icons can be found.
+         IconPath can be listed multiple times to allow searching
+         for icons in multiple paths.
+      -->
+    <IconPath>
+<!--
+        /usr/pkg/share/icons/wm-icons/32x32-aquafusion
+ -->
+        /usr/pkg/share/icons/wm-icons/16x16-aquafusion
+    </IconPath>
 
-      <Clock>xclock</Clock>
+    <!-- Virtual Desktops -->
+    <!-- Desktop tags can be contained within Desktops for desktop names. -->
+    <Desktops width="4" height="1">
+        <!-- Default background. Note that a Background tag can be
+              contained within a Desktop tag to give a specific background
+              for that desktop.
+         -->
+<!--
+        <Background type="solid">#111111</Background>
+ -->
+<!--
+        <Background type="image">$HOME/image/bg.jpg</Background>
+ -->
+    </Desktops>
 
-   </Tray>
+    <!-- Double click speed (in milliseconds) -->
+    <DoubleClickSpeed>400</DoubleClickSpeed>
 
-   <!-- Visual Styles -->
+    <!-- Double click delta (in pixels) -->
+    <DoubleClickDelta>2</DoubleClickDelta>
 
-   <WindowStyle>
+    <!-- The focus model (sloppy or click) -->
+    <FocusModel>sloppy</FocusModel>
 
-      <!-- <Font>FreeSans-9:bold</Font> -->
-      <Font>VLPgothic-11:bold</Font>
-      <Width>4</Width>
-      <Height>20</Height>
+    <!-- The snap mode (none, screen, or border) -->
+    <SnapMode distance="10">border</SnapMode>
 
-      <Active>
-         <Text>white</Text>
-         <Title>#70849d:#2e3a67</Title>
-         <Outline>black</Outline>
-         <Opacity>1.0</Opacity>
-      </Active>
+    <!-- The move mode (outline or opaque) -->
+    <MoveMode>opaque</MoveMode>
 
-      <Inactive>
-         <Text>#aaaaaa</Text>
-         <Title>#808488:#303438</Title>
-         <Outline>black</Outline>
-         <Opacity>0.5:0.9:0.1</Opacity>
-      </Inactive>
+    <!-- The resize mode (outline or opaque) -->
+    <ResizeMode>opaque</ResizeMode>
 
-   </WindowStyle>
+    <!-- Key bindings -->
+    <Key key="Up">up</Key>
+    <Key key="Down">down</Key>
+    <Key key="Right">right</Key>
+    <Key key="Left">left</Key>
+    <Key key="h">left</Key>
+    <Key key="j">down</Key>
+    <Key key="k">up</Key>
+    <Key key="l">right</Key>
+    <Key key="Return">select</Key>
+    <Key key="Escape">escape</Key>
 
-   <TaskListStyle>
-      <!-- <Font>FreeSans-12:bold</Font> -->
-      <Font>VLPgothic-11:bold</Font>
-      <ActiveForeground>black</ActiveForeground>
-      <ActiveBackground>gray80:gray90</ActiveBackground>
-      <Foreground>black</Foreground>
-      <Background>gray90:gray80</Background>
-   </TaskListStyle>
+    <Key mask="A" key="Tab">nextstacked</Key>
+    <Key mask="A" key="F4">close</Key>
+    <Key mask="A" key="#">desktop#</Key>
+    <Key mask="A" key="F1">root:1</Key>
+    <Key mask="A" key="F2">window</Key>
+    <Key mask="A" key="F10">maximize</Key>
+    <Key mask="A" key="Right">rdesktop</Key>
+    <Key mask="A" key="Left">ldesktop</Key>
+    <Key mask="A" key="Up">udesktop</Key>
+    <Key mask="A" key="Down">ddesktop</Key>
 
-   <!-- Additional TrayStyle attribute: insert -->
-   <TrayStyle>
-      <!-- <Font>FreeSans-12:bold</Font> -->
-      <Font>LuxiSerif-12:bold</Font>
-      <Background>gray90</Background>
-      <Foreground>black</Foreground>
-      <Opacity>0.75</Opacity>
-   </TrayStyle>
-
-   <PagerStyle>
-      <Outline>black</Outline>
-      <Foreground>gray90</Foreground>
-      <Background>#808488</Background>
-      <ActiveForeground>#70849d</ActiveForeground>
-      <ActiveBackground>#2e3a67</ActiveBackground>
-   </PagerStyle>
-
-   <MenuStyle>
-      <!-- <Font>FreeSans-12:bold</Font> -->
-      <Font>VLPgothic-11:bold</Font>
-      <Foreground>black</Foreground>
-      <Background>gray90</Background>
-      <ActiveForeground>white</ActiveForeground>
-      <ActiveBackground>#70849d:#2e3a67</ActiveBackground>
-      <Opacity>0.85</Opacity>
-   </MenuStyle>
-
-   <PopupStyle>
-      <!-- <Font>FreeSans-10</Font> -->
-      <Font>VLPgothic-11</Font>
-      <Outline>black</Outline>
-      <Foreground>black</Foreground>
-      <Background>yellow</Background>
-   </PopupStyle>
-
-   <IconPath>
-      /usr/share/icons/wm-icons/32x32-gant
-   </IconPath>
-
-   <!-- Virtual Desktops -->
-   <!-- Desktop tags can be contained within Desktops for desktop names. -->
-   <!-- <Desktops width="4" height="2"> -->
-   <Desktops width="4" height="1">
-      <!-- Default background. Note that a Background tag can be
-           contained within a Desktop tag to give a specific background
-           for that desktop.
-       -->
-      <!--
-      <Background type="image">$HOME/image.jpg</Background>
-       -->
-   </Desktops>
-
-   <!-- Double click speed (in milliseconds) -->
-   <DoubleClickSpeed>400</DoubleClickSpeed>
-
-   <!-- Double click delta (in pixels) -->
-   <DoubleClickDelta>2</DoubleClickDelta>
-
-   <!-- The focus model (sloppy or click) -->
-   <FocusModel>sloppy</FocusModel>
-
-   <!-- The snap mode (none, screen, or border) -->
-   <SnapMode distance="10">border</SnapMode>
-
-   <!-- The move mode (outline or opaque) -->
-   <MoveMode>opaque</MoveMode>
-
-   <!-- The resize mode (outline or opaque) -->
-   <ResizeMode>opaque</ResizeMode>
-
-   <!--
-   <StartupCommand>gkrellm</StartupCommand>
-   -->
-
-   <!-- Key bindings -->
-   <Key key="Up">up</Key>
-   <Key key="Down">down</Key>
-   <Key key="Right">right</Key>
-   <Key key="Left">left</Key>
-   <Key key="h">left</Key>
-   <Key key="j">down</Key>
-   <Key key="k">up</Key>
-   <Key key="l">right</Key>
-   <Key key="Return">select</Key>
-   <Key key="Escape">escape</Key>
-
-   <Key mask="A" key="Tab">nextstacked</Key>
-   <Key mask="AS" key="Tab">prevstacked</Key>
-   <Key mask="A" key="F4">close</Key>
-   <Key mask="A" key="#">desktop#</Key>
-   <Key mask="A" key="F1">root:1</Key>
-   <Key mask="A" key="F2">window</Key>
-   <Key mask="A" key="F10">maximize</Key>
-   <Key mask="A" key="Right">rdesktop</Key>
-   <Key mask="A" key="Left">ldesktop</Key>
-   <Key mask="A" key="Up">udesktop</Key>
-   <Key mask="A" key="Down">ddesktop</Key>
-
+<!--
+    <Key mask="C" key="period">prev</Key>
+    <Key mask="C" key="comma">next</Key>
+ -->
 </JWM>
-
