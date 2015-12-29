@@ -213,7 +213,7 @@ MBRNETBSD=169
 
 # makefs(8) parameters
 BLOCKSIZE=16384
-FRAGSIZE=2048
+FRAGSIZE=4096
 DENSITY=8192
 
 echo creating ${IMAGE_TYPE} image for ${MACHINE}...
