@@ -1,6 +1,8 @@
-DEFAULT = 16,-efont-biwidth-medium-r-normal-*-16-*-*-*-c-*-iso10646-1
+DEFAULT = 16,-gnu-unifont-medium-r-normal-*-16-*-*-*-c-*-iso10646-1
+#DEFAULT = 16,-efont-biwidth-medium-r-normal-*-16-*-*-*-c-*-iso10646-1
 ISO8859_1 = 16,-sony-fixed-medium-r-normal-*-16-*-*-*-c-*-iso8859-1
 JISX0208_1978 = 16,-sony-fixed-medium-r-normal-*-16-*-*-*-c-*-jisx0208.1978-0
 JISX0208_1983 = 16,-*-fixed-medium-r-normal-*-16-*-*-*-c-*-jisx0208.1983-0
-ISO10646_UCS4_1 = 16,-efont-biwidth-medium-r-normal-*-16-*-*-*-c-*-iso10646-1
+ISO10646_UCS4_1 = 16,-gnu-unifont-medium-r-normal-*-16-*-*-*-c-*-iso10646-1
+#ISO10646_UCS4_1 = 16,-efont-biwidth-medium-r-normal-*-16-*-*-*-c-*-iso10646-1
 ISO10646_UCS4_1_FULLWIDTH=&ISO10646_UCS4_1
