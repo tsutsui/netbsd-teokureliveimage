@@ -46,9 +46,9 @@ TOOLDIR=${TOOLDIR_I386} ${SH} mksetupliveimage.sh
 TOOLDIR=${TOOLDIR_AMD64} ${SH} mkimagebuilder.sh amd64
 TOOLDIR=${TOOLDIR_AMD64} ${SH} mkliveimage.sh usb amd64
 ${QEMU_X86_64} -m 512 \
- -hda work.amd64.qemu/liveimage-amd64-qemu-${REVISION}.img \
- -hdb work.amd64.usb/liveimage-amd64-usb-${REVISION}.img \
- -hdc work.setupliveimage/setupliveimage-${REVISION}.fs
+ -drive file=work.amd64.qemu/liveimage-amd64-qemu-${REVISION}.img,index=0,media=disk,format=raw,cache=unsafe \
+ -drive file=work.amd64.usb/liveimage-amd64-usb-${REVISION}.img,index=1,media=disk,format=raw,cache=unsafe \
+ -drive file=work.setupliveimage/setupliveimage-${REVISION}.fs,index=2,media=disk,format=raw,cache=unsafe
 
 # build and setup i386 USB/emulator/virtualbox/vmdk images
 rm -f ${VDIDIR}/liveimage-i386-vbox-${REVISION}.vdi
@@ -56,13 +56,13 @@ TOOLDIR=${TOOLDIR_I386} ${SH} mkimagebuilder.sh i386
 TOOLDIR=${TOOLDIR_I386} ${SH} mkliveimage.sh usb i386
 TOOLDIR=${TOOLDIR_I386} ${SH} mkliveimage.sh emu i386
 ${QEMU_I386} -m 512 \
- -hda work.i386.qemu/liveimage-i386-qemu-${REVISION}.img \
- -hdb work.i386.usb/liveimage-i386-usb-${REVISION}.img \
- -hdc work.setupliveimage/setupliveimage-${REVISION}.fs
+ -drive file=work.i386.qemu/liveimage-i386-qemu-${REVISION}.img,index=0,media=disk,format=raw,cache=unsafe \
+ -drive file=work.i386.usb/liveimage-i386-usb-${REVISION}.img,index=1,media=disk,format=raw,cache=unsafe \
+ -drive file=work.setupliveimage/setupliveimage-${REVISION}.fs,index=2,media=disk,format=raw,cache=unsafe
 ${QEMU_I386} -m 512 \
- -hda work.i386.qemu/liveimage-i386-qemu-${REVISION}.img \
- -hdb work.i386.emu/liveimage-i386-emu-${REVISION}.img \
- -hdc work.setupliveimage/setupliveimage-${REVISION}.fs
+ -drive file=work.i386.qemu/liveimage-i386-qemu-${REVISION}.img,index=0,media=disk,format=raw,cache=unsafe \
+ -drive file=work.i386.emu/liveimage-i386-emu-${REVISION}.img,index=1,media=disk,format=raw,cache=unsafe \
+ -drive file=work.setupliveimage/setupliveimage-${REVISION}.fs,index=2,media=disk,format=raw,cache=unsafe
 ${QEMU_IMG} convert -O vmdk \
  work.i386.emu/liveimage-i386-emu-${REVISION}.img \
  ${VMDKDIR}/liveimage-i386-vmdk-${REVISION}.vmdk
