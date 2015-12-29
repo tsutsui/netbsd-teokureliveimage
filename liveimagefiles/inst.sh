@@ -33,6 +33,7 @@ PACKAGES=" \
 	unifont \
 	freefont-ttf \
 	jwm \
+	wm-icons \
 	ibus \
 	adwaita-icon-theme \
 	mozc-server mozc-tool ibus-mozc mozc-elisp \
