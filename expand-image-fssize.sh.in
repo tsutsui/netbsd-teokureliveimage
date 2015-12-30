@@ -143,7 +143,7 @@ disklabel -R ${BOOTDISK} /tmp/disklabel.${BOOTDISK}.new
 
 # update fs size
 echo Perform resize_ffs...
-resize_ffs -y /dev/r${BOOTDISK}a
+resize_ffs -p -y /dev/r${BOOTDISK}a
 echo Done!
 echo
 echo Hit Enter to reboot...
