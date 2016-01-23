@@ -28,6 +28,9 @@ if [ -r "$resources" ]; then
 	xrdb -load "$resources"
 fi
 
+# for webkit-gtk and adobe-flash-plugin
+#export MOZ_PLUGIN_PATH=/usr/pkg/lib/netscape/plugins
+
 # iBus
 if [ ! -f ${HOME}/.config/dconf/user ]; then
 	# set mozc-jp as the default inputmethod
