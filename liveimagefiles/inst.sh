@@ -25,7 +25,7 @@ PACKAGES=" \
 	emacs \
 	medit \
 	firefox firefox-l10n \
-	gst-libav gst-plugins1-good \
+	gst-plugins1-libav gst-plugins1-good \
 	w3m \
 	vlgothic-ttf ipafont \
 	droid-ttf \
