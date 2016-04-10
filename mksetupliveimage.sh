@@ -32,7 +32,10 @@ fi
 # source and target
 INSTSH=inst.sh
 FILESDIR=liveimagefiles
-WORKDIR=work.setupliveimage
+if [ "${OBJDIR}"X = "X" ]; then
+	OBJDIR=.
+fi
+WORKDIR=${OBJDIR}/work.setupliveimage
 IMAGE=${WORKDIR}/setupliveimage-${REVISION}.fs
 
 #

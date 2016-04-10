@@ -37,15 +37,15 @@
 #
 # expected usage:
 # % qemu-system-i386 -m 512 \
-#   -hda work.i386.qemu/liveimage-i386-qemu-YYYYMMDD.img \
-#   -hdb work.i386.usb/liveimage-i386-usb-YYYYMMDD.img \
-#   -hdc work.setupliveimage/setupliveimage-YYYYMMDD.fs
+#   -hda obj/work.i386.qemu/liveimage-i386-qemu-YYYYMMDD.img \
+#   -hdb obj/work.i386.usb/liveimage-i386-usb-YYYYMMDD.img \
+#   -hdc obj/work.setupliveimage/setupliveimage-YYYYMMDD.fs
 #
 # for VirtualBox image:
 # % qemu-system-i386 -m 512 \
-#   -hda work.i386.qemu/liveimage-i386-qemu-YYYYMMDD.img \
-#   -hdb liveimage-i386-vbox-YYYYMMDD.img \
-#   -hdc work.setupliveimage/setupliveimage-YYYYMMDD.fs
+#   -hda obj/work.i386.qemu/liveimage-i386-qemu-YYYYMMDD.img \
+#   -hdb obj/liveimage-i386-vbox-YYYYMMDD.img \
+#   -hdc obj/work.setupliveimage/setupliveimage-YYYYMMDD.fs
 #   -net nic,model=virtio
 #
 
@@ -167,9 +167,12 @@ SH=sh
 TAR=tar
 
 # working directories
-TARGETROOTDIR=targetroot.${MACHINE}.${IMAGE_TYPE}
+if [ "${OBJDIR}"X = "X" ]; then
+	OBJDIR=.
+fi
+TARGETROOTDIR=${OBJDIR}/targetroot.${MACHINE}.${IMAGE_TYPE}
 DOWNLOADDIR=download.${MACHINE}
-WORKDIR=work.${MACHINE}.${IMAGE_TYPE}
+WORKDIR=${OBJDIR}/work.${MACHINE}.${IMAGE_TYPE}
 IMAGE=${WORKDIR}/liveimage-${MACHINE}-${IMAGE_TYPE}-${REVISION}.img
 
 #

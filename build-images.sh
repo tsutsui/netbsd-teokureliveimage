@@ -13,6 +13,10 @@ fi
 CURDIR=`pwd`
 # assume proper symlinks are prepared in ${CURDIR}
 NETBSDSRCDIR=${CURDIR}/src
+OBJDIR=${CURDIR}
+if [ -e ${CURDIR}/obj ]; then
+	OBJDIR=${CURDIR}/obj
+fi
 VBOXDIR=${CURDIR}/vbox
 VDIDIR=${CURDIR}/vdi
 VMDKDIR=${CURDIR}/vmdk
@@ -40,35 +44,35 @@ TOOLDIR_AMD64=${NETBSDSRCDIR}/obj.amd64/${TOOLDIRNAME}
 #TOOLDIR_AMD64=/usr/tools/x86_64
 
 # build "setup liveimage" image
-TOOLDIR=${TOOLDIR_I386} ${SH} mksetupliveimage.sh
+TOOLDIR=${TOOLDIR_I386} OBJDIR=${OBJDIR} ${SH} mksetupliveimage.sh
 
 # build and setup amd64 USB liveimage
-TOOLDIR=${TOOLDIR_AMD64} ${SH} mkimagebuilder.sh amd64
-TOOLDIR=${TOOLDIR_AMD64} ${SH} mkliveimage.sh usb amd64
+TOOLDIR=${TOOLDIR_AMD64} OBJDIR=${OBJDIR} ${SH} mkimagebuilder.sh amd64
+TOOLDIR=${TOOLDIR_AMD64} OBJDIR=${OBJDIR} ${SH} mkliveimage.sh usb amd64
 ${QEMU_X86_64} -m 512 \
- -drive file=work.amd64.qemu/liveimage-amd64-qemu-${REVISION}.img,index=0,media=disk,format=raw,cache=unsafe \
- -drive file=work.amd64.usb/liveimage-amd64-usb-${REVISION}.img,index=1,media=disk,format=raw,cache=unsafe \
- -drive file=work.setupliveimage/setupliveimage-${REVISION}.fs,index=2,media=disk,format=raw,cache=unsafe
+ -drive file=${OBJDIR}/work.amd64.qemu/liveimage-amd64-qemu-${REVISION}.img,index=0,media=disk,format=raw,cache=unsafe \
+ -drive file=${OBJDIR}/work.amd64.usb/liveimage-amd64-usb-${REVISION}.img,index=1,media=disk,format=raw,cache=unsafe \
+ -drive file=${OBJDIR}/work.setupliveimage/setupliveimage-${REVISION}.fs,index=2,media=disk,format=raw,cache=unsafe
 
 # build and setup i386 USB/emulator/virtualbox/vmdk images
 rm -f ${VDIDIR}/liveimage-i386-vbox-${REVISION}.vdi
-TOOLDIR=${TOOLDIR_I386} ${SH} mkimagebuilder.sh i386
-TOOLDIR=${TOOLDIR_I386} ${SH} mkliveimage.sh usb i386
-TOOLDIR=${TOOLDIR_I386} ${SH} mkliveimage.sh emu i386
+TOOLDIR=${TOOLDIR_I386} OBJDIR=${OBJDIR} ${SH} mkimagebuilder.sh i386
+TOOLDIR=${TOOLDIR_I386} OBJDIR=${OBJDIR} ${SH} mkliveimage.sh usb i386
+TOOLDIR=${TOOLDIR_I386} OBJDIR=${OBJDIR} ${SH} mkliveimage.sh emu i386
 ${QEMU_I386} -m 512 \
- -drive file=work.i386.qemu/liveimage-i386-qemu-${REVISION}.img,index=0,media=disk,format=raw,cache=unsafe \
- -drive file=work.i386.usb/liveimage-i386-usb-${REVISION}.img,index=1,media=disk,format=raw,cache=unsafe \
- -drive file=work.setupliveimage/setupliveimage-${REVISION}.fs,index=2,media=disk,format=raw,cache=unsafe
+ -drive file=${OBJDIR}/work.i386.qemu/liveimage-i386-qemu-${REVISION}.img,index=0,media=disk,format=raw,cache=unsafe \
+ -drive file=${OBJDIR}/work.i386.usb/liveimage-i386-usb-${REVISION}.img,index=1,media=disk,format=raw,cache=unsafe \
+ -drive file=${OBJDIR}/work.setupliveimage/setupliveimage-${REVISION}.fs,index=2,media=disk,format=raw,cache=unsafe
 ${QEMU_I386} -m 512 \
- -drive file=work.i386.qemu/liveimage-i386-qemu-${REVISION}.img,index=0,media=disk,format=raw,cache=unsafe \
- -drive file=work.i386.emu/liveimage-i386-emu-${REVISION}.img,index=1,media=disk,format=raw,cache=unsafe \
- -drive file=work.setupliveimage/setupliveimage-${REVISION}.fs,index=2,media=disk,format=raw,cache=unsafe
+ -drive file=${OBJDIR}/work.i386.qemu/liveimage-i386-qemu-${REVISION}.img,index=0,media=disk,format=raw,cache=unsafe \
+ -drive file=${OBJDIR}/work.i386.emu/liveimage-i386-emu-${REVISION}.img,index=1,media=disk,format=raw,cache=unsafe \
+ -drive file=${OBJDIR}/work.setupliveimage/setupliveimage-${REVISION}.fs,index=2,media=disk,format=raw,cache=unsafe
 ${QEMU_IMG} convert -O vmdk \
- work.i386.emu/liveimage-i386-emu-${REVISION}.img \
+ ${OBJDIR}/work.i386.emu/liveimage-i386-emu-${REVISION}.img \
  ${VMDKDIR}/liveimage-i386-vmdk-${REVISION}.vmdk
 LD_LIBRARY_PATH=${VBOXDIR}/usr/lib/virtualbox \
  ${VBOXDIR}/usr/lib/virtualbox/VBoxManage convertfromraw --format VDI \
- work.i386.emu/liveimage-i386-emu-${REVISION}.img \
+ ${OBJDIR}/work.i386.emu/liveimage-i386-emu-${REVISION}.img \
  ${VDIDIR}/liveimage-i386-vbox-${REVISION}.vdi
 
 # prepare compressed images (and omit swap for USB images) for distribution
@@ -87,16 +91,16 @@ mkdir -p ${IMAGEDIR}
  ${ZIP} -9 ${IMAGEDIR}/liveimage-i386-vmdk-${REVISION}.zip  \
   liveimage-i386-vmdk-${REVISION}.vmdk)
 
-dd if=work.i386.usb/liveimage-i386-usb-${REVISION}.img count=${USBMB} bs=1m \
+dd if=${OBJDIR}/work.i386.usb/liveimage-i386-usb-${REVISION}.img count=${USBMB} bs=1m \
     | ${GZIP} -9c > ${IMAGEDIR}/liveimage-i386-usb-${REVISION}.img.gz
 
-dd if=work.amd64.usb/liveimage-amd64-usb-${REVISION}.img count=${USBMB} bs=1m \
+dd if=${OBJDIR}/work.amd64.usb/liveimage-amd64-usb-${REVISION}.img count=${USBMB} bs=1m \
     | ${GZIP} -9c > ${IMAGEDIR}/liveimage-amd64-usb-${REVISION}.img.gz
 
-${GZIP} -9c work.i386.emu/liveimage-i386-emu-${REVISION}.img \
+${GZIP} -9c ${OBJDIR}/work.i386.emu/liveimage-i386-emu-${REVISION}.img \
     > ${IMAGEDIR}/liveimage-i386-emu-${REVISION}.img.gz
 
-${GZIP} -9c work.setupliveimage/setupliveimage-${REVISION}.fs \
+${GZIP} -9c ${OBJDIR}/work.setupliveimage/setupliveimage-${REVISION}.fs \
     > ${IMAGEDIR}/setupliveimage-${REVISION}.fs.gz
 
 (cd ${IMAGEDIR} && ${MD5} \

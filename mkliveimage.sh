@@ -175,9 +175,12 @@ SH=sh
 TAR=tar
 
 # working directories
-TARGETROOTDIR=targetroot.${MACHINE}.${IMAGE_TYPE}
+if [ "${OBJDIR}"X = "X" ]; then
+	OBJDIR=.
+fi
+TARGETROOTDIR=${OBJDIR}/targetroot.${MACHINE}.${IMAGE_TYPE}
 DOWNLOADDIR=download.${MACHINE}
-WORKDIR=work.${MACHINE}.${IMAGE_TYPE}
+WORKDIR=${OBJDIR}/work.${MACHINE}.${IMAGE_TYPE}
 IMAGE=${WORKDIR}/liveimage-${MACHINE}-${IMAGE_TYPE}-${REVISION}.img
 
 #
