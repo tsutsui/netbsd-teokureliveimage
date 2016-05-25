@@ -1,6 +1,6 @@
 #! /bin/sh
 #
-# Copyright (c) 2009, 2010, 2011, 2012, 2013, 2014, 2015 Izumi Tsutsui.
+# Copyright (c) 2009, 2010, 2011, 2012, 2013, 2014, 2015, 2016 Izumi Tsutsui.
 # All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
@@ -148,7 +148,7 @@ fi
 #FTPHOST=ftp.jp.NetBSD.org
 FTPHOST=ftp7.jp.NetBSD.org
 #FTPHOST=nyftp.NetBSD.org
-RELEASE=7.0
+RELEASE=7.0.1
 RELEASEDIR=pub/NetBSD/NetBSD-${RELEASE}
 #RELEASEDIR=pub/NetBSD-daily/netbsd-7/201507032200Z
 
