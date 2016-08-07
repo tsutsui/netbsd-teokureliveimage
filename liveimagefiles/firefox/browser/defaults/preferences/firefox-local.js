@@ -1,8 +1,5 @@
-// choose useragent locale per LANG
-pref("intl.locale.matchOS", true);
-
-// use default en-US on searchplugin regardless of LANG
-pref("distribution.searchplugins.defaultLocale", "en-US");
+// disable "default browser" check on startup
+pref("browser.shell.checkDefaultBrowser", false);
 
 // enable addons "installed and owned by Firefox" by default
 // (note this need to be loaded before the default firefox.js)
