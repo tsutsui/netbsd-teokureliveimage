@@ -34,6 +34,10 @@
 
     <!-- Options for program groups. -->
     <Group>
+        <Option>tiled</Option>
+        <Option>aerosnap</Option>
+    </Group>
+    <Group>
         <Class>Pidgin</Class>
         <Option>sticky</Option>
     </Group>
@@ -53,10 +57,10 @@
  -->
     <Tray x="0" y="-1" height="32" autohide="off">
 
+        <TrayButton icon="jwm-blue">root:1</TrayButton>
 <!--
-        <TrayButton label="JWM">root:1</TrayButton>
- -->
         <TrayButton label="BSD">root:1</TrayButton>
+ -->
         <Spacer width="2"/>
         <TrayButton label="_">showdesktop</TrayButton>
         <Spacer width="2"/>
@@ -72,7 +76,7 @@
            xload -nolabel -bg black -fg red -hl white
         </Swallow>
 
-        <Clock><Button mask="123">exec:xclock</Button></Clock>
+        <Clock format="%H:%M"><Button mask="123">exec:xclock</Button></Clock>
 
     </Tray>
 
@@ -88,7 +92,7 @@
         <Foreground>#FFFFFF</Foreground>
         <Background>#555555</Background>
         <Outline>#000000</Outline>
-        <Opacity>0.5:0.9:0.1</Opacity>
+        <Opacity>0.5</Opacity>
         <Active>
             <Foreground>#FFFFFF</Foreground>
             <Background>#0077CC</Background>
@@ -116,7 +120,7 @@
         <Text>#FFFFFF</Text>
         <Active>
             <Foreground>#0077CC</Foreground>
-            <Background>#555555</Background>
+            <Background>#004488</Background>
         </Active>
     </PagerStyle>
     <MenuStyle>
@@ -151,6 +155,9 @@
         /usr/pkg/share/icons/wm-icons/32x32-aquafusion
  -->
         /usr/pkg/share/icons/wm-icons/16x16-aquafusion
+    </IconPath>
+    <IconPath>
+        /usr/pkg/share/jwm
     </IconPath>
 
     <!-- Virtual Desktops -->
