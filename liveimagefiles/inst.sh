@@ -25,6 +25,7 @@ PACKAGES=" \
 	emacs \
 	medit \
 	firefox firefox-l10n \
+	alsa-plugins-oss \
 	w3m \
 	vlgothic-ttf ipafont \
 	droid-ttf \
