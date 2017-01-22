@@ -31,7 +31,6 @@ PACKAGES=" \
 	w3m \
 	vlgothic-ttf ipafont \
 	droid-ttf \
-	efont-unicode \
 	unifont \
 	freefont-ttf \
 	jwm \

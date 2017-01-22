@@ -1,5 +1,4 @@
 DEFAULT=/usr/pkg/share/fonts/X11/misc/unifont.pcf.gz:100
-#DEFAULT=/usr/pkg/share/fonts/X11/efont/b16.pcf.gz
 
 ISO8859_1=/usr/X11R7/lib/X11/fonts/misc/8x16.pcf.gz
 JISX0201_KATA=/usr/X11R7/lib/X11/fonts/misc/8x16rk.pcf.gz
@@ -12,7 +11,6 @@ JISX0213_2000_2=&JISX0208_1983
 #JISX0213_2000_1=/usr/pkg/share/fonts/X11/local/jiskan16-2000-1.pcf.gz
 #JISX0213_2000_2=/usr/pkg/share/fonts/X11/local/jiskan16-2000-2.pcf.gz
 
-# using pkgsrc/fonts/efont-unicode
+# using pkgsrc/fonts/unifont
 ISO10646_UCS4_1=/usr/pkg/share/fonts/X11/misc/unifont.pcf.gz:100
-#ISO10646_UCS4_1=/usr/pkg/share/fonts/X11/efont/b16.pcf.gz
 ISO10646_UCS4_1_FULLWIDTH=&ISO10646_UCS4_1
