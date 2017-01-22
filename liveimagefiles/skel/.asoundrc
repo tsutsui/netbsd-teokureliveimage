@@ -1,9 +1,29 @@
 pcm.!default {
+	type pulse
+	#type oss
+	#fallback "oss"
+}
+
+ctl.!default {
+	type pulse
+	#type oss
+	#fallback "oss"
+}
+
+pcm.oss {
 	type oss
 	device /dev/audio
 }
 
-ctl.!default {
+ctl.oss {
 	type oss
 	device /dev/mixer
+}
+
+pcm.pulse {
+	type pulse
+}
+
+ctl.pulse {
+	type pulse
 }
