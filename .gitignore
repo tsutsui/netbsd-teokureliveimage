@@ -1,7 +1,10 @@
 REVISION
 download.*
-work.*
-targetroot.*
+obj
 setupliveimage-*.fs
 src
+targetroot.*
 vbox
+vdi
+vmdk
+work.*
