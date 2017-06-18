@@ -7,3 +7,6 @@ pref("extensions.autoDisableScopes", 11);
 
 // enable add-on selection dialog on update
 pref("extensions.shownSelectionUI", true);
+
+// disable electrolysis (e10s) temporarily until it's stable on NetBSD
+pref("browser.tabs.remote.autostart.2", false);
