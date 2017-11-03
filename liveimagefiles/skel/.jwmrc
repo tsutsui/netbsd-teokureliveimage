@@ -12,7 +12,7 @@
             <Program icon="editor.png" label="emacs">emacs</Program>
             <Program icon="editor.png" label="medit">medit</Program>
             <Program icon="www.png" label="Firefox">firefox</Program>
-            <Program label="mikutter">mikutter</Program>
+            <Program icon="/usr/pkg/share/mikutter/core/skin/data/icon_alternative.png" label="mikutter">mikutter</Program>
         </Menu>
         <Menu icon="folder.png" label="Utilities">
             <Program icon="font.png" label="Fonts">xfontsel</Program>
