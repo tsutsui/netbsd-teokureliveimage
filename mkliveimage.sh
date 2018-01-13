@@ -148,9 +148,10 @@ fi
 #FTPHOST=ftp.jp.NetBSD.org
 FTPHOST=ftp7.jp.NetBSD.org
 #FTPHOST=nyftp.NetBSD.org
-RELEASE=7.1
+RELEASE=7.1.1
 RELEASEDIR=pub/NetBSD/NetBSD-${RELEASE}
 #RELEASEDIR=pub/NetBSD-daily/netbsd-7/201507032200Z
+#RELEASEDIR=pub/NetBSD-daily/netbsd-8/201711301510Z
 
 #
 # misc build settings
