@@ -19,7 +19,7 @@ SHELL=/usr/pkg/bin/tcsh
 PASSWORD="Teokure-"
 
 # packages list
-RUBY_PKGPREFIX=ruby23
+RUBY_PKGPREFIX=ruby24
 PACKAGES=" \
 	bash tcsh zsh \
 	emacs \
