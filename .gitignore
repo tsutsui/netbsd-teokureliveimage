@@ -5,6 +5,7 @@ setupliveimage-*.fs
 src
 targetroot.*
 vbox
+vbox-*
 vdi
 vmdk
 work.*

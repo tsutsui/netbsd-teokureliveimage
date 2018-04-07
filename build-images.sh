@@ -75,10 +75,13 @@ ${QEMU_IMG} convert -O vmdk \
 
 echo Converting from raw to vdi...
 rm -f ${VDIDIR}/liveimage-i386-vbox-${REVISION}.vdi
-LD_LIBRARY_PATH=${VBOXDIR}/usr/lib/virtualbox \
- ${VBOXDIR}/usr/lib/virtualbox/VBoxManage convertfromraw --format VDI \
- ${OBJDIR}/work.i386.emu/liveimage-i386-emu-${REVISION}.img \
- ${VDIDIR}/liveimage-i386-vbox-${REVISION}.vdi
+#LD_LIBRARY_PATH=${VBOXDIR}/usr/lib/virtualbox \
+# ${VBOXDIR}/usr/lib/virtualbox/VBoxManage convertfromraw --format VDI \
+# ${OBJDIR}/work.i386.emu/liveimage-i386-emu-${REVISION}.img \
+# ${VDIDIR}/liveimage-i386-vbox-${REVISION}.vdi
+${VBOXDIR}/vbox-img convert --srcformat RAW --dstformat VDI \
+ --srcfilename ${OBJDIR}/work.i386.emu/liveimage-i386-emu-${REVISION}.img \
+ --dstfilename ${VDIDIR}/liveimage-i386-vbox-${REVISION}.vdi
 
 # prepare compressed images (and omit swap for USB images) for distribution
 
