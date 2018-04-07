@@ -55,7 +55,6 @@ ${QEMU_X86_64} -m 512 \
  -drive file=${OBJDIR}/work.setupliveimage/setupliveimage-${REVISION}.fs,index=2,media=disk,format=raw,cache=unsafe
 
 # build and setup i386 USB/emulator/virtualbox/vmdk images
-rm -f ${VDIDIR}/liveimage-i386-vbox-${REVISION}.vdi
 TOOLDIR=${TOOLDIR_I386} OBJDIR=${OBJDIR} ${SH} mkimagebuilder.sh i386
 TOOLDIR=${TOOLDIR_I386} OBJDIR=${OBJDIR} ${SH} mkliveimage.sh usb i386
 TOOLDIR=${TOOLDIR_I386} OBJDIR=${OBJDIR} ${SH} mkliveimage.sh emu i386
@@ -67,9 +66,15 @@ ${QEMU_I386} -m 512 \
  -drive file=${OBJDIR}/work.i386.qemu/liveimage-i386-qemu-${REVISION}.img,index=0,media=disk,format=raw,cache=unsafe \
  -drive file=${OBJDIR}/work.i386.emu/liveimage-i386-emu-${REVISION}.img,index=1,media=disk,format=raw,cache=unsafe \
  -drive file=${OBJDIR}/work.setupliveimage/setupliveimage-${REVISION}.fs,index=2,media=disk,format=raw,cache=unsafe
+
+echo Converting from raw to vmdk...
+rm -f ${VDIDIR}/liveimage-i386-vmdk-${REVISION}.vmdk
 ${QEMU_IMG} convert -O vmdk \
  ${OBJDIR}/work.i386.emu/liveimage-i386-emu-${REVISION}.img \
  ${VMDKDIR}/liveimage-i386-vmdk-${REVISION}.vmdk
+
+echo Converting from raw to vdi...
+rm -f ${VDIDIR}/liveimage-i386-vbox-${REVISION}.vdi
 LD_LIBRARY_PATH=${VBOXDIR}/usr/lib/virtualbox \
  ${VBOXDIR}/usr/lib/virtualbox/VBoxManage convertfromraw --format VDI \
  ${OBJDIR}/work.i386.emu/liveimage-i386-emu-${REVISION}.img \
@@ -77,6 +82,7 @@ LD_LIBRARY_PATH=${VBOXDIR}/usr/lib/virtualbox \
 
 # prepare compressed images (and omit swap for USB images) for distribution
 
+echo Preparing compressed image files...
 USBMB=3308
 IMAGEDIR=${CURDIR}/images/${REVISION}
 
