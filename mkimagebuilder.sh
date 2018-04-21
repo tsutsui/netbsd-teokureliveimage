@@ -178,7 +178,7 @@ IMAGE=${WORKDIR}/liveimage-${MACHINE}-${IMAGE_TYPE}-${REVISION}.img
 #
 # target image size settings
 #
-IMAGEMB=150			# minimum
+IMAGEMB=250			# minimum
 IMAGESECTORS=$((${IMAGEMB} * 1024 * 1024 / 512))
 # no swap
 
