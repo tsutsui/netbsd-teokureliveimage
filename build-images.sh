@@ -32,6 +32,7 @@ ZIP=/usr/pkg/bin/zip
 QEMU_I386=/usr/pkg/bin/qemu-system-i386
 QEMU_X86_64=/usr/pkg/bin/qemu-system-x86_64
 QEMU_IMG=/usr/pkg/bin/qemu-img
+QEMU_MEM=1024
 
 _HOST_OSNAME=`uname -s`
 _HOST_OSREL=`uname -r`
@@ -49,7 +50,7 @@ TOOLDIR=${TOOLDIR_I386} OBJDIR=${OBJDIR} ${SH} mksetupliveimage.sh
 # build and setup amd64 USB liveimage
 TOOLDIR=${TOOLDIR_AMD64} OBJDIR=${OBJDIR} ${SH} mkimagebuilder.sh amd64
 TOOLDIR=${TOOLDIR_AMD64} OBJDIR=${OBJDIR} ${SH} mkliveimage.sh usb amd64
-${QEMU_X86_64} -m 512 \
+${QEMU_X86_64} -m ${QEMU_MEM} \
  -drive file=${OBJDIR}/work.amd64.qemu/liveimage-amd64-qemu-${REVISION}.img,index=0,media=disk,format=raw,cache=unsafe \
  -drive file=${OBJDIR}/work.amd64.usb/liveimage-amd64-usb-${REVISION}.img,index=1,media=disk,format=raw,cache=unsafe \
  -drive file=${OBJDIR}/work.setupliveimage/setupliveimage-${REVISION}.fs,index=2,media=disk,format=raw,cache=unsafe
@@ -58,11 +59,11 @@ ${QEMU_X86_64} -m 512 \
 TOOLDIR=${TOOLDIR_I386} OBJDIR=${OBJDIR} ${SH} mkimagebuilder.sh i386
 TOOLDIR=${TOOLDIR_I386} OBJDIR=${OBJDIR} ${SH} mkliveimage.sh usb i386
 TOOLDIR=${TOOLDIR_I386} OBJDIR=${OBJDIR} ${SH} mkliveimage.sh emu i386
-${QEMU_I386} -m 512 \
+${QEMU_I386} -m ${QEMU_MEM} \
  -drive file=${OBJDIR}/work.i386.qemu/liveimage-i386-qemu-${REVISION}.img,index=0,media=disk,format=raw,cache=unsafe \
  -drive file=${OBJDIR}/work.i386.usb/liveimage-i386-usb-${REVISION}.img,index=1,media=disk,format=raw,cache=unsafe \
  -drive file=${OBJDIR}/work.setupliveimage/setupliveimage-${REVISION}.fs,index=2,media=disk,format=raw,cache=unsafe
-${QEMU_I386} -m 512 \
+${QEMU_I386} -m ${QEMU_MEM} \
  -drive file=${OBJDIR}/work.i386.qemu/liveimage-i386-qemu-${REVISION}.img,index=0,media=disk,format=raw,cache=unsafe \
  -drive file=${OBJDIR}/work.i386.emu/liveimage-i386-emu-${REVISION}.img,index=1,media=disk,format=raw,cache=unsafe \
  -drive file=${OBJDIR}/work.setupliveimage/setupliveimage-${REVISION}.fs,index=2,media=disk,format=raw,cache=unsafe

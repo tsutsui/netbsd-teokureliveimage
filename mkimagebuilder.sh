@@ -141,7 +141,7 @@ fi
 #FTPHOST=ftp.jp.NetBSD.org
 FTPHOST=ftp7.jp.NetBSD.org
 #FTPHOST=nyftp.NetBSD.org
-RELEASE=7.1.2
+RELEASE=8.0_RC1
 RELEASEDIR=pub/NetBSD/NetBSD-${RELEASE}
 #RELEASEDIR=pub/NetBSD-daily/netbsd-7/201507032200Z
 
@@ -178,7 +178,7 @@ IMAGE=${WORKDIR}/liveimage-${MACHINE}-${IMAGE_TYPE}-${REVISION}.img
 #
 # target image size settings
 #
-IMAGEMB=150			# minimum
+IMAGEMB=250			# minimum
 IMAGESECTORS=$((${IMAGEMB} * 1024 * 1024 / 512))
 # no swap
 
@@ -253,7 +253,7 @@ ${CP} ${WORKDIR}/fstab  ${TARGETROOTDIR}/etc
 echo Preparing setup script...
 ${CAT} > ${WORKDIR}/etc.rc <<EOF
 export PATH=/sbin:/usr/sbin:/bin:/usr/bin:/usr/pkg/sbin:/usr/pkg/bin
-export PATH=\${PATH}:/usr/X11R7/bin:/usr/X11R6/bin:/usr/local/sbin:/usr/local/bin
+export PATH=\${PATH}:/usr/X11R7/bin:/usr/local/sbin:/usr/local/bin
 set -o emacs
 stty erase ^H
 mount -o async /dev/wd1a /targetroot
