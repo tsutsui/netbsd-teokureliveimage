@@ -146,9 +146,10 @@ fi
 #
 #FTPHOST=ftp.NetBSD.org
 #FTPHOST=ftp.jp.NetBSD.org
-FTPHOST=ftp7.jp.NetBSD.org
+#FTPHOST=ftp7.jp.NetBSD.org
+FTPHOST=cdn.NetBSD.org
 #FTPHOST=nyftp.NetBSD.org
-RELEASE=8.0_RC1
+RELEASE=8.0
 RELEASEDIR=pub/NetBSD/NetBSD-${RELEASE}
 #RELEASEDIR=pub/NetBSD-daily/netbsd-7/201507032200Z
 #RELEASEDIR=pub/NetBSD-daily/netbsd-8/201711301510Z
@@ -225,7 +226,7 @@ echo creating ${IMAGE_TYPE} image for ${MACHINE}...
 #
 # get binary sets
 #
-URL_SETS=ftp://${FTPHOST}/${RELEASEDIR}/${MACHINE}/binary/sets
+URL_SETS=http://${FTPHOST}/${RELEASEDIR}/${MACHINE}/binary/sets
 SETS="${KERN_SET} modules base etc comp games man misc tests text xbase xcomp xetc xfont xserver ${EXTRA_SETS}"
 #SETS="${KERN_SET} modules base etc comp ${EXTRA_SETS}"
 #SETS="${KERN_SET} base etc comp games man misc tests text xbase xcomp xetc xfont xserver ${EXTRA_SETS}"
