@@ -188,7 +188,7 @@ IMAGE=${WORKDIR}/liveimage-${MACHINE}-${IMAGE_TYPE}-${REVISION}.img
 #
 # target image size settings
 #
-IMAGEMB=3820			# for "4GB" USB memory (there is 3824MB one)
+IMAGEMB=5120			# 5120MB (4GB isn't enough for 8.0 + 2018Q2)
 SWAPMB=512			# 512MB
 IMAGESECTORS=$((${IMAGEMB} * 1024 * 1024 / 512))
 SWAPSECTORS=$((${SWAPMB} * 1024 * 1024 / 512))

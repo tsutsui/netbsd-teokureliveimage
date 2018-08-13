@@ -87,7 +87,9 @@ ${VBOXDIR}/vbox-img convert --srcformat RAW --dstformat VDI \
 # prepare compressed images (and omit swap for USB images) for distribution
 
 echo Preparing compressed image files...
-USBMB=3308
+IMAGEMB=5120			# 5120MB (4GB isn't enough for 8.0 + 2018Q2)
+SWAPMB=512			# 512MB
+USBMB=$((${IMAGEMB} - ${SWAPMB}))
 IMAGEDIR=${CURDIR}/images/${REVISION}
 
 rm -rf ${IMAGEDIR}
