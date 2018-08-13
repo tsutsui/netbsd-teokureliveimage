@@ -31,7 +31,7 @@ if [ "${REVISION}"X = "X" ]; then
 fi
 
 DISKNAME=TeokureLiveImage
-HOSTNAME=teokure
+IMAGEHOSTNAME=teokure
 TIMEZONE=Japan
 
 #TESTIMAGE=yes
@@ -288,7 +288,7 @@ if [ ${RTC_LOCALTIME}x = "yesx" ]; then
 else
 	echo #rtclocaltime=YES		>> ${WORKDIR}/rc.conf
 fi
-echo hostname=${HOSTNAME}		>> ${WORKDIR}/rc.conf
+echo hostname=${IMAGEHOSTNAME}		>> ${WORKDIR}/rc.conf
 echo dhcpcd=YES				>> ${WORKDIR}/rc.conf
 ${CP} ${WORKDIR}/rc.conf ${TARGETROOTDIR}/etc
 

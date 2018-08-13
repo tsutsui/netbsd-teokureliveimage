@@ -57,7 +57,7 @@ if [ "${REVISION}"X = "X" ]; then
 fi
 
 DISKNAME=TeokureBuilder
-HOSTNAME=teokure
+IMAGEHOSTNAME=teokure
 TIMEZONE=Japan
 IMAGE_TYPE=qemu
 
