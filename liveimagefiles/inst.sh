@@ -22,6 +22,7 @@ PASSWORD="Teokure-"
 RUBY_PKGPREFIX=ruby24
 PACKAGES=" \
 	bash tcsh zsh \
+	emacs \
 	medit \
 	firefox firefox-l10n \
 	alsa-utils \
@@ -36,7 +37,7 @@ PACKAGES=" \
 	wm-icons \
 	ibus \
 	adwaita-icon-theme \
-	mozc-server mozc-tool ibus-mozc \
+	mozc-server mozc-tool ibus-mozc mozc-elisp \
 	kterm mlterm \
 	git-base \
 	${RUBY_PKGPREFIX}-mikutter \
