@@ -1,4 +1,5 @@
 REVISION
+buildlog-*.log
 download.*
 obj
 setupliveimage-*.fs
