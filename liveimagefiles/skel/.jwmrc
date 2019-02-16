@@ -79,7 +79,7 @@
            xload -nolabel -bg black -fg red -hl white
         </Swallow>
 
-        <Clock format="%H:%M"><Button mask="123">exec:xclock</Button></Clock>
+        <Clock format="%m/%d %H:%M"><Button mask="123">exec:xclock</Button></Clock>
 
     </Tray>
 
