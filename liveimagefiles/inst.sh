@@ -38,6 +38,7 @@ PACKAGES=" \
 	ibus \
 	adwaita-icon-theme \
 	arandr \
+	wpa_gui \
 	mozc-server mozc-tool ibus-mozc mozc-elisp \
 	kterm mlterm \
 	git-base \
@@ -54,6 +55,10 @@ cp ${FILEDIR}/etc.${MACHINE}/ttys /etc
 
 # copy typical mk.conf file
 cp ${FILEDIR}/etc/mk.conf /etc
+
+echo "installing wpa_supplicant(8) settings..."
+install -o root -g wheel -m 600 ${FILEDIR}/etc/wpa_supplicant.conf /etc
+ln -s /usr/share/examples/dhcpcd/hooks/10-wpa_supplicant /libexec/dhcpcd-hooks
 
 echo "installing packages..."
 PACKAGESDIR=${FILEDIR}/packages/${MACHINE_ARCH}

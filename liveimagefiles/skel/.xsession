@@ -27,6 +27,9 @@ if [ -r "$resources" ]; then
 	xrdb -load "$resources"
 fi
 
+# WiFi status in the tray icon
+/usr/pkg/sbin/wpa_gui -t &
+
 # for webkit-gtk and adobe-flash-plugin
 #export MOZ_PLUGIN_PATH=/usr/pkg/lib/netscape/plugins
 
