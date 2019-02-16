@@ -1,6 +1,7 @@
 #! /bin/sh
 #
-# Copyright (c) 2009, 2010, 2011, 2012, 2013, 2014, 2015, 2016, 2017, 2018 Izumi Tsutsui.
+# Copyright (c) 2009, 2010, 2011, 2012, 2013, 2014, 2015, 2016, 2017, 2018,
+#  2019 Izumi Tsutsui.
 # All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
@@ -159,10 +160,12 @@ RELEASEDIR=pub/NetBSD/NetBSD-${RELEASE}
 #
 
 # tools binaries
-DISKLABEL=${TOOLDIR}/bin/nbdisklabel
-FDISK=${TOOLDIR}/bin/${MACHINE_GNU_PLATFORM}-fdisk
-SED=${TOOLDIR}/bin/nbsed
-SUNLABEL=${TOOLDIR}/bin/nbsunlabel
+TOOL_DISKLABEL=${TOOLDIR}/bin/nbdisklabel
+TOOL_FDISK=${TOOLDIR}/bin/${MACHINE_GNU_PLATFORM}-fdisk
+TOOL_INSTALLBOOT=${TOOLDIR}/bin/nbinstallboot
+TOOL_MAKEFS=${TOOLDIR}/bin/nbmakefs
+TOOL_SED=${TOOLDIR}/bin/nbsed
+TOOL_SUNLABEL=${TOOLDIR}/bin/nbsunlabel
 
 # host binaries
 CAT=cat
@@ -282,7 +285,7 @@ ${CP} ${WORKDIR}/fstab  ${TARGETROOTDIR}/etc
 
 echo Setting liveimage specific configurations in /etc/rc.conf...
 ${CAT} ${TARGETROOTDIR}/etc/rc.conf | \
-    ${SED} -e 's/rc_configured=NO/rc_configured=YES/' > ${WORKDIR}/rc.conf
+    ${TOOL_SED} -e 's/rc_configured=NO/rc_configured=YES/' > ${WORKDIR}/rc.conf
 if [ ${RTC_LOCALTIME}x = "yesx" ]; then
 	echo rtclocaltime=YES		>> ${WORKDIR}/rc.conf
 else
@@ -297,9 +300,9 @@ ln -sf /usr/share/zoneinfo/${TIMEZONE} ${TARGETROOTDIR}/etc/localtime
 
 echo Preparing spec file for makefs...
 ${CAT} ${TARGETROOTDIR}/etc/mtree/* | \
-	${SED} -e 's/ size=[0-9]*//' > ${WORKDIR}/spec
+	${TOOL_SED} -e 's/ size=[0-9]*//' > ${WORKDIR}/spec
 ${SH} ${TARGETROOTDIR}/dev/MAKEDEV -s all | \
-	${SED} -e '/^\. type=dir/d' -e 's,^\.,./dev,' >> ${WORKDIR}/spec
+	${TOOL_SED} -e '/^\. type=dir/d' -e 's,^\.,./dev,' >> ${WORKDIR}/spec
 # spec for optional files/dirs
 ${CAT} >> ${WORKDIR}/spec <<EOF
 ./boot				type=file mode=0444
@@ -312,7 +315,7 @@ EOF
 
 if [ ${HAVE_EXPANDFS_SCRIPT}x = "yesx" ]; then
 	echo Preparing ${EXPANDFS_SH} script...
-	${SED}  -e "s/@@BOOTDISK@@/${BOOTDISK}/"			\
+	${TOOL_SED}  -e "s/@@BOOTDISK@@/${BOOTDISK}/"			\
 		-e "s/@@DISKNAME@@/${DISKNAME}/"			\
 		-e "s/@@MBRNETBSD@@/${MBRNETBSD}/"			\
 		-e "s/@@IMAGEMB@@/${IMAGEMB}/"				\
@@ -324,7 +327,7 @@ if [ ${HAVE_EXPANDFS_SCRIPT}x = "yesx" ]; then
 fi
 
 echo Creating rootfs...
-${TOOLDIR}/bin/nbmakefs -M ${FSSIZE} -m ${FSSIZE} \
+${TOOL_MAKEFS} -M ${FSSIZE} -m ${FSSIZE} \
 	-B ${TARGET_ENDIAN} \
 	-F ${WORKDIR}/spec -N ${TARGETROOTDIR}/etc \
 	-o bsize=${BLOCKSIZE},fsize=${FRAGSIZE},density=${DENSITY} \
@@ -332,7 +335,7 @@ ${TOOLDIR}/bin/nbmakefs -M ${FSSIZE} -m ${FSSIZE} \
 
 if [ ${PRIMARY_BOOT}x != "x" ]; then
 echo Installing bootstrap...
-${TOOLDIR}/bin/nbinstallboot -v -m ${MACHINE} ${WORKDIR}/rootfs \
+${TOOL_INSTALLBOOT} -v -m ${MACHINE} ${WORKDIR}/rootfs \
     ${TARGETROOTDIR}/usr/mdec/${PRIMARY_BOOT} ${SECONDARY_BOOT_ARG}
 fi
 
@@ -345,7 +348,7 @@ if [ ${LABELSECTORS} != 0 ]; then
 	echo creating MBR labels...
 	${DD} if=/dev/zero of=${IMAGE}.mbr count=1 \
 	    seek=$((${IMAGESECTORS} - 1))
-	${FDISK} -f -u \
+	${TOOL_FDISK} -f -u \
 	    -b ${MBRCYLINDERS}/${MBRHEADS}/${MBRSECTORS} \
 	    -0 -a -s ${MBRNETBSD}/${FSOFFSET}/${BSDPARTSECTORS} \
 	    -i -c ${TARGETROOTDIR}/usr/mdec/mbr \
@@ -370,7 +373,7 @@ if [ ! -z ${USE_SUNLABEL} ]; then
 	printf 'V ncyl %d\nV nhead %d\nV nsect %d\na %d %d/0/0\nb %d %d/0/0\nW\n' \
 	    ${CYLINDERS} ${HEADS} ${SECTORS} \
 	    ${FSOFFSET} ${FSCYLINDERS} ${FSCYLINDERS} ${SWAPCYLINDERS} | \
-	    ${SUNLABEL} -nq ${IMAGE}
+	    ${TOOL_SUNLABEL} -nq ${IMAGE}
 fi
 
 echo Creating disklabel...
@@ -401,10 +404,10 @@ c:    ${BSDPARTSECTORS} ${FSOFFSET} unused 0 0
 d:    ${IMAGESECTORS} 0 unused 0 0
 EOF
 
-${DISKLABEL} -R -F -M ${MACHINE} ${IMAGE} ${WORKDIR}/labelproto
+${TOOL_DISKLABEL} -R -F -M ${MACHINE} ${IMAGE} ${WORKDIR}/labelproto
 
 # XXX some ${MACHINE} needs disklabel for installboot
-#${TOOLDIR}/bin/nbinstallboot -vm ${MACHINE} ${MACHINE}.img \
+#${TOOL_INSTALLBOOT} -vm ${MACHINE} ${MACHINE}.img \
 #    ${TARGETROOTDIR}/usr/mdec/${PRIMARY_BOOT}
 
 echo Creating image \"${IMAGE}\" complete.

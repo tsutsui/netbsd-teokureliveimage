@@ -1,6 +1,7 @@
 #! /bin/sh
 #
-# Copyright (c) 2009, 2010, 2011, 2012, 2013, 2014, 2015, 2016, 2017, 2018 Izumi Tsutsui.
+# Copyright (c) 2009, 2010, 2011, 2012, 2013, 2014, 2015, 2016, 2017, 2018,
+#  2019 Izumi Tsutsui.
 # All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
@@ -151,9 +152,11 @@ RELEASEDIR=pub/NetBSD/NetBSD-${RELEASE}
 #
 
 # tools binaries
-DISKLABEL=${TOOLDIR}/bin/nbdisklabel
-FDISK=${TOOLDIR}/bin/${MACHINE_GNU_PLATFORM}-fdisk
-SED=${TOOLDIR}/bin/nbsed
+TOOL_MAKEFS=${TOOLDIR}/bin/nbmakefs
+TOOL_DISKLABEL=${TOOLDIR}/bin/nbdisklabel
+TOOL_FDISK=${TOOLDIR}/bin/${MACHINE_GNU_PLATFORM}-fdisk
+TOOL_INSTALLBOOT=${TOOLDIR}/bin/nbinstallboot
+TOOL_SED=${TOOLDIR}/bin/nbsed
 
 # host binaries
 CAT=cat
@@ -266,7 +269,7 @@ if [ "\${IFNAME}"x = "vioif0"x ]; then
 fi
 halt -p
 EOF
-rm -f ${TARGETROOTDIR}/etc/rc
+${RM} -f ${TARGETROOTDIR}/etc/rc
 ${CP} ${WORKDIR}/etc.rc  ${TARGETROOTDIR}/etc/rc
 
 echo Setting localtime...
@@ -274,9 +277,9 @@ ln -sf /usr/share/zoneinfo/${TIMEZONE} ${TARGETROOTDIR}/etc/localtime
 
 echo Preparing spec file for makefs...
 ${CAT} ${TARGETROOTDIR}/etc/mtree/* | \
-	${SED} -e 's/ size=[0-9]*//' > ${WORKDIR}/spec
+	${TOOL_SED} -e 's/ size=[0-9]*//' > ${WORKDIR}/spec
 ${SH} ${TARGETROOTDIR}/dev/MAKEDEV -s all | \
-	${SED} -e '/^\. type=dir/d' -e 's,^\.,./dev,' >> ${WORKDIR}/spec
+	${TOOL_SED} -e '/^\. type=dir/d' -e 's,^\.,./dev,' >> ${WORKDIR}/spec
 # spec for optional files/dirs
 ${CAT} >> ${WORKDIR}/spec <<EOF
 ./boot				type=file mode=0444
@@ -288,7 +291,7 @@ ${CAT} >> ${WORKDIR}/spec <<EOF
 EOF
 
 echo Creating rootfs...
-${TOOLDIR}/bin/nbmakefs -M ${FSSIZE} -m ${FSSIZE} \
+${TOOL_MAKEFS} -M ${FSSIZE} -m ${FSSIZE} \
 	-B ${TARGET_ENDIAN} \
 	-F ${WORKDIR}/spec -N ${TARGETROOTDIR}/etc \
 	-o bsize=${BLOCKSIZE},fsize=${FRAGSIZE},density=${DENSITY} \
@@ -296,7 +299,7 @@ ${TOOLDIR}/bin/nbmakefs -M ${FSSIZE} -m ${FSSIZE} \
 
 if [ ${PRIMARY_BOOT}x != "x" ]; then
 echo Installing bootstrap...
-${TOOLDIR}/bin/nbinstallboot -v -m ${MACHINE} ${WORKDIR}/rootfs \
+${TOOL_INSTALLBOOT} -v -m ${MACHINE} ${WORKDIR}/rootfs \
     ${TARGETROOTDIR}/usr/mdec/${PRIMARY_BOOT} ${SECONDARY_BOOT_ARG}
 fi
 
@@ -330,6 +333,6 @@ c:    ${BSDPARTSECTORS} ${FSOFFSET} unused 0 0
 d:    ${IMAGESECTORS} 0 unused 0 0
 EOF
 
-${DISKLABEL} -R -F -M ${MACHINE} ${IMAGE} ${WORKDIR}/labelproto
+${TOOL_DISKLABEL} -R -F -M ${MACHINE} ${IMAGE} ${WORKDIR}/labelproto
 
 echo Creating image \"${IMAGE}\" complete.

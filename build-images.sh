@@ -21,6 +21,10 @@ VBOXDIR=${CURDIR}/vbox
 VDIDIR=${CURDIR}/vdi
 VMDKDIR=${CURDIR}/vmdk
 
+# host binaries
+DD=dd
+MKDIR=mkdir
+RM=rm
 #GZIP=/usr/bin/gzip
 GZIP=/usr/bin/pigz	# for threads
 MD5=/usr/bin/md5
@@ -29,11 +33,13 @@ SH=/bin/sh
 ZIP=/usr/pkg/bin/zip
 #ZIP=/usr/local/bin/zip
 
+# qemu binaries to setup images
 QEMU_I386=/usr/pkg/bin/qemu-system-i386
 QEMU_X86_64=/usr/pkg/bin/qemu-system-x86_64
 QEMU_IMG=/usr/pkg/bin/qemu-img
 QEMU_MEM=1024
 
+# tooldir settings
 _HOST_OSNAME=`uname -s`
 _HOST_OSREL=`uname -r`
 _HOST_ARCH=`uname -p 2> /dev/null || uname -m`
@@ -69,13 +75,13 @@ ${QEMU_I386} -m ${QEMU_MEM} \
  -drive file=${OBJDIR}/work.setupliveimage/setupliveimage-${REVISION}.fs,index=2,media=disk,format=raw,cache=unsafe
 
 echo Converting from raw to vmdk...
-rm -f ${VDIDIR}/liveimage-i386-vmdk-${REVISION}.vmdk
+${RM} -f ${VDIDIR}/liveimage-i386-vmdk-${REVISION}.vmdk
 ${QEMU_IMG} convert -O vmdk \
  ${OBJDIR}/work.i386.emu/liveimage-i386-emu-${REVISION}.img \
  ${VMDKDIR}/liveimage-i386-vmdk-${REVISION}.vmdk
 
 echo Converting from raw to vdi...
-rm -f ${VDIDIR}/liveimage-i386-vbox-${REVISION}.vdi
+${RM} -f ${VDIDIR}/liveimage-i386-vbox-${REVISION}.vdi
 #LD_LIBRARY_PATH=${VBOXDIR}/usr/lib/virtualbox \
 # ${VBOXDIR}/usr/lib/virtualbox/VBoxManage convertfromraw --format VDI \
 # ${OBJDIR}/work.i386.emu/liveimage-i386-emu-${REVISION}.img \
@@ -92,8 +98,8 @@ SWAPMB=512			# 512MB
 USBMB=$((${IMAGEMB} - ${SWAPMB}))
 IMAGEDIR=${CURDIR}/images/${REVISION}
 
-rm -rf ${IMAGEDIR}
-mkdir -p ${IMAGEDIR}
+${RM} -rf ${IMAGEDIR}
+${MKDIR} -p ${IMAGEDIR}
 
 (cd ${VDIDIR} && \
  ${ZIP} -9 ${IMAGEDIR}/liveimage-i386-vbox-${REVISION}.zip  \
@@ -103,10 +109,10 @@ mkdir -p ${IMAGEDIR}
  ${ZIP} -9 ${IMAGEDIR}/liveimage-i386-vmdk-${REVISION}.zip  \
   liveimage-i386-vmdk-${REVISION}.vmdk)
 
-dd if=${OBJDIR}/work.i386.usb/liveimage-i386-usb-${REVISION}.img count=${USBMB} bs=1m \
+${DD} if=${OBJDIR}/work.i386.usb/liveimage-i386-usb-${REVISION}.img count=${USBMB} bs=1m \
     | ${GZIP} -9c > ${IMAGEDIR}/liveimage-i386-usb-${REVISION}.img.gz
 
-dd if=${OBJDIR}/work.amd64.usb/liveimage-amd64-usb-${REVISION}.img count=${USBMB} bs=1m \
+${DD} if=${OBJDIR}/work.amd64.usb/liveimage-amd64-usb-${REVISION}.img count=${USBMB} bs=1m \
     | ${GZIP} -9c > ${IMAGEDIR}/liveimage-amd64-usb-${REVISION}.img.gz
 
 ${GZIP} -9c ${OBJDIR}/work.i386.emu/liveimage-i386-emu-${REVISION}.img \

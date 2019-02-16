@@ -1,6 +1,7 @@
 #! /bin/sh
 #
-# Copyright (c) 2012, 2013, 2014, 2015 Izumi Tsutsui.  All rights reserved.
+# Copyright (c) 2012, 2013, 2014, 2015, 2019 Izumi Tsutsui.
+# All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions
@@ -68,8 +69,11 @@ if [ ! -x ${TOOLDIR}/bin/nbmake-${MACHINE} ]; then
 	echo 'build tools in ${TOOLDIR} first'; exit 1
 fi
 
-DISKLABEL=${TOOLDIR}/bin/nbdisklabel
-MAKEFS=${TOOLDIR}/bin/nbmakefs
+# tools binaries
+TOOL_DISKLABEL=${TOOLDIR}/bin/nbdisklabel
+TOOL_MAKEFS=${TOOLDIR}/bin/nbmakefs
+
+# host binaries
 MKDIR=mkdir
 RM=rm
 
@@ -96,7 +100,7 @@ ${RM} -rf ${WORKDIR}
 ${MKDIR} -p ${WORKDIR}
 
 echo Creating rootfs...
-${MAKEFS} -M ${FSSIZE} -m ${FSSIZE} \
+${TOOL_MAKEFS} -M ${FSSIZE} -m ${FSSIZE} \
 	-B ${TARGET_ENDIAN} \
 	-o bsize=${BLOCKSIZE},fsize=${FRAGSIZE},density=${DENSITY} \
 	${IMAGE} ${FILESDIR}
@@ -128,7 +132,7 @@ a:    ${FSSECTORS} ${FSOFFSET} 4.2BSD ${FRAGSIZE} ${BLOCKSIZE} 128
 c:    ${FSSECTORS} ${FSOFFSET} unused 0 0
 EOF
 
-${DISKLABEL} -R -F -M ${MACHINE} ${IMAGE} ${LABELPROTO}
-rm -f ${LABELPROTO}
+${TOOL_DISKLABEL} -R -F -M ${MACHINE} ${IMAGE} ${LABELPROTO}
+${RM} -f ${LABELPROTO}
 
 echo Creating image \"${IMAGE}\" complete.
