@@ -46,6 +46,12 @@ usage()
 	exit 1
 }
 
+err()
+{
+	echo $1 failed!
+	exit 1
+}
+
 if [ $# != 2 ]; then
 	usage
 fi
@@ -239,7 +245,8 @@ for set in ${SETS}; do
 	if [ ! -f ${DOWNLOADDIR}/${set}.tgz ]; then
 		echo Fetching ${set}.tgz...
 		${FTP} ${FTP_OPTIONS} \
-		    -o ${DOWNLOADDIR}/${set}.tgz ${URL_SETS}/${set}.tgz
+		    -o ${DOWNLOADDIR}/${set}.tgz ${URL_SETS}/${set}.tgz \
+		    || err ${FTP}
 	fi
 done
 
@@ -251,7 +258,8 @@ ${RM} -rf ${TARGETROOTDIR}
 ${MKDIR} -p ${TARGETROOTDIR}
 for set in ${SETS}; do
 	echo Extracting ${set}...
-	${TAR} -C ${TARGETROOTDIR} -zxf ${DOWNLOADDIR}/${set}.tgz
+	${TAR} -C ${TARGETROOTDIR} -zxf ${DOWNLOADDIR}/${set}.tgz \
+	    || err ${TAR}
 done
 # XXX /var/spool/ftp/hidden is unreadable
 chmod u+r ${TARGETROOTDIR}/var/spool/ftp/hidden
@@ -331,40 +339,51 @@ ${TOOL_MAKEFS} -M ${FSSIZE} -m ${FSSIZE} \
 	-B ${TARGET_ENDIAN} \
 	-F ${WORKDIR}/spec -N ${TARGETROOTDIR}/etc \
 	-o bsize=${BLOCKSIZE},fsize=${FRAGSIZE},density=${DENSITY} \
-	${WORKDIR}/rootfs ${TARGETROOTDIR}
+	${WORKDIR}/rootfs ${TARGETROOTDIR} \
+	|| err ${TOOL_MAKEFS}
 
 if [ ${PRIMARY_BOOT}x != "x" ]; then
 echo Installing bootstrap...
 ${TOOL_INSTALLBOOT} -v -m ${MACHINE} ${WORKDIR}/rootfs \
-    ${TARGETROOTDIR}/usr/mdec/${PRIMARY_BOOT} ${SECONDARY_BOOT_ARG}
+    ${TARGETROOTDIR}/usr/mdec/${PRIMARY_BOOT} ${SECONDARY_BOOT_ARG} \
+    || err ${TOOL_INSTALLBOOT}
 fi
 
 if [ "${OMIT_SWAPIMG}x" != "yesx" ]; then
 	echo Creating swap fs
-	${DD} if=/dev/zero of=${WORKDIR}/swap seek=$((${SWAPSECTORS} - 1)) count=1
+	${DD} if=/dev/zero of=${WORKDIR}/swap \
+	    seek=$((${SWAPSECTORS} - 1)) count=1 \
+	    || erro ${DD}
 fi
 
 if [ ${LABELSECTORS} != 0 ]; then
 	echo creating MBR labels...
 	${DD} if=/dev/zero of=${IMAGE}.mbr count=1 \
-	    seek=$((${IMAGESECTORS} - 1))
+	    seek=$((${IMAGESECTORS} - 1)) \
+	    || err ${DD}
 	${TOOL_FDISK} -f -u \
 	    -b ${MBRCYLINDERS}/${MBRHEADS}/${MBRSECTORS} \
 	    -0 -a -s ${MBRNETBSD}/${FSOFFSET}/${BSDPARTSECTORS} \
 	    -i -c ${TARGETROOTDIR}/usr/mdec/mbr \
-	    -F ${IMAGE}.mbr
-	${DD} if=${IMAGE}.mbr of=${WORKDIR}/mbrsectors count=${LABELSECTORS}
+	    -F ${IMAGE}.mbr \
+	    || err ${TOOL_FDISK}
+	${DD} if=${IMAGE}.mbr of=${WORKDIR}/mbrsectors count=${LABELSECTORS} \
+	    || err ${DD}
 	${RM} -f ${IMAGE}.mbr
 	echo Copying target disk image...
-	${CAT} ${WORKDIR}/mbrsectors ${WORKDIR}/rootfs > ${IMAGE}
+	${CAT} ${WORKDIR}/mbrsectors ${WORKDIR}/rootfs > ${IMAGE} \
+	    || err ${CAT}
 	if [ "${OMIT_SWAPIMG}x" != "yesx" ]; then
-		${CAT} ${WORKDIR}/swap >> ${IMAGE}
+		${CAT} ${WORKDIR}/swap >> ${IMAGE} \
+		    || err ${CAT}
 	fi
 else
 	echo Copying target disk image...
-	${CP} ${WORKDIR}/rootfs ${IMAGE}
+	${CP} ${WORKDIR}/rootfs ${IMAGE} \
+	    || err ${CP}
 	if [ "${OMIT_SWAPIMG}x" != "yesx" ]; then
-		${CAT} ${WORKDIR}/swap >> ${IMAGE}
+		${CAT} ${WORKDIR}/swap >> ${IMAGE} \
+		    || err ${CAT}
 	fi
 fi
 
@@ -373,7 +392,8 @@ if [ ! -z ${USE_SUNLABEL} ]; then
 	printf 'V ncyl %d\nV nhead %d\nV nsect %d\na %d %d/0/0\nb %d %d/0/0\nW\n' \
 	    ${CYLINDERS} ${HEADS} ${SECTORS} \
 	    ${FSOFFSET} ${FSCYLINDERS} ${FSCYLINDERS} ${SWAPCYLINDERS} | \
-	    ${TOOL_SUNLABEL} -nq ${IMAGE}
+	    ${TOOL_SUNLABEL} -nq ${IMAGE} \
+	    || err ${TOOL_SUNLABEL}
 fi
 
 echo Creating disklabel...
@@ -404,7 +424,8 @@ c:    ${BSDPARTSECTORS} ${FSOFFSET} unused 0 0
 d:    ${IMAGESECTORS} 0 unused 0 0
 EOF
 
-${TOOL_DISKLABEL} -R -F -M ${MACHINE} ${IMAGE} ${WORKDIR}/labelproto
+${TOOL_DISKLABEL} -R -F -M ${MACHINE} ${IMAGE} ${WORKDIR}/labelproto \
+    || err ${TOOL_DISKLABEL}
 
 # XXX some ${MACHINE} needs disklabel for installboot
 #${TOOL_INSTALLBOOT} -vm ${MACHINE} ${MACHINE}.img \

@@ -30,6 +30,12 @@ if [ "${REVISION}"X = "X" ]; then
 	REVISION=`date +%C%y%m%d`
 fi
 
+err()
+{
+	echo $1 failed!
+	exit 1
+}
+
 # source and target
 INSTSH=inst.sh
 FILESDIR=liveimagefiles
@@ -103,7 +109,8 @@ echo Creating rootfs...
 ${TOOL_MAKEFS} -M ${FSSIZE} -m ${FSSIZE} \
 	-B ${TARGET_ENDIAN} \
 	-o bsize=${BLOCKSIZE},fsize=${FRAGSIZE},density=${DENSITY} \
-	${IMAGE} ${FILESDIR}
+	${IMAGE} ${FILESDIR} \
+	|| err ${TOOL_MAKEFS}
 
 echo Creating disklabel...
 LABELPROTO=${WORKDIR}/labelproto
@@ -132,7 +139,8 @@ a:    ${FSSECTORS} ${FSOFFSET} 4.2BSD ${FRAGSIZE} ${BLOCKSIZE} 128
 c:    ${FSSECTORS} ${FSOFFSET} unused 0 0
 EOF
 
-${TOOL_DISKLABEL} -R -F -M ${MACHINE} ${IMAGE} ${LABELPROTO}
+${TOOL_DISKLABEL} -R -F -M ${MACHINE} ${IMAGE} ${LABELPROTO} \
+	|| err ${TOOL_DISKLABEL}
 ${RM} -f ${LABELPROTO}
 
 echo Creating image \"${IMAGE}\" complete.
