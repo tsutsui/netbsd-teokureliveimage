@@ -96,7 +96,8 @@ ${RM} -rf ${WORKDIR}
 ${MKDIR} -p ${WORKDIR}
 
 echo Creating rootfs...
-${MAKEFS} -M ${FSSIZE} -B ${TARGET_ENDIAN} \
+${MAKEFS} -M ${FSSIZE} -m ${FSSIZE} \
+	-B ${TARGET_ENDIAN} \
 	-o bsize=${BLOCKSIZE},fsize=${FRAGSIZE},density=${DENSITY} \
 	${IMAGE} ${FILESDIR}
 

@@ -288,7 +288,8 @@ ${CAT} >> ${WORKDIR}/spec <<EOF
 EOF
 
 echo Creating rootfs...
-${TOOLDIR}/bin/nbmakefs -M ${FSSIZE} -B ${TARGET_ENDIAN} \
+${TOOLDIR}/bin/nbmakefs -M ${FSSIZE} -m ${FSSIZE} \
+	-B ${TARGET_ENDIAN} \
 	-F ${WORKDIR}/spec -N ${TARGETROOTDIR}/etc \
 	-o bsize=${BLOCKSIZE},fsize=${FRAGSIZE},density=${DENSITY} \
 	${WORKDIR}/rootfs ${TARGETROOTDIR}
