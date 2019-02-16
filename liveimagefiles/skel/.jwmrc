@@ -22,6 +22,9 @@
             <Program icon="window.png" label="Window Information">
                 xwininfo | xmessage -file -
             </Program>
+            <Program icon="window.png" label="Screen Layout Editor">
+                arandr
+            </Program>
         </Menu>
         <Separator/>
         <Program icon="lock.png" label="Lock">

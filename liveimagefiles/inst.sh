@@ -37,6 +37,7 @@ PACKAGES=" \
 	wm-icons \
 	ibus \
 	adwaita-icon-theme \
+	arandr \
 	mozc-server mozc-tool ibus-mozc mozc-elisp \
 	kterm mlterm \
 	git-base \
