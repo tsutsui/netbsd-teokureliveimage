@@ -63,27 +63,36 @@ TOOLDIR_AMD64=${NETBSDSRCDIR}/obj.amd64/${TOOLDIRNAME}
 TOOLDIR=${TOOLDIR_I386} OBJDIR=${OBJDIR} ${SH} mksetupliveimage.sh \
     || err mksetupliveimage.sh
 
-# build and setup amd64 USB liveimage
+# build amd64 USB liveimage
 TOOLDIR=${TOOLDIR_AMD64} OBJDIR=${OBJDIR} ${SH} mkimagebuilder.sh amd64 \
     || err 'mkimagebuilder.sh amd64'
 TOOLDIR=${TOOLDIR_AMD64} OBJDIR=${OBJDIR} ${SH} mkliveimage.sh usb amd64 \
     || err 'mkliveimage.sh usb amd64'
-${QEMU_X86_64} -m ${QEMU_MEM} \
- -drive file=${OBJDIR}/work.amd64.qemu/liveimage-amd64-qemu-${REVISION}.img,index=0,media=disk,format=raw,cache=unsafe \
- -drive file=${OBJDIR}/work.amd64.usb/liveimage-amd64-usb-${REVISION}.img,index=1,media=disk,format=raw,cache=unsafe \
- -drive file=${OBJDIR}/work.setupliveimage/setupliveimage-${REVISION}.fs,index=2,media=disk,format=raw,cache=unsafe
 
-# build and setup i386 USB/emulator/virtualbox/vmdk images
+# build i386 USB/emulator/virtualbox/vmdk images
 TOOLDIR=${TOOLDIR_I386} OBJDIR=${OBJDIR} ${SH} mkimagebuilder.sh i386 \
     || err 'mkimagebuilder.sh i386'
 TOOLDIR=${TOOLDIR_I386} OBJDIR=${OBJDIR} ${SH} mkliveimage.sh usb i386 \
     || err 'mkliveimage.sh usb i386'
 TOOLDIR=${TOOLDIR_I386} OBJDIR=${OBJDIR} ${SH} mkliveimage.sh emu i386 \
     || err 'mkliveimage.sh emu i386'
+
+# setup amd64 USB liveimage
+echo Setting up amd64 USB liveimage by QEMU...
+${QEMU_X86_64} -m ${QEMU_MEM} \
+ -drive file=${OBJDIR}/work.amd64.qemu/liveimage-amd64-qemu-${REVISION}.img,index=0,media=disk,format=raw,cache=unsafe \
+ -drive file=${OBJDIR}/work.amd64.usb/liveimage-amd64-usb-${REVISION}.img,index=1,media=disk,format=raw,cache=unsafe \
+ -drive file=${OBJDIR}/work.setupliveimage/setupliveimage-${REVISION}.fs,index=2,media=disk,format=raw,cache=unsafe
+
+# setup i386 USB image
+echo Setting up i386 USB liveimage by QEMU...
 ${QEMU_I386} -m ${QEMU_MEM} \
  -drive file=${OBJDIR}/work.i386.qemu/liveimage-i386-qemu-${REVISION}.img,index=0,media=disk,format=raw,cache=unsafe \
  -drive file=${OBJDIR}/work.i386.usb/liveimage-i386-usb-${REVISION}.img,index=1,media=disk,format=raw,cache=unsafe \
  -drive file=${OBJDIR}/work.setupliveimage/setupliveimage-${REVISION}.fs,index=2,media=disk,format=raw,cache=unsafe
+
+# setup i386 emulator/virtualbox/vmdk images
+echo Setting up i386 emulator liveimage by QEMU...
 ${QEMU_I386} -m ${QEMU_MEM} \
  -drive file=${OBJDIR}/work.i386.qemu/liveimage-i386-qemu-${REVISION}.img,index=0,media=disk,format=raw,cache=unsafe \
  -drive file=${OBJDIR}/work.i386.emu/liveimage-i386-emu-${REVISION}.img,index=1,media=disk,format=raw,cache=unsafe \
