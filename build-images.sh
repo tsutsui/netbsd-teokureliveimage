@@ -41,7 +41,7 @@ ZIP=/usr/pkg/bin/zip
 # qemu binaries to setup images
 QEMU_I386=/usr/pkg/bin/qemu-system-i386
 QEMU_X86_64=/usr/pkg/bin/qemu-system-x86_64
-QEMU_MEM=1024
+QEMU_OPT="-m 1024 -nographic"
 
 # qemu and virtual box binaries to convert images
 QEMU_IMG=/usr/pkg/bin/qemu-img
@@ -79,21 +79,21 @@ TOOLDIR=${TOOLDIR_I386} OBJDIR=${OBJDIR} ${SH} mkliveimage.sh emu i386 \
 
 # setup amd64 USB liveimage
 echo Setting up amd64 USB liveimage by QEMU...
-${QEMU_X86_64} -m ${QEMU_MEM} \
+${QEMU_X86_64} ${QEMU_OPT} \
  -drive file=${OBJDIR}/work.amd64.qemu/liveimage-amd64-qemu-${REVISION}.img,index=0,media=disk,format=raw,cache=unsafe \
  -drive file=${OBJDIR}/work.amd64.usb/liveimage-amd64-usb-${REVISION}.img,index=1,media=disk,format=raw,cache=unsafe \
  -drive file=${OBJDIR}/work.setupliveimage/setupliveimage-${REVISION}.fs,index=2,media=disk,format=raw,cache=unsafe
 
 # setup i386 USB image
 echo Setting up i386 USB liveimage by QEMU...
-${QEMU_I386} -m ${QEMU_MEM} \
+${QEMU_I386} ${QEMU_OPT} \
  -drive file=${OBJDIR}/work.i386.qemu/liveimage-i386-qemu-${REVISION}.img,index=0,media=disk,format=raw,cache=unsafe \
  -drive file=${OBJDIR}/work.i386.usb/liveimage-i386-usb-${REVISION}.img,index=1,media=disk,format=raw,cache=unsafe \
  -drive file=${OBJDIR}/work.setupliveimage/setupliveimage-${REVISION}.fs,index=2,media=disk,format=raw,cache=unsafe
 
 # setup i386 emulator/virtualbox/vmdk images
 echo Setting up i386 emulator liveimage by QEMU...
-${QEMU_I386} -m ${QEMU_MEM} \
+${QEMU_I386} ${QEMU_OPT} \
  -drive file=${OBJDIR}/work.i386.qemu/liveimage-i386-qemu-${REVISION}.img,index=0,media=disk,format=raw,cache=unsafe \
  -drive file=${OBJDIR}/work.i386.emu/liveimage-i386-emu-${REVISION}.img,index=1,media=disk,format=raw,cache=unsafe \
  -drive file=${OBJDIR}/work.setupliveimage/setupliveimage-${REVISION}.fs,index=2,media=disk,format=raw,cache=unsafe

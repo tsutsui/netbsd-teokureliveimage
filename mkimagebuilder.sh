@@ -164,6 +164,8 @@ TOOL_FDISK=${TOOLDIR}/bin/${MACHINE_GNU_PLATFORM}-fdisk
 TOOL_INSTALLBOOT=${TOOLDIR}/bin/nbinstallboot
 TOOL_SED=${TOOLDIR}/bin/nbsed
 
+INSTALLBOOT_OPT="-v -o console=com0"
+
 # host binaries
 CAT=cat
 CP=cp
@@ -308,7 +310,7 @@ ${TOOL_MAKEFS} -M ${FSSIZE} -m ${FSSIZE} \
 
 if [ ${PRIMARY_BOOT}x != "x" ]; then
 echo Installing bootstrap...
-${TOOL_INSTALLBOOT} -v -m ${MACHINE} ${WORKDIR}/rootfs \
+${TOOL_INSTALLBOOT} ${INSTALLBOOT_OPT} -m ${MACHINE} ${WORKDIR}/rootfs \
     ${TARGETROOTDIR}/usr/mdec/${PRIMARY_BOOT} ${SECONDARY_BOOT_ARG} \
     || err ${TOOL_INSTALLBOOT}
 fi
