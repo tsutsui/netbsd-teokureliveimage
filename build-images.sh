@@ -86,6 +86,14 @@ WRK_I386_VDI=${VDIDIR}
 WRK_I386_VMDK=${VMDKDIR}
 WRK_SETUP=${OBJDIR}/work.setupliveimage
 
+# check required build tools are installed
+TOOLS="${AWK} ${GZIP} ${MD5} ${WC} ${ZIP} ${QEMU_I386} ${QEMU_X86_64} ${QEMU_IMG} ${VBOX_IMG}"
+for tool in ${IMAGES}; do
+	if [ -x ${tool} ]; then
+		err 'checking installed binary ${tool}'
+	fi
+done
+
 # build "setup liveimage" image
 TOOLDIR=${TOOLDIR_I386} OBJDIR=${OBJDIR} ${SH} mksetupliveimage.sh \
     || err mksetupliveimage.sh
