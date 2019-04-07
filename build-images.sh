@@ -52,6 +52,10 @@ VBOX_IMG=${VBOXDIR}/vbox-img
 _HOST_OSNAME=`uname -s`
 _HOST_OSREL=`uname -r`
 _HOST_ARCH=`uname -p 2> /dev/null || uname -m`
+# XXX see PR toolchain/54100
+if [ "${_HOST_ARCH}"X = "x86_64X" ]; then
+	_HOST_ARCH=`uname -m`
+fi
 TOOLDIRNAME=tooldir.${_HOST_OSNAME}-${_HOST_OSREL}-${_HOST_ARCH}
 
 TOOLDIR_I386=${NETBSDSRCDIR}/obj.i386/${TOOLDIRNAME}
