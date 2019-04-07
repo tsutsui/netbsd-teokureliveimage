@@ -297,7 +297,7 @@ ${CAT} ${TARGETROOTDIR}/etc/rc.conf | \
 if [ ${RTC_LOCALTIME}x = "yesx" ]; then
 	echo rtclocaltime=YES		>> ${WORKDIR}/rc.conf
 else
-	echo #rtclocaltime=YES		>> ${WORKDIR}/rc.conf
+	echo \#rtclocaltime=YES		>> ${WORKDIR}/rc.conf
 fi
 echo hostname=${IMAGEHOSTNAME}		>> ${WORKDIR}/rc.conf
 echo dhcpcd=YES				>> ${WORKDIR}/rc.conf
