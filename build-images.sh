@@ -205,13 +205,13 @@ done
 # put sizes of uncompressed images
 echo >> ${IMAGEDIR}/${TARGET}
 #  for ${IMG_AMD64_USB}
- (cd ${WRK_AMD64_USB} && ${WC} -c ${IMG_AMD64_USB} | \
+ (${GZIP} -cd ${IMAGEDIR}/${IMG_AMD64_USB}.gz | ${WC} -c | \
   LANG=ja_JP.UTF-8 ${AWK} '{printf "Size (%s) = %\047d bytes\n","'${IMG_AMD64_USB}'",$1 }' >> ${IMAGEDIR}/${TARGET})
 #  for ${IMG_I386_EMU}
  (cd ${WRK_I386_EMU} && ${WC} -c ${IMG_I386_EMU} | \
   LANG=ja_JP.UTF-8 ${AWK} '{printf "Size (%s) = %\047d bytes\n","'${IMG_I386_EMU}'",$1 }' >> ${IMAGEDIR}/${TARGET})
 #  for ${IMG_I386_USB}
- (cd ${WRK_I386_USB} && ${WC} -c ${IMG_I386_USB} | \
+ (${GZIP} -cd ${IMAGEDIR}/${IMG_I386_USB}.gz | ${WC} -c | \
   LANG=ja_JP.UTF-8 ${AWK} '{printf "Size (%s) = %\047d bytes\n","'${IMG_I386_USB}'",$1 }' >> ${IMAGEDIR}/${TARGET})
 #  for ${IMG_I386_VDI}
  (cd ${WRK_I386_VDI} && ${WC} -c ${IMG_I386_VDI} | \
