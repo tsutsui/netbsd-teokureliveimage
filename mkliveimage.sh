@@ -164,6 +164,8 @@ RELEASE=8.0
 #RELEASEDIR=pub/NetBSD-daily/netbsd-7/201507032200Z
 #RELEASEDIR=pub/NetBSD-daily/netbsd-8/201711301510Z
 RELEASEDIR=pub/NetBSD-daily/HEAD/201905101150Z
+COMPATDIR=pub/NetBSD/NetBSD-${RELEASE}
+COMPATFTPHOST=cdn.NetBSD.org
 
 #
 # misc build settings
@@ -240,6 +242,7 @@ echo creating ${IMAGE_TYPE} image for ${MACHINE}...
 # get binary sets
 #
 URL_SETS=http://${FTPHOST}/${RELEASEDIR}/${MACHINE}/binary/sets
+URL_COMPAT_SETS=http://${COMPATFTPHOST}/${COMPATDIR}/${MACHINE}/binary/sets
 SETS="${KERN_SET} modules base etc comp games man misc tests text xbase xcomp xetc xfont xserver ${EXTRA_SETS}"
 #SETS="${KERN_SET} modules base etc comp ${EXTRA_SETS}"
 #SETS="${KERN_SET} base etc comp games man misc tests text xbase xcomp xetc xfont xserver ${EXTRA_SETS}"
@@ -254,12 +257,37 @@ for set in ${SETS}; do
 	fi
 done
 
+${MKDIR} -p ${DOWNLOADDIR}/compat
+for set in base xbase; do
+	if [ ! -f ${DOWNLOADDIR}/compat/${set}.tgz ]; then
+		echo Fetching compat ${set}.tgz...
+echo		     ${URL_COMPAT_SETS}/${set}.tgz
+		${FTP} ${FTP_OPTIONS} \
+		    -o ${DOWNLOADDIR}/compat/${set}.tgz ${URL_COMPAT_SETS}/${set}.tgz \
+		    || err ${FTP}
+	fi
+done
+
 #
 # create targetroot
 #
+echo Removing ${WORKDIR}...
+${RM} -rf ${WORKDIR}
+${MKDIR} -p ${WORKDIR}
+
 echo Removing ${TARGETROOTDIR}...
 ${RM} -rf ${TARGETROOTDIR}
 ${MKDIR} -p ${TARGETROOTDIR}
+
+# to prepare compat libs
+for set in base xbase; do
+	echo Extracting compat ${set}...
+	${TAR} -C ${TARGETROOTDIR} -zxf ${DOWNLOADDIR}/compat/${set}.tgz \
+	    || err ${TAR}
+done
+grep -h '.*/lib/.*' /etc/mtree/set.* | grep -hv '.so .*type=link' > \
+	${WORKDIR}/set.compat
+
 for set in ${SETS}; do
 	echo Extracting ${set}...
 	${TAR} -C ${TARGETROOTDIR} -zxf ${DOWNLOADDIR}/${set}.${SUFFIX_SETS} \
@@ -278,10 +306,6 @@ fi
 #
 # create target fs
 #
-echo Removing ${WORKDIR}...
-${RM} -rf ${WORKDIR}
-${MKDIR} -p ${WORKDIR}
-
 echo Preparing /etc/fstab...
 ${CAT} > ${WORKDIR}/fstab <<EOF
 /dev/${BOOTDISK}a	/		ffs	rw,log		1 1
@@ -311,8 +335,13 @@ echo Setting localtime...
 ln -sf /usr/share/zoneinfo/${TIMEZONE} ${TARGETROOTDIR}/etc/localtime
 
 echo Preparing spec file for makefs...
-${CAT} ${TARGETROOTDIR}/etc/mtree/* | \
-	${TOOL_SED} -e 's/ size=[0-9]*//' > ${WORKDIR}/spec
+${CAT} ${WORKDIR}/set.compat ${TARGETROOTDIR}/etc/mtree/set.* | \
+	${TOOL_SED} -e 's/ size=[0-9]*//' -e 's/ sha256=[0-9a-z]*//' \
+	-e 's|^\./usr/X11R7/lib/modules/dri/r300_dri.so.0 type=file|# &|' \
+	-e 's/ optional//' |\
+	sort | uniq > ${WORKDIR}/spec.0
+${CAT} ${TARGETROOTDIR}/etc/mtree/NetBSD.dist ${WORKDIR}/spec.0 > \
+	${WORKDIR}/spec
 ${SH} ${TARGETROOTDIR}/dev/MAKEDEV -s all | \
 	${TOOL_SED} -e '/^\. type=dir/d' -e 's,^\.,./dev,' >> ${WORKDIR}/spec
 # spec for optional files/dirs
