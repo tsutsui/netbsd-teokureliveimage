@@ -12,11 +12,11 @@ ROOTFSDEV=/dev/${BOOTDEV}a
 
 # default user settings
 UID=100
-USER="mikutter"
+USER="netbsd"
 GROUP="users"
 SHELL=/usr/pkg/bin/tcsh
 #SHELL=/usr/pkg/bin/bash
-PASSWORD="Teokure-"
+PASSWORD="netbsd"
 
 # packages list
 RUBY_PKGPREFIX=ruby24
@@ -42,8 +42,6 @@ PACKAGES=" \
 	mozc-server mozc-tool ibus-mozc mozc-elisp \
 	kterm mlterm \
 	git-base \
-	${RUBY_PKGPREFIX}-mikutter \
-	${RUBY_PKGPREFIX}-tw \
 	mozilla-rootcerts \
 	"
 
