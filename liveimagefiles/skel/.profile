@@ -33,7 +33,7 @@ export EDITOR=vi
 #export PRINTER=change-this-to-a-printer
 
 # Set LANG; using ja_JP.UTF-8 on this liveimage
-export LANG=ja_JP.UTF-8
+#export LANG=ja_JP.UTF-8
 
 # Set PERL_BADLANG to appease perl warnings on LANG=ja_JP.UTF-8 environment
 export PERL_BADLANG=0

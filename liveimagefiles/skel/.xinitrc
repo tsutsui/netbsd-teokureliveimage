@@ -2,7 +2,7 @@
 #
 # .xinitrc
 #
-export LANG=ja_JP.UTF-8
+#export LANG=ja_JP.UTF-8
 export XAPPLRESDIR=/usr/pkg/lib/X11/app-defaults
 
 host=`hostname`

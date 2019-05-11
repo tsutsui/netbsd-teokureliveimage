@@ -33,7 +33,7 @@ setenv	EDITOR	vi
 #setenv	PRINTER	change-this-to-a-printer
 
 # Set LANG; using ja_JP.UTF-8 on this liveimage
-setenv	LANG ja_JP.UTF-8
+#setenv	LANG ja_JP.UTF-8
 
 # Set PERL_BADLANG to appease perl warnings on LANG=ja_JP.UTF-8 environment
 setenv	PERL_BADLANG 0
