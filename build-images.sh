@@ -102,8 +102,8 @@ fi
 
 # check required build tools are installed
 TOOLS="${AWK} ${GZIP} ${MD5} ${WC} ${ZIP} ${QEMU_I386} ${QEMU_X86_64} ${QEMU_IMG} ${VBOX_IMG}"
-for tool in ${IMAGES}; do
-	if [ -x ${tool} ]; then
+for tool in ${TOOLS}; do
+	if [ ! -x ${tool} ]; then
 		err 'checking installed binary ${tool}'
 	fi
 done
