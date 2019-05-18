@@ -86,6 +86,20 @@ WRK_I386_VDI=${VDIDIR}
 WRK_I386_VMDK=${VMDKDIR}
 WRK_SETUP=${OBJDIR}/work.setupliveimage
 
+# check ${TOOLDIR}s
+if [ ! -d ${TOOLDIR_I386} ]; then
+	echo 'TOOLDIR_I386 (${TOOLDIR_I386}) does not exist'; exit 1
+fi
+if [ ! -x ${TOOLDIR_I386}/bin/nbmake-i386 ]; then
+	echo 'build tools in ${TOOLDIR_I386} first'; exit 1
+fi
+if [ ! -d ${TOOLDIR_AMD64} ]; then
+	echo 'TOOLDIR_AMD64 (${TOOLDIR_AMD64}) does not exist'; exit 1
+fi
+if [ ! -x ${TOOLDIR_AMD64}/bin/nbmake-amd64 ]; then
+	echo 'build tools in ${TOOLDIR_AMD64} first'; exit 1
+fi
+
 # check required build tools are installed
 TOOLS="${AWK} ${GZIP} ${MD5} ${WC} ${ZIP} ${QEMU_I386} ${QEMU_X86_64} ${QEMU_IMG} ${VBOX_IMG}"
 for tool in ${IMAGES}; do
