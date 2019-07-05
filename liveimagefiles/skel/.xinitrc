@@ -8,6 +8,7 @@ export XAPPLRESDIR=/usr/pkg/lib/X11/app-defaults
 host=`hostname`
 
 xset s noblank
+xset fp+ /usr/pkg/share/fonts/X11/OTF/
 xset fp+ /usr/pkg/share/fonts/X11/TTF/
 xset fp+ /usr/pkg/share/fonts/X11/misc/
 xset fp+ /usr/pkg/share/fonts/truetype/unifont/
