@@ -58,7 +58,10 @@ cp ${FILEDIR}/etc/mk.conf /etc
 
 echo "installing wpa_supplicant(8) settings..."
 install -o root -g wheel -m 600 ${FILEDIR}/etc/wpa_supplicant.conf /etc
-ln -s /usr/share/examples/dhcpcd/hooks/10-wpa_supplicant /libexec/dhcpcd-hooks
+# Note /libexec/dhcpcd-hooks/10-wpa_supplicant is marked as obsolete
+# in src/distrib/sets/lists/base/mi (PR/54351)
+cp /usr/share/examples/dhcpcd/hooks/10-wpa_supplicant \
+    /libexec/dhcpcd-hooks/11-wpa_supplicant
 
 echo "installing packages..."
 PACKAGESDIR=${FILEDIR}/packages/${MACHINE_ARCH}
