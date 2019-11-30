@@ -89,7 +89,7 @@ if [ ${TOTALSECTORS} -ne ${ORIGIMAGESECTORS} ]; then
 fi
 
 # get actual disk size from dmesg
-BOOTDISKDMSG=`dmesg | grep "^${BOOTDISK}: .* sectors$"`
+BOOTDISKDMSG=`dmesg -t | grep "^${BOOTDISK}: .* sectors$"`
 if [ "${BOOTDISKDMSG}"X = "X" ]; then
 	echo Error: cannot find ${BOOTDISK} in dmesg
 	exit 1
