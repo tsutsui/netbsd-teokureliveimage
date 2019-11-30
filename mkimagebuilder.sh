@@ -91,7 +91,6 @@ if [ "${MACHINE}" = "amd64" ]; then
  KERN_SET=kern-GENERIC
  SUFFIX_SETS=tar.xz
  EXTRA_SETS= # nothing
- BOOTDISK=wd0		# for USB disk
  PRIMARY_BOOT=bootxx_ffsv1
  SECONDARY_BOOT=boot
  SECONDARY_BOOT_ARG= # nothing
@@ -104,7 +103,6 @@ if [ "${MACHINE}" = "i386" ]; then
  KERN_SET=kern-GENERIC
  SUFFIX_SETS=tgz
  EXTRA_SETS= # nothing
- BOOTDISK=wd0		# for ATA disk
  PRIMARY_BOOT=bootxx_ffsv1
  SECONDARY_BOOT=boot
  SECONDARY_BOOT_ARG= # nothing
@@ -258,8 +256,8 @@ ${MKDIR} -p ${WORKDIR}
 
 echo Preparing /etc/fstab...
 ${CAT} > ${WORKDIR}/fstab <<EOF
-/dev/${BOOTDISK}a	/		ffs	rw,log		1 1
-/dev/${BOOTDISK}b	none		none	sw		0 0
+ROOT.a		/		ffs	rw,log		1 1
+ROOT.b		none		none	sw		0 0
 ptyfs		/dev/pts	ptyfs	rw		0 0
 kernfs		/kern		kernfs	rw		0 0
 procfs		/proc		procfs	rw		0 0

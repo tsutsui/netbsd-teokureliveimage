@@ -39,9 +39,7 @@ TIMEZONE=Japan
 
 usage()
 {
-	echo "usage: $0 <imagetype> <machine>"
-	echo "supported imagetypes: " \
-	     "usb (for USB memory), emu (for emulators)"
+	echo "usage: $0 <machine>"
 	echo "supported machine: amd64, i386"
 	exit 1
 }
@@ -52,21 +50,15 @@ err()
 	exit 1
 }
 
-if [ $# != 2 ]; then
+if [ $# != 1 ]; then
 	usage
 fi
 
-if [ "$1" != "usb" -a "$1" != "emu" ]; then
-	usage
-fi
+IMAGE_TYPE=raw
+MACHINE=$1
 
-IMAGE_TYPE=$1
-MACHINE=$2
-
-if [ ${IMAGE_TYPE}x = "usbx" ]; then
- HAVE_EXPANDFS_SCRIPT=yes	# put a script to expand image fssize
- EXPANDFS_SH=expand-image-fssize.sh
-fi
+HAVE_EXPANDFS_SCRIPT=yes	# put a script to expand image fssize
+EXPANDFS_SH=expand-image-fssize.sh
 
 #
 # target dependent info
@@ -79,16 +71,8 @@ if [ "${MACHINE}" = "amd64" ]; then
  SUFFIX_SETS=tar.xz
  EXTRA_SETS= # nothing
  USE_MBR=yes
- if [ ${IMAGE_TYPE}x = "emux" ]; then
-  BOOTDISK=wd0		# for ATA disk
-  OMIT_SWAPIMG=no	# include swap partition in output image
-  #RTC_LOCALTIME=no	# assume emulators return UTC
- else
-  BOOTDISK=sd0		# for USB disk
-  #OMIT_SWAPIMG=yes	# no swap partition in output image
-  OMIT_SWAPIMG=no	# XXX to use emulators to install packages
-  RTC_LOCALTIME=yes	# use rtclocaltime=YES in rc.d(8)
- fi
+ OMIT_SWAPIMG=no	# include swap partition in output image for emulators
+ RTC_LOCALTIME=yes	# use rtclocaltime=YES in rc.d(8) for Windows machines
  PRIMARY_BOOT=bootxx_ffsv1
  SECONDARY_BOOT=boot
  SECONDARY_BOOT_ARG= # nothing
@@ -102,16 +86,8 @@ if [ "${MACHINE}" = "i386" ]; then
  SUFFIX_SETS=tgz
  EXTRA_SETS= # nothing
  USE_MBR=yes
- if [ ${IMAGE_TYPE}x = "emux" ]; then
-  BOOTDISK=wd0		# for ATA disk
-  OMIT_SWAPIMG=no	# include swap partition in output image
-  #RTC_LOCALTIME=no	# assume emulators return UTC
- else
-  BOOTDISK=sd0		# for USB disk
-  #OMIT_SWAPIMG=yes	# no swap partition in output image
-  OMIT_SWAPIMG=no	# XXX to use emulators to install packages
-  RTC_LOCALTIME=yes	# use rtclocaltime=YES in rc.d(8)
- fi
+ OMIT_SWAPIMG=no	# include swap partition in output image for emulators
+ RTC_LOCALTIME=yes	# use rtclocaltime=YES in rc.d(8) for Windows machines
  PRIMARY_BOOT=bootxx_ffsv1
  SECONDARY_BOOT=boot
  SECONDARY_BOOT_ARG= # nothing
@@ -283,8 +259,8 @@ ${MKDIR} -p ${WORKDIR}
 
 echo Preparing /etc/fstab...
 ${CAT} > ${WORKDIR}/fstab <<EOF
-/dev/${BOOTDISK}a	/		ffs	rw,log		1 1
-/dev/${BOOTDISK}b	none		none	sw		0 0
+ROOT.a		/		ffs	rw,log		1 1
+ROOT.b		none		none	sw		0 0
 kernfs		/kern		kernfs	rw		0 0
 ptyfs		/dev/pts	ptyfs	rw		0 0
 procfs		/proc		procfs	rw		0 0

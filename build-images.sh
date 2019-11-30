@@ -68,20 +68,18 @@ TOOLDIR_AMD64=${NETBSDSRCDIR}/obj.amd64/${TOOLDIRNAME}
 # image file names
 IMAGEDIR=${CURDIR}/images/${REVISION}
 IMG_AMD64_QEMU=liveimage-amd64-qemu-${REVISION}.img
-IMG_AMD64_USB=liveimage-amd64-usb-${REVISION}.img
+IMG_AMD64_RAW=liveimage-amd64-raw-${REVISION}.img
 IMG_I386_QEMU=liveimage-i386-qemu-${REVISION}.img
-IMG_I386_EMU=liveimage-i386-emu-${REVISION}.img
-IMG_I386_USB=liveimage-i386-usb-${REVISION}.img
+IMG_I386_RAW=liveimage-i386-raw-${REVISION}.img
 IMG_I386_VDI=liveimage-i386-vbox-${REVISION}.vdi
 IMG_I386_VMDK=liveimage-i386-vmdk-${REVISION}.vmdk
 IMG_SETUP=setupliveimage-${REVISION}.fs
 
 # image file build dir
 WRK_AMD64_QEMU=${OBJDIR}/work.amd64.qemu
-WRK_AMD64_USB=${OBJDIR}/work.amd64.usb
+WRK_AMD64_RAW=${OBJDIR}/work.amd64.raw
 WRK_I386_QEMU=${OBJDIR}/work.i386.qemu
-WRK_I386_EMU=${OBJDIR}/work.i386.emu
-WRK_I386_USB=${OBJDIR}/work.i386.usb
+WRK_I386_RAW=${OBJDIR}/work.i386.raw
 WRK_I386_VDI=${VDIDIR}
 WRK_I386_VMDK=${VMDKDIR}
 WRK_SETUP=${OBJDIR}/work.setupliveimage
@@ -112,45 +110,37 @@ done
 TOOLDIR=${TOOLDIR_I386} OBJDIR=${OBJDIR} ${SH} mksetupliveimage.sh \
     || err mksetupliveimage.sh
 
-# build amd64 USB liveimage
+# build amd64 RAW liveimage
 TOOLDIR=${TOOLDIR_AMD64} OBJDIR=${OBJDIR} ${SH} mkimagebuilder.sh amd64 \
     || err 'mkimagebuilder.sh amd64'
-TOOLDIR=${TOOLDIR_AMD64} OBJDIR=${OBJDIR} ${SH} mkliveimage.sh usb amd64 \
-    || err 'mkliveimage.sh usb amd64'
+TOOLDIR=${TOOLDIR_AMD64} OBJDIR=${OBJDIR} ${SH} mkliveimage.sh amd64 \
+    || err 'mkliveimage.sh amd64'
 
-# build i386 USB/emulator/virtualbox/vmdk images
-TOOLDIR=${TOOLDIR_I386} OBJDIR=${OBJDIR} ${SH} mkimagebuilder.sh i386 \
-    || err 'mkimagebuilder.sh i386'
-TOOLDIR=${TOOLDIR_I386} OBJDIR=${OBJDIR} ${SH} mkliveimage.sh usb i386 \
-    || err 'mkliveimage.sh usb i386'
-TOOLDIR=${TOOLDIR_I386} OBJDIR=${OBJDIR} ${SH} mkliveimage.sh emu i386 \
-    || err 'mkliveimage.sh emu i386'
-
-# setup amd64 USB liveimage
-echo Setting up amd64 USB liveimage by QEMU...
+# setup amd64 RAW image
+echo Setting up amd64 RAW liveimage by QEMU...
 ${QEMU_X86_64} ${QEMU_OPT} \
  -drive file=${WRK_AMD64_QEMU}/${IMG_AMD64_QEMU},index=0,media=disk,format=raw,cache=unsafe \
- -drive file=${WRK_AMD64_USB}/${IMG_AMD64_USB},index=1,media=disk,format=raw,cache=unsafe \
+ -drive file=${WRK_AMD64_RAW}/${IMG_AMD64_RAW},index=1,media=disk,format=raw,cache=unsafe \
  -drive file=${WRK_SETUP}/${IMG_SETUP},index=2,media=disk,format=raw,cache=unsafe
 
-# setup i386 USB image
-echo Setting up i386 USB liveimage by QEMU...
+# setup i386 RAW image
+echo Setting up i386 RAW liveimage by QEMU...
 ${QEMU_I386} ${QEMU_OPT} \
  -drive file=${WRK_I386_QEMU}/${IMG_I386_QEMU},index=0,media=disk,format=raw,cache=unsafe \
- -drive file=${WRK_I386_USB}/${IMG_I386_USB},index=1,media=disk,format=raw,cache=unsafe \
+ -drive file=${WRK_I386_RAW}/${IMG_I386_RAW},index=1,media=disk,format=raw,cache=unsafe \
  -drive file=${WRK_SETUP}/${IMG_SETUP},index=2,media=disk,format=raw,cache=unsafe
 
 # setup i386 emulator/virtualbox/vmdk images
 echo Setting up i386 emulator liveimage by QEMU...
 ${QEMU_I386} ${QEMU_OPT} \
  -drive file=${WRK_I386_QEMU}/${IMG_I386_QEMU},index=0,media=disk,format=raw,cache=unsafe \
- -drive file=${WRK_I386_EMU}/${IMG_I386_EMU},index=1,media=disk,format=raw,cache=unsafe \
+ -drive file=${WRK_I386_RAW}/${IMG_I386_RAW},index=1,media=disk,format=raw,cache=unsafe \
  -drive file=${WRK_SETUP}/${IMG_SETUP},index=2,media=disk,format=raw,cache=unsafe
 
 echo Converting from raw image to vmdk...
 ${RM} -f ${VDIDIR}/${IMG_I386_VMDK}
 ${QEMU_IMG} convert -O vmdk \
- ${WRK_I386_EMU}/${IMG_I386_EMU} \
+ ${WRK_I386_RAW}/${IMG_I386_RAW} \
  ${VMDKDIR}/${IMG_I386_VMDK} \
     || err ${QEMU_IMG}
 
@@ -158,19 +148,19 @@ echo Converting from raw image to vdi...
 ${RM} -f ${VDIDIR}/${IMG_I386_VDI}
 #LD_LIBRARY_PATH=${VBOXDIR}/usr/lib/virtualbox \
 # ${VBOXDIR}/usr/lib/virtualbox/VBoxManage convertfromraw --format VDI \
-# ${WRK_I386_EMU}/${IMG_I386_EMU} \
+# ${WRK_I386_RAW}/${IMG_I386_RAW} \
 # ${VDIDIR}/${IMG_I386_VDI}
 ${VBOX_IMG} convert --srcformat RAW --dstformat VDI \
- --srcfilename ${WRK_I386_EMU}/${IMG_I386_EMU} \
+ --srcfilename ${WRK_I386_RAW}/${IMG_I386_RAW} \
  --dstfilename ${VDIDIR}/${IMG_I386_VDI} \
     || err ${VBOX_IMG}
 
-# prepare compressed images (and omit swap for USB images) for distribution
+# prepare compressed images for distribution
 
 echo Preparing compressed image files...
 IMAGEMB=5120			# 5120MB (4GB isn't enough for 8.0 + 2018Q2)
 SWAPMB=512			# 512MB
-USBMB=$((${IMAGEMB} - ${SWAPMB}))
+RAWMB=$((${IMAGEMB} - ${SWAPMB}))
 
 ${RM} -rf ${IMAGEDIR}
 ${MKDIR} -p ${IMAGEDIR}
@@ -185,24 +175,20 @@ echo Compressing liveimage-i386-vmdk-${REVISION}.vmdk...
  ${ZIP} -9 ${IMAGEDIR}/`basename ${IMG_I386_VMDK} .vmdk`.zip  \
   ${IMG_I386_VMDK})
 
-echo Compressing ${IMG_I386_USB}...
-${DD} if=${WRK_I386_USB}/${IMG_I386_USB} count=${USBMB} bs=1m \
-    | ${GZIP} -9c > ${IMAGEDIR}/${IMG_I386_USB}.gz
+echo Compressing ${IMG_AMD64_RAW}...
+${GZIP} -9c ${WRK_AMD64_RAW}/${IMG_AMD64_RAW} \
+    > ${IMAGEDIR}/${IMG_AMD64_RAW}.gz
 
-echo Compressing ${IMG_AMD64_USB}...
-${DD} if=${WRK_AMD64_USB}/${IMG_AMD64_USB} count=${USBMB} bs=1m \
-    | ${GZIP} -9c > ${IMAGEDIR}/${IMG_AMD64_USB}.gz
-
-echo Compressing ${IMG_I386_EMU}...
-${GZIP} -9c ${WRK_I386_EMU}/${IMG_I386_EMU} \
-    > ${IMAGEDIR}/${IMG_I386_EMU}.gz
+echo Compressing ${IMG_I386_RAW}...
+${GZIP} -9c ${WRK_I386_RAW}/${IMG_I386_RAW} \
+    > ${IMAGEDIR}/${IMG_I386_RAW}.gz
 
 echo Compressing setupliveimage-${REVISION}.img...
 ${GZIP} -9c ${WRK_SETUP}/${IMG_SETUP} \
     > ${IMAGEDIR}/${IMG_SETUP}.gz
 
 echo Calculating distinfo...
-IMAGES="${IMG_AMD64_USB}.gz ${IMG_I386_EMU}.gz ${IMG_I386_USB}.gz `basename ${IMG_I386_VDI} .vdi`.zip `basename ${IMG_I386_VMDK} .vmdk`.zip ${IMG_SETUP}.gz"
+IMAGES="${IMG_AMD64_RAW}.gz ${IMG_I386_RAW}.gz `basename ${IMG_I386_VDI} .vdi`.zip `basename ${IMG_I386_VMDK} .vmdk`.zip ${IMG_SETUP}.gz"
 TARGET=distinfo
 
 rm -f ${IMAGEDIR}/${TARGET}
@@ -218,15 +204,12 @@ done
 
 # put sizes of uncompressed images
 echo >> ${IMAGEDIR}/${TARGET}
-#  for ${IMG_AMD64_USB}
- (${GZIP} -cd ${IMAGEDIR}/${IMG_AMD64_USB}.gz | ${WC} -c | \
-  LANG=ja_JP.UTF-8 ${AWK} '{printf "Size (%s) = %\047d bytes\n","'${IMG_AMD64_USB}'",$1 }' >> ${IMAGEDIR}/${TARGET})
-#  for ${IMG_I386_EMU}
- (cd ${WRK_I386_EMU} && ${WC} -c ${IMG_I386_EMU} | \
-  LANG=ja_JP.UTF-8 ${AWK} '{printf "Size (%s) = %\047d bytes\n","'${IMG_I386_EMU}'",$1 }' >> ${IMAGEDIR}/${TARGET})
-#  for ${IMG_I386_USB}
- (${GZIP} -cd ${IMAGEDIR}/${IMG_I386_USB}.gz | ${WC} -c | \
-  LANG=ja_JP.UTF-8 ${AWK} '{printf "Size (%s) = %\047d bytes\n","'${IMG_I386_USB}'",$1 }' >> ${IMAGEDIR}/${TARGET})
+#  for ${IMG_AMD64_RAW}
+ (cd ${WRK_AMD64_RAW} && ${WC} -c ${IMG_AMD64_RAW} | \
+  LANG=ja_JP.UTF-8 ${AWK} '{printf "Size (%s) = %\047d bytes\n","'${IMG_AMD64_RAW}'",$1 }' >> ${IMAGEDIR}/${TARGET})
+#  for ${IMG_I386_RAW}
+ (cd ${WRK_I386_RAW} && ${WC} -c ${IMG_I386_RAW} | \
+  LANG=ja_JP.UTF-8 ${AWK} '{printf "Size (%s) = %\047d bytes\n","'${IMG_I386_RAW}'",$1 }' >> ${IMAGEDIR}/${TARGET})
 #  for ${IMG_I386_VDI}
  (cd ${WRK_I386_VDI} && ${WC} -c ${IMG_I386_VDI} | \
   LANG=ja_JP.UTF-8 ${AWK} '{printf "Size (%s) = %\047d bytes\n","'${IMG_I386_VDI}'",$1 }' >> ${IMAGEDIR}/${TARGET})
