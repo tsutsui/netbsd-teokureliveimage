@@ -89,6 +89,7 @@ if [ "${MACHINE}" = "amd64" ]; then
  MACHINE_GNU_PLATFORM=x86_64--netbsd		# for fdisk(8)
  TARGET_ENDIAN=le
  KERN_SET=kern-GENERIC
+ SUFFIX_SETS=tar.xz
  EXTRA_SETS= # nothing
  BOOTDISK=wd0		# for USB disk
  PRIMARY_BOOT=bootxx_ffsv1
@@ -101,6 +102,7 @@ if [ "${MACHINE}" = "i386" ]; then
  MACHINE_GNU_PLATFORM=i486--netbsdelf		# for fdisk(8)
  TARGET_ENDIAN=le
  KERN_SET=kern-GENERIC
+ SUFFIX_SETS=tgz
  EXTRA_SETS= # nothing
  BOOTDISK=wd0		# for ATA disk
  PRIMARY_BOOT=bootxx_ffsv1
@@ -149,7 +151,7 @@ fi
 #FTPHOST=ftp7.jp.NetBSD.org
 FTPHOST=cdn.NetBSD.org
 #FTPHOST=nyftp.NetBSD.org
-RELEASE=8.1
+RELEASE=9.0_RC1
 RELEASEDIR=pub/NetBSD/NetBSD-${RELEASE}
 #RELEASEDIR=pub/NetBSD-daily/netbsd-7/201507032200Z
 
@@ -190,7 +192,7 @@ IMAGE=${WORKDIR}/liveimage-${MACHINE}-${IMAGE_TYPE}-${REVISION}.img
 #
 # target image size settings
 #
-IMAGEMB=250			# minimum
+IMAGEMB=300			# minimum
 IMAGESECTORS=$((${IMAGEMB} * 1024 * 1024 / 512))
 # no swap
 
@@ -217,10 +219,11 @@ URL_SETS=http://${FTPHOST}/${RELEASEDIR}/${MACHINE}/binary/sets
 SETS="${KERN_SET} base etc"
 ${MKDIR} -p ${DOWNLOADDIR}
 for set in ${SETS}; do
-	if [ ! -f ${DOWNLOADDIR}/${set}.tgz ]; then
-		echo Fetching ${set}.tgz...
+	if [ ! -f ${DOWNLOADDIR}/${set}.${SUFFIX_SETS} ]; then
+		echo Fetching ${set}.${SUFFIX_SETS}...
 		${FTP} ${FTP_OPTIONS} \
-		    -o ${DOWNLOADDIR}/${set}.tgz ${URL_SETS}/${set}.tgz \
+		    -o ${DOWNLOADDIR}/${set}.${SUFFIX_SETS} \
+		     ${URL_SETS}/${set}.${SUFFIX_SETS} \
 		    || err ${FTP}
 	fi
 done
@@ -233,7 +236,7 @@ ${RM} -rf ${TARGETROOTDIR}
 ${MKDIR} -p ${TARGETROOTDIR}
 for set in ${SETS}; do
 	echo Extracting ${set}...
-	${TAR} -C ${TARGETROOTDIR} -zxf ${DOWNLOADDIR}/${set}.tgz \
+	${TAR} -C ${TARGETROOTDIR} -zxf ${DOWNLOADDIR}/${set}.${SUFFIX_SETS} \
 	    || err ${TAR}
 done
 # XXX /var/spool/ftp/hidden is unreadable
