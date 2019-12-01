@@ -214,10 +214,10 @@ echo creating ${IMAGE_TYPE} image for ${MACHINE}...
 # get binary sets
 #
 URL_SETS=http://${FTPHOST}/${RELEASEDIR}/${MACHINE}/binary/sets
-SETS="${KERN_SET} modules base etc comp games man misc tests text xbase xcomp xetc xfont xserver ${EXTRA_SETS}"
-#SETS="${KERN_SET} modules base etc comp ${EXTRA_SETS}"
-#SETS="${KERN_SET} base etc comp games man misc tests text xbase xcomp xetc xfont xserver ${EXTRA_SETS}"
-#SETS="${KERN_SET} base etc comp ${EXTRA_SETS}"
+SETS="${KERN_SET} modules base rescue etc comp games man misc tests text xbase xcomp xetc xfont xserver ${EXTRA_SETS}"
+#SETS="${KERN_SET} modules base rescue etc comp ${EXTRA_SETS}"
+#SETS="${KERN_SET} base rescue etc comp games man misc tests text xbase xcomp xetc xfont xserver ${EXTRA_SETS}"
+#SETS="${KERN_SET} base rescue etc comp ${EXTRA_SETS}"
 ${MKDIR} -p ${DOWNLOADDIR}
 for set in ${SETS}; do
 	if [ ! -f ${DOWNLOADDIR}/${set}.${SUFFIX_SETS} ]; then
