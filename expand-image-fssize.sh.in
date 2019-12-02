@@ -22,7 +22,7 @@
 # (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 # THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-BOOTDISK=@@BOOTDISK@@		# liveimage for USB disk
+BOOTDISK=`dmesg -t | sed -n -e '/^boot device: /s/.*: //p' | tail -1`
 
 echo Start expanding fs size upto the actual disk size...
 
@@ -89,7 +89,7 @@ if [ ${TOTALSECTORS} -ne ${ORIGIMAGESECTORS} ]; then
 fi
 
 # get actual disk size from dmesg
-BOOTDISKDMSG=`dmesg -t | grep "^${BOOTDISK}: .* sectors$"`
+BOOTDISKDMSG=`dmesg -t | grep "^${BOOTDISK}: .* sectors$" | tail -1`
 if [ "${BOOTDISKDMSG}"X = "X" ]; then
 	echo Error: cannot find ${BOOTDISK} in dmesg
 	exit 1

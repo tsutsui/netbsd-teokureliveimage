@@ -302,7 +302,7 @@ EOF
 
 if [ ${HAVE_EXPANDFS_SCRIPT}x = "yesx" ]; then
 	echo Preparing ${EXPANDFS_SH} script...
-	${TOOL_SED}  -e "s/@@BOOTDISK@@/${BOOTDISK}/"			\
+	${TOOL_SED} \
 		-e "s/@@DISKNAME@@/${DISKNAME}/"			\
 		-e "s/@@MBRNETBSD@@/${MBRNETBSD}/"			\
 		-e "s/@@IMAGEMB@@/${IMAGEMB}/"				\
