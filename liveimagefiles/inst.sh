@@ -19,7 +19,7 @@ SHELL=/usr/pkg/bin/tcsh
 PASSWORD="Teokure-"
 
 # packages list
-RUBY_PKGPREFIX=ruby24
+RUBY_PKGPREFIX=ruby26
 PACKAGES=" \
 	bash tcsh zsh \
 	emacs \
@@ -43,7 +43,9 @@ PACKAGES=" \
 	kterm mlterm \
 	git-base \
 	${RUBY_PKGPREFIX}-mikutter \
-	${RUBY_PKGPREFIX}-tw \
+	${RUBY_PKGPREFIX}-mikutter-plugins-twitter \
+	sayaka \
+	nanotodon \
 	mozilla-rootcerts \
 	"
 
