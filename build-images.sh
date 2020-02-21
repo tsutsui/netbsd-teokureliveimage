@@ -116,6 +116,12 @@ TOOLDIR=${TOOLDIR_AMD64} OBJDIR=${OBJDIR} ${SH} mkimagebuilder.sh amd64 \
 TOOLDIR=${TOOLDIR_AMD64} OBJDIR=${OBJDIR} ${SH} mkliveimage.sh amd64 \
     || err 'mkliveimage.sh amd64'
 
+# build i386 RAW liveimage
+TOOLDIR=${TOOLDIR_I386} OBJDIR=${OBJDIR} ${SH} mkimagebuilder.sh i386 \
+    || err 'mkimagebuilder.sh i386'
+TOOLDIR=${TOOLDIR_I386} OBJDIR=${OBJDIR} ${SH} mkliveimage.sh i386 \
+    || err 'mkliveimage.sh i386'
+
 # setup amd64 RAW image
 echo Setting up amd64 RAW liveimage by QEMU...
 ${QEMU_X86_64} ${QEMU_OPT} \
