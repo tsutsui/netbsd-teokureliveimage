@@ -83,6 +83,10 @@
 
     </Tray>
 
+    <!-- Startup Commands -->
+    <!-- WiFi status in the tray icon -->
+    <StartupCommand>/usr/pkg/sbin/wpa_gui -t</StartupCommand>
+
     <!-- Visual Styles -->
     <WindowStyle>
 <!--

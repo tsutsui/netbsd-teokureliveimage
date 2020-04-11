@@ -29,7 +29,8 @@ if [ -r "$resources" ]; then
 fi
 
 # WiFi status in the tray icon
-/usr/pkg/sbin/wpa_gui -t &
+#  This is invoked via ~/.jwmrc
+#/usr/pkg/sbin/wpa_gui -t &
 
 # for webkit-gtk and adobe-flash-plugin
 #export MOZ_PLUGIN_PATH=/usr/pkg/lib/netscape/plugins
