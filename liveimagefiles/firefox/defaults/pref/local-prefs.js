@@ -2,7 +2,7 @@
 pref("intl.locale.requested", "");
 
 // Assume prefered languages to show pages per LANG
-pref("intl_accept_languages", "");
+pref("intl.accept_languages", "");
 
 // Enable Network Manager integration
 pref("network.manage-offline-status", true);
