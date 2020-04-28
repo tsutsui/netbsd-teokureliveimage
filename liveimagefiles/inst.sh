@@ -94,6 +94,10 @@ echo avahidaemon=NO			>> /etc/rc.conf
 # copy files for asound.conf
 #cp ${FILEDIR}/etc/asound.conf /etc
 
+# copy sample xorg.conf settings to workaround accelaration issue
+cp ${FILEDIR}/etc/xorg.conf.intel-uxa /etc/X11
+cp ${FILEDIR}/etc/xorg.conf.vesa /etc/X11
+
 echo "installing mozilla CA root certificates..."
 /usr/pkg/sbin/mozilla-rootcerts install
 
