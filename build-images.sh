@@ -136,13 +136,6 @@ ${QEMU_I386} ${QEMU_OPT} \
  -drive file=${WRK_I386_RAW}/${IMG_I386_RAW},index=1,media=disk,format=raw,cache=unsafe \
  -drive file=${WRK_SETUP}/${IMG_SETUP},index=2,media=disk,format=raw,cache=unsafe
 
-# setup i386 emulator/virtualbox/vmdk images
-echo Setting up i386 emulator liveimage by QEMU...
-${QEMU_I386} ${QEMU_OPT} \
- -drive file=${WRK_I386_QEMU}/${IMG_I386_QEMU},index=0,media=disk,format=raw,cache=unsafe \
- -drive file=${WRK_I386_RAW}/${IMG_I386_RAW},index=1,media=disk,format=raw,cache=unsafe \
- -drive file=${WRK_SETUP}/${IMG_SETUP},index=2,media=disk,format=raw,cache=unsafe
-
 echo Converting from raw image to vmdk...
 ${RM} -f ${VDIDIR}/${IMG_I386_VMDK}
 ${QEMU_IMG} convert -O vmdk \
