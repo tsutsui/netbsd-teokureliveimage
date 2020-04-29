@@ -1,5 +1,5 @@
 Section "Device"
 	Identifier "Intel Gen3 GPU workaround"
-#	Driver     "intel"
+	Driver     "intel"
         Option     "AccelMethod" "uxa"
 EndSection
