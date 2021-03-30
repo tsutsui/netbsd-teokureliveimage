@@ -33,6 +33,7 @@ PACKAGES=" \
 	droid-ttf \
 	unifont \
 	freefont-ttf \
+	twemoji-color-font-ttf \
 	jisx0212fonts jisx0213fonts \
 	jwm \
 	wm-icons \
