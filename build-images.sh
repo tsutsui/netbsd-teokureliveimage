@@ -65,19 +65,49 @@ TOOLDIR_AMD64=${NETBSDSRCDIR}/obj.amd64/${TOOLDIRNAME}
 #TOOLDIR_I386=/usr/tools/i386
 #TOOLDIR_AMD64=/usr/tools/x86_64
 
+# switch which vm image file are built
+MK_AMD64_VDI=yes
+MK_AMD64_VMDK=yes
+MK_I386_VDI=no
+MK_I386_VMDK=no
+
 # image file names
 IMAGEDIR=${CURDIR}/images/${REVISION}
 IMG_AMD64_QEMU=liveimage-amd64-qemu-${REVISION}.img
 IMG_AMD64_RAW=liveimage-amd64-raw-${REVISION}.img
+IMG_AMD64_VDI=liveimage-amd64-vbox-${REVISION}.vdi
+IMG_AMD64_VMDK=liveimage-amd64-vmdk-${REVISION}.vmdk
 IMG_I386_QEMU=liveimage-i386-qemu-${REVISION}.img
 IMG_I386_RAW=liveimage-i386-raw-${REVISION}.img
 IMG_I386_VDI=liveimage-i386-vbox-${REVISION}.vdi
 IMG_I386_VMDK=liveimage-i386-vmdk-${REVISION}.vmdk
 IMG_SETUP=setupliveimage-${REVISION}.fs
+if [ ${MK_AMD64_VDI} = "yes" ]; then
+  ZIP_AMD64_VDI=`basename ${IMG_AMD64_VDI} .vdi`.zip
+else
+  ZIP_AMD64_VDI=
+fi
+if [ ${MK_AMD64_VDI} = "yes" ]; then
+  ZIP_AMD64_VMDK=`basename ${IMG_AMD64_VMDK} .vmdk`.zip
+else
+  ZIP_AMD64_VMDK=
+fi
+if [ ${MK_I386_VDI} = "yes" ]; then
+  ZIP_I386_VDI=`basename ${IMG_I386_VDI} .vdi`.zip
+else
+  ZIP_I386_VDI=
+fi
+if [ ${MK_I386_VMDK} = "yes" ]; then
+  ZIP_I386_VMDK=`basename ${IMG_I386_VMDK} .vmdk`.zip
+else
+  ZIP_I386_VMDK=
+fi
 
 # image file build dir
 WRK_AMD64_QEMU=${OBJDIR}/work.amd64.qemu
 WRK_AMD64_RAW=${OBJDIR}/work.amd64.raw
+WRK_AMD64_VDI=${VDIDIR}
+WRK_AMD64_VMDK=${VMDKDIR}
 WRK_I386_QEMU=${OBJDIR}/work.i386.qemu
 WRK_I386_RAW=${OBJDIR}/work.i386.raw
 WRK_I386_VDI=${VDIDIR}
@@ -137,22 +167,36 @@ ${QEMU_I386} ${QEMU_OPT} \
  -drive file=${WRK_SETUP}/${IMG_SETUP},index=2,media=disk,format=raw,cache=unsafe
 
 echo Converting from raw image to vmdk...
-${RM} -f ${VDIDIR}/${IMG_I386_VMDK}
-${QEMU_IMG} convert -O vmdk \
- ${WRK_I386_RAW}/${IMG_I386_RAW} \
- ${VMDKDIR}/${IMG_I386_VMDK} \
-    || err ${QEMU_IMG}
+if [ ${MK_AMD64_VMDK} = "yes" ]; then
+  ${RM} -f ${VDIDIR}/${IMG_AMD64_VMDK}
+  ${QEMU_IMG} convert -O vmdk \
+   ${WRK_AMD64_RAW}/${IMG_AMD64_RAW} \
+   ${VMDKDIR}/${IMG_AMD64_VMDK} \
+      || err ${QEMU_IMG}
+fi
+if [ ${MK_I386_VMDK} = "yes" ]; then
+  ${RM} -f ${VDIDIR}/${IMG_I386_VMDK}
+  ${QEMU_IMG} convert -O vmdk \
+   ${WRK_I386_RAW}/${IMG_I386_RAW} \
+   ${VMDKDIR}/${IMG_I386_VMDK} \
+      || err ${QEMU_IMG}
+fi
 
 echo Converting from raw image to vdi...
-${RM} -f ${VDIDIR}/${IMG_I386_VDI}
-#LD_LIBRARY_PATH=${VBOXDIR}/usr/lib/virtualbox \
-# ${VBOXDIR}/usr/lib/virtualbox/VBoxManage convertfromraw --format VDI \
-# ${WRK_I386_RAW}/${IMG_I386_RAW} \
-# ${VDIDIR}/${IMG_I386_VDI}
-${VBOX_IMG} convert --srcformat RAW --dstformat VDI \
- --srcfilename ${WRK_I386_RAW}/${IMG_I386_RAW} \
- --dstfilename ${VDIDIR}/${IMG_I386_VDI} \
-    || err ${VBOX_IMG}
+if [ ${MK_AMD64_VDI} = "yes" ]; then
+  ${RM} -f ${VDIDIR}/${IMG_AMD64_VDI}
+  ${VBOX_IMG} convert --srcformat RAW --dstformat VDI \
+   --srcfilename ${WRK_AMD64_RAW}/${IMG_AMD64_RAW} \
+   --dstfilename ${VDIDIR}/${IMG_AMD64_VDI} \
+      || err ${VBOX_IMG}
+fi
+if [ ${MK_I386_VDI} = "yes" ]; then
+  ${RM} -f ${VDIDIR}/${IMG_I386_VDI}
+  ${VBOX_IMG} convert --srcformat RAW --dstformat VDI \
+   --srcfilename ${WRK_I386_RAW}/${IMG_I386_RAW} \
+   --dstfilename ${VDIDIR}/${IMG_I386_VDI} \
+      || err ${VBOX_IMG}
+fi
 
 # prepare compressed images for distribution
 
@@ -164,15 +208,33 @@ RAWMB=$((${IMAGEMB} - ${SWAPMB}))
 ${RM} -rf ${IMAGEDIR}
 ${MKDIR} -p ${IMAGEDIR}
 
-echo Compressing ${IMG_I386_VDI}...
-(cd ${VDIDIR} && \
- ${ZIP} -9 ${IMAGEDIR}/`basename ${IMG_I386_VDI} .vdi`.zip  \
-  ${IMG_I386_VDI})
+if [ ${MK_AMD64_VDI} = "yes" ]; then
+  echo Compressing ${IMG_AMD64_VDI}...
+  (cd ${VDIDIR} && \
+   ${ZIP} -9 ${IMAGEDIR}/`basename ${IMG_AMD64_VDI} .vdi`.zip  \
+    ${IMG_AMD64_VDI})
+fi
 
-echo Compressing liveimage-i386-vmdk-${REVISION}.vmdk...
-(cd ${VMDKDIR} && \
- ${ZIP} -9 ${IMAGEDIR}/`basename ${IMG_I386_VMDK} .vmdk`.zip  \
-  ${IMG_I386_VMDK})
+if [ ${MK_I386_VDI} = "yes" ]; then
+  echo Compressing ${IMG_I386_VDI}...
+  (cd ${VDIDIR} && \
+   ${ZIP} -9 ${IMAGEDIR}/`basename ${IMG_I386_VDI} .vdi`.zip  \
+    ${IMG_I386_VDI})
+fi
+
+if [ ${MK_AMD64_VMDK} = "yes" ]; then
+  echo Compressing ${IMG_AMD64_VMDK}...
+  (cd ${VMDKDIR} && \
+   ${ZIP} -9 ${IMAGEDIR}/`basename ${IMG_AMD64_VMDK} .vmdk`.zip  \
+    ${IMG_AMD64_VMDK})
+fi
+
+if [ ${MK_I386_VMDK} = "yes" ]; then
+  echo Compressing ${IMG_I386_VMDK} ...
+  (cd ${VMDKDIR} && \
+   ${ZIP} -9 ${IMAGEDIR}/`basename ${IMG_I386_VMDK} .vmdk`.zip  \
+    ${IMG_I386_VMDK})
+fi
 
 echo Compressing ${IMG_AMD64_RAW}...
 ${GZIP} -9c ${WRK_AMD64_RAW}/${IMG_AMD64_RAW} \
@@ -187,7 +249,8 @@ ${GZIP} -9c ${WRK_SETUP}/${IMG_SETUP} \
     > ${IMAGEDIR}/${IMG_SETUP}.gz
 
 echo Calculating distinfo...
-IMAGES="${IMG_AMD64_RAW}.gz ${IMG_I386_RAW}.gz `basename ${IMG_I386_VDI} .vdi`.zip `basename ${IMG_I386_VMDK} .vmdk`.zip ${IMG_SETUP}.gz"
+
+IMAGES="${IMG_AMD64_RAW}.gz ${IMG_I386_RAW}.gz ${ZIP_AMD64_VDI} ${ZIP_AMD64_VMDK} ${ZIP_I386_VDI} ${ZIP_I386_VMDK} ${IMG_SETUP}.gz"
 TARGET=distinfo
 
 rm -f ${IMAGEDIR}/${TARGET}
@@ -209,12 +272,31 @@ echo >> ${IMAGEDIR}/${TARGET}
 #  for ${IMG_I386_RAW}
  (cd ${WRK_I386_RAW} && ${WC} -c ${IMG_I386_RAW} | \
   LANG=ja_JP.UTF-8 ${AWK} '{printf "Size (%s) = %\047d bytes\n","'${IMG_I386_RAW}'",$1 }' >> ${IMAGEDIR}/${TARGET})
+
+if [ ${MK_AMD64_VDI} = "yes" ]; then
+#  for ${IMG_AMD64_VDI}
+ (cd ${WRK_AMD64_VDI} && ${WC} -c ${IMG_AMD64_VDI} | \
+  LANG=ja_JP.UTF-8 ${AWK} '{printf "Size (%s) = %\047d bytes\n","'${IMG_AMD64_VDI}'",$1 }' >> ${IMAGEDIR}/${TARGET})
+fi
+
+if [ ${MK_AMD64_VMDK} = "yes" ]; then
+#  for ${IMG_AMD64_VMDK}
+ (cd ${WRK_AMD64_VMDK} && ${WC} -c ${IMG_AMD64_VMDK} | \
+  LANG=ja_JP.UTF-8 ${AWK} '{printf "Size (%s) = %\047d bytes\n","'${IMG_AMD64_VMDK}'",$1 }' >> ${IMAGEDIR}/${TARGET})
+fi
+
+if [ ${MK_I386_VDI} = "yes" ]; then
 #  for ${IMG_I386_VDI}
  (cd ${WRK_I386_VDI} && ${WC} -c ${IMG_I386_VDI} | \
   LANG=ja_JP.UTF-8 ${AWK} '{printf "Size (%s) = %\047d bytes\n","'${IMG_I386_VDI}'",$1 }' >> ${IMAGEDIR}/${TARGET})
+fi
+
+if [ ${MK_I386_VMDK} = "yes" ]; then
 #  for ${IMG_I386_VMDK}
  (cd ${WRK_I386_VMDK} && ${WC} -c ${IMG_I386_VMDK} | \
   LANG=ja_JP.UTF-8 ${AWK} '{printf "Size (%s) = %\047d bytes\n","'${IMG_I386_VMDK}'",$1 }' >> ${IMAGEDIR}/${TARGET})
+fi
+
 #  for ${IMG_SETUP}
  (cd ${WRK_SETUP} && ${WC} -c ${IMG_SETUP} | \
   LANG=ja_JP.UTF-8 ${AWK} '{printf "Size (%s) = %\047d bytes\n","'${IMG_SETUP}'",$1 }' >> ${IMAGEDIR}/${TARGET})
