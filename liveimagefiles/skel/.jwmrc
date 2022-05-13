@@ -239,8 +239,8 @@
     <Key mask="A" key="Down">ddesktop</Key>
 
 <!--
-    <Key mask="C" key="period">prev</Key>
-    <Key mask="C" key="comma">next</Key>
+    <Key mask="C" key="comma">prev</Key>
+    <Key mask="C" key="period">next</Key>
  -->
 
     <Mouse context="root" button="4">ldesktop</Mouse>
