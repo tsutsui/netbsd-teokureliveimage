@@ -25,6 +25,7 @@ if [ -e ${CURDIR}/obj ]; then
 fi
 VDIDIR=${CURDIR}/vdi
 VMDKDIR=${CURDIR}/vmdk
+VHDXDIR=${CURDIR}/vhdx
 
 # host binaries
 AWK=/usr/pkg/bin/gawk	# GNU awk is necessary for "%'d" format
@@ -67,9 +68,11 @@ TOOLDIR_AMD64=${NETBSDSRCDIR}/obj.amd64/${TOOLDIRNAME}
 
 # switch which vm image file are built
 MK_AMD64_VDI=yes
-MK_AMD64_VMDK=yes
+MK_AMD64_VMDK=no
+MK_AMD64_VHDX=yes
 MK_I386_VDI=no
 MK_I386_VMDK=no
+MK_I386_VHDX=no
 
 # image file names
 IMAGEDIR=${CURDIR}/images/${REVISION}
@@ -77,20 +80,27 @@ IMG_AMD64_QEMU=liveimage-amd64-qemu-${REVISION}.img
 IMG_AMD64_RAW=liveimage-amd64-raw-${REVISION}.img
 IMG_AMD64_VDI=liveimage-amd64-vbox-${REVISION}.vdi
 IMG_AMD64_VMDK=liveimage-amd64-vmdk-${REVISION}.vmdk
+IMG_AMD64_VHDX=liveimage-amd64-vhdx-${REVISION}.vhdx
 IMG_I386_QEMU=liveimage-i386-qemu-${REVISION}.img
 IMG_I386_RAW=liveimage-i386-raw-${REVISION}.img
 IMG_I386_VDI=liveimage-i386-vbox-${REVISION}.vdi
 IMG_I386_VMDK=liveimage-i386-vmdk-${REVISION}.vmdk
+IMG_I386_VHDX=liveimage-i386-vhdx-${REVISION}.vhdx
 IMG_SETUP=setupliveimage-${REVISION}.fs
 if [ ${MK_AMD64_VDI} = "yes" ]; then
   ZIP_AMD64_VDI=`basename ${IMG_AMD64_VDI} .vdi`.zip
 else
   ZIP_AMD64_VDI=
 fi
-if [ ${MK_AMD64_VDI} = "yes" ]; then
+if [ ${MK_AMD64_VMDK} = "yes" ]; then
   ZIP_AMD64_VMDK=`basename ${IMG_AMD64_VMDK} .vmdk`.zip
 else
   ZIP_AMD64_VMDK=
+fi
+if [ ${MK_AMD64_VHDX} = "yes" ]; then
+  ZIP_AMD64_VHDX=`basename ${IMG_AMD64_VHDX} .vhdx`.zip
+else
+  ZIP_AMD64_VHDX=
 fi
 if [ ${MK_I386_VDI} = "yes" ]; then
   ZIP_I386_VDI=`basename ${IMG_I386_VDI} .vdi`.zip
@@ -102,16 +112,23 @@ if [ ${MK_I386_VMDK} = "yes" ]; then
 else
   ZIP_I386_VMDK=
 fi
+if [ ${MK_I386_VHDX} = "yes" ]; then
+  ZIP_I386_VHDX=`basename ${IMG_I386_VHDX} .vhdx`.zip
+else
+  ZIP_I386_VHDX=
+fi
 
 # image file build dir
 WRK_AMD64_QEMU=${OBJDIR}/work.amd64.qemu
 WRK_AMD64_RAW=${OBJDIR}/work.amd64.raw
 WRK_AMD64_VDI=${VDIDIR}
 WRK_AMD64_VMDK=${VMDKDIR}
+WRK_AMD64_VHDX=${VHDXDIR}
 WRK_I386_QEMU=${OBJDIR}/work.i386.qemu
 WRK_I386_RAW=${OBJDIR}/work.i386.raw
 WRK_I386_VDI=${VDIDIR}
 WRK_I386_VMDK=${VMDKDIR}
+WRK_I386_VHDX=${VHDXDIR}
 WRK_SETUP=${OBJDIR}/work.setupliveimage
 
 # check ${TOOLDIR}s
@@ -168,18 +185,34 @@ ${QEMU_I386} ${QEMU_OPT} \
 
 echo Converting from raw image to vmdk...
 if [ ${MK_AMD64_VMDK} = "yes" ]; then
-  ${RM} -f ${VDIDIR}/${IMG_AMD64_VMDK}
+  ${RM} -f ${VMDKDIR}/${IMG_AMD64_VMDK}
   ${QEMU_IMG} convert -O vmdk \
    ${WRK_AMD64_RAW}/${IMG_AMD64_RAW} \
    ${VMDKDIR}/${IMG_AMD64_VMDK} \
-      || err ${QEMU_IMG}
+      || err ${QEMU_IMG} ${IMG_AMD64_RAW}
 fi
 if [ ${MK_I386_VMDK} = "yes" ]; then
-  ${RM} -f ${VDIDIR}/${IMG_I386_VMDK}
+  ${RM} -f ${VMDKDIR}/${IMG_I386_VMDK}
   ${QEMU_IMG} convert -O vmdk \
    ${WRK_I386_RAW}/${IMG_I386_RAW} \
    ${VMDKDIR}/${IMG_I386_VMDK} \
-      || err ${QEMU_IMG}
+      || err ${QEMU_IMG} ${IMG_I386_VMDK}
+fi
+
+echo Converting from raw image to vhdx...
+if [ ${MK_AMD64_VHDX} = "yes" ]; then
+  ${RM} -f ${VHDXDIR}/${IMG_AMD64_VHDX}
+  ${QEMU_IMG} convert -O vhdx \
+   ${WRK_AMD64_RAW}/${IMG_AMD64_RAW} \
+   ${VHDXDIR}/${IMG_AMD64_VHDX} \
+      || err ${QEMU_IMG} ${IMG_AMD64_VHDX}
+fi
+if [ ${MK_I386_VHDX} = "yes" ]; then
+  ${RM} -f ${VHDXDIR}/${IMG_I386_VHDX}
+  ${QEMU_IMG} convert -O vhdx \
+   ${WRK_I386_RAW}/${IMG_I386_RAW} \
+   ${VHDXDIR}/${IMG_I386_VHDX} \
+      || err ${QEMU_IMG} ${IMG_I386_VHDX}
 fi
 
 echo Converting from raw image to vdi...
@@ -236,6 +269,20 @@ if [ ${MK_I386_VMDK} = "yes" ]; then
     ${IMG_I386_VMDK})
 fi
 
+if [ ${MK_AMD64_VHDX} = "yes" ]; then
+  echo Compressing ${IMG_AMD64_VHDX}...
+  (cd ${VHDXDIR} && \
+   ${ZIP} -9 ${IMAGEDIR}/`basename ${IMG_AMD64_VHDX} .vhdx`.zip  \
+    ${IMG_AMD64_VHDX})
+fi
+
+if [ ${MK_I386_VHDX} = "yes" ]; then
+  echo Compressing ${IMG_I386_VHDX} ...
+  (cd ${VHDXDIR} && \
+   ${ZIP} -9 ${IMAGEDIR}/`basename ${IMG_I386_VHDX} .vhdx`.zip  \
+    ${IMG_I386_VHDX})
+fi
+
 echo Compressing ${IMG_AMD64_RAW}...
 ${GZIP} -9c ${WRK_AMD64_RAW}/${IMG_AMD64_RAW} \
     > ${IMAGEDIR}/${IMG_AMD64_RAW}.gz
@@ -250,7 +297,7 @@ ${GZIP} -9c ${WRK_SETUP}/${IMG_SETUP} \
 
 echo Calculating distinfo...
 
-IMAGES="${IMG_AMD64_RAW}.gz ${IMG_I386_RAW}.gz ${ZIP_AMD64_VDI} ${ZIP_AMD64_VMDK} ${ZIP_I386_VDI} ${ZIP_I386_VMDK} ${IMG_SETUP}.gz"
+IMAGES="${IMG_AMD64_RAW}.gz ${IMG_I386_RAW}.gz ${ZIP_AMD64_VDI} ${ZIP_AMD64_VMDK} ${ZIP_AMD64_VHDX} ${ZIP_I386_VDI} ${ZIP_I386_VMDK} ${ZIP_I386_VHDX} ${IMG_SETUP}.gz"
 TARGET=distinfo
 
 rm -f ${IMAGEDIR}/${TARGET}
@@ -285,6 +332,12 @@ if [ ${MK_AMD64_VMDK} = "yes" ]; then
   LANG=ja_JP.UTF-8 ${AWK} '{printf "Size (%s) = %\047d bytes\n","'${IMG_AMD64_VMDK}'",$1 }' >> ${IMAGEDIR}/${TARGET})
 fi
 
+if [ ${MK_AMD64_VHDX} = "yes" ]; then
+#  for ${IMG_AMD64_VHDX}
+ (cd ${WRK_AMD64_VHDX} && ${WC} -c ${IMG_AMD64_VHDX} | \
+  LANG=ja_JP.UTF-8 ${AWK} '{printf "Size (%s) = %\047d bytes\n","'${IMG_AMD64_VHDX}'",$1 }' >> ${IMAGEDIR}/${TARGET})
+fi
+
 if [ ${MK_I386_VDI} = "yes" ]; then
 #  for ${IMG_I386_VDI}
  (cd ${WRK_I386_VDI} && ${WC} -c ${IMG_I386_VDI} | \
@@ -295,6 +348,12 @@ if [ ${MK_I386_VMDK} = "yes" ]; then
 #  for ${IMG_I386_VMDK}
  (cd ${WRK_I386_VMDK} && ${WC} -c ${IMG_I386_VMDK} | \
   LANG=ja_JP.UTF-8 ${AWK} '{printf "Size (%s) = %\047d bytes\n","'${IMG_I386_VMDK}'",$1 }' >> ${IMAGEDIR}/${TARGET})
+fi
+
+if [ ${MK_I386_VHDX} = "yes" ]; then
+#  for ${IMG_I386_VHDX}
+ (cd ${WRK_I386_VHDX} && ${WC} -c ${IMG_I386_VHDX} | \
+  LANG=ja_JP.UTF-8 ${AWK} '{printf "Size (%s) = %\047d bytes\n","'${IMG_I386_VHDX}'",$1 }' >> ${IMAGEDIR}/${TARGET})
 fi
 
 #  for ${IMG_SETUP}
