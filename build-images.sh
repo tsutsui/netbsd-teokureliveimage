@@ -48,8 +48,6 @@ QEMU_OPT="-m 1024 -nographic"
 
 # qemu and virtual box binaries to convert images
 QEMU_IMG=/usr/pkg/bin/qemu-img
-VBOXDIR=${CURDIR}/vbox
-VBOX_IMG=${VBOXDIR}/vbox-img
 
 # tooldir settings
 _HOST_OSNAME=`uname -s`
@@ -146,7 +144,7 @@ if [ ! -x ${TOOLDIR_AMD64}/bin/nbmake-amd64 ]; then
 fi
 
 # check required build tools are installed
-TOOLS="${AWK} ${GZIP} ${MD5} ${WC} ${ZIP} ${QEMU_I386} ${QEMU_X86_64} ${QEMU_IMG} ${VBOX_IMG}"
+TOOLS="${AWK} ${GZIP} ${MD5} ${WC} ${ZIP} ${QEMU_I386} ${QEMU_X86_64} ${QEMU_IMG}"
 for tool in ${TOOLS}; do
 	if [ ! -x ${tool} ]; then
 		err 'checking installed binary ${tool}'
@@ -218,17 +216,17 @@ fi
 echo Converting from raw image to vdi...
 if [ ${MK_AMD64_VDI} = "yes" ]; then
   ${RM} -f ${VDIDIR}/${IMG_AMD64_VDI}
-  ${VBOX_IMG} convert --srcformat RAW --dstformat VDI \
-   --srcfilename ${WRK_AMD64_RAW}/${IMG_AMD64_RAW} \
-   --dstfilename ${VDIDIR}/${IMG_AMD64_VDI} \
-      || err ${VBOX_IMG}
+  ${QEMU_IMG} convert -O vdi \
+   ${WRK_AMD64_RAW}/${IMG_AMD64_RAW} \
+   ${VDIDIR}/${IMG_AMD64_VDI} \
+      || err ${QEMU_IMG} ${IMG_AMD64_VDI}
 fi
 if [ ${MK_I386_VDI} = "yes" ]; then
   ${RM} -f ${VDIDIR}/${IMG_I386_VDI}
-  ${VBOX_IMG} convert --srcformat RAW --dstformat VDI \
-   --srcfilename ${WRK_I386_RAW}/${IMG_I386_RAW} \
-   --dstfilename ${VDIDIR}/${IMG_I386_VDI} \
-      || err ${VBOX_IMG}
+  ${QEMU_IMG} convert -O vdi \
+   ${WRK_I386_RAW}/${IMG_I386_RAW} \
+   ${VDIDIR}/${IMG_I386_VDI} \
+      || err ${QEMU_IMG} ${IMG_I386_VDI}
 fi
 
 # prepare compressed images for distribution
