@@ -181,8 +181,8 @@ ${QEMU_I386} ${QEMU_OPT} \
  -drive file=${WRK_I386_RAW}/${IMG_I386_RAW},index=1,media=disk,format=raw,cache=unsafe \
  -drive file=${WRK_SETUP}/${IMG_SETUP},index=2,media=disk,format=raw,cache=unsafe
 
-echo Converting from raw image to vmdk...
 if [ ${MK_AMD64_VMDK} = "yes" ]; then
+  echo Converting from amd64 raw image to vmdk...
   ${RM} -f ${VMDKDIR}/${IMG_AMD64_VMDK}
   ${QEMU_IMG} convert -O vmdk \
    ${WRK_AMD64_RAW}/${IMG_AMD64_RAW} \
@@ -190,6 +190,7 @@ if [ ${MK_AMD64_VMDK} = "yes" ]; then
       || err ${QEMU_IMG} ${IMG_AMD64_RAW}
 fi
 if [ ${MK_I386_VMDK} = "yes" ]; then
+  echo Converting from i386 raw image to vmdk...
   ${RM} -f ${VMDKDIR}/${IMG_I386_VMDK}
   ${QEMU_IMG} convert -O vmdk \
    ${WRK_I386_RAW}/${IMG_I386_RAW} \
@@ -197,8 +198,8 @@ if [ ${MK_I386_VMDK} = "yes" ]; then
       || err ${QEMU_IMG} ${IMG_I386_VMDK}
 fi
 
-echo Converting from raw image to vhdx...
 if [ ${MK_AMD64_VHDX} = "yes" ]; then
+  echo Converting from amd64 raw image to vhdx...
   ${RM} -f ${VHDXDIR}/${IMG_AMD64_VHDX}
   ${QEMU_IMG} convert -O vhdx \
    ${WRK_AMD64_RAW}/${IMG_AMD64_RAW} \
@@ -206,6 +207,7 @@ if [ ${MK_AMD64_VHDX} = "yes" ]; then
       || err ${QEMU_IMG} ${IMG_AMD64_VHDX}
 fi
 if [ ${MK_I386_VHDX} = "yes" ]; then
+  echo Converting from i386 raw image to vhdx...
   ${RM} -f ${VHDXDIR}/${IMG_I386_VHDX}
   ${QEMU_IMG} convert -O vhdx \
    ${WRK_I386_RAW}/${IMG_I386_RAW} \
@@ -213,8 +215,8 @@ if [ ${MK_I386_VHDX} = "yes" ]; then
       || err ${QEMU_IMG} ${IMG_I386_VHDX}
 fi
 
-echo Converting from raw image to vdi...
 if [ ${MK_AMD64_VDI} = "yes" ]; then
+  echo Converting from amd64 raw image to vdi...
   ${RM} -f ${VDIDIR}/${IMG_AMD64_VDI}
   ${QEMU_IMG} convert -O vdi \
    ${WRK_AMD64_RAW}/${IMG_AMD64_RAW} \
@@ -222,6 +224,7 @@ if [ ${MK_AMD64_VDI} = "yes" ]; then
       || err ${QEMU_IMG} ${IMG_AMD64_VDI}
 fi
 if [ ${MK_I386_VDI} = "yes" ]; then
+  echo Converting from i386 raw image to vdi...
   ${RM} -f ${VDIDIR}/${IMG_I386_VDI}
   ${QEMU_IMG} convert -O vdi \
    ${WRK_I386_RAW}/${IMG_I386_RAW} \
@@ -242,42 +245,42 @@ ${MKDIR} -p ${IMAGEDIR}
 if [ ${MK_AMD64_VDI} = "yes" ]; then
   echo Compressing ${IMG_AMD64_VDI}...
   (cd ${VDIDIR} && \
-   ${ZIP} -9 ${IMAGEDIR}/`basename ${IMG_AMD64_VDI} .vdi`.zip  \
+   ${ZIP} -9 ${IMAGEDIR}/${ZIP_AMD64_VDI} \
     ${IMG_AMD64_VDI})
 fi
 
 if [ ${MK_I386_VDI} = "yes" ]; then
   echo Compressing ${IMG_I386_VDI}...
   (cd ${VDIDIR} && \
-   ${ZIP} -9 ${IMAGEDIR}/`basename ${IMG_I386_VDI} .vdi`.zip  \
+   ${ZIP} -9 ${IMAGEDIR}/${ZIP_I386_VDI} \
     ${IMG_I386_VDI})
 fi
 
 if [ ${MK_AMD64_VMDK} = "yes" ]; then
   echo Compressing ${IMG_AMD64_VMDK}...
   (cd ${VMDKDIR} && \
-   ${ZIP} -9 ${IMAGEDIR}/`basename ${IMG_AMD64_VMDK} .vmdk`.zip  \
+   ${ZIP} -9 ${IMAGEDIR}/${ZIP_AMD64_VMDK} \
     ${IMG_AMD64_VMDK})
 fi
 
 if [ ${MK_I386_VMDK} = "yes" ]; then
   echo Compressing ${IMG_I386_VMDK} ...
   (cd ${VMDKDIR} && \
-   ${ZIP} -9 ${IMAGEDIR}/`basename ${IMG_I386_VMDK} .vmdk`.zip  \
+   ${ZIP} -9 ${IMAGEDIR}/${ZIP_I386_VMDK} \
     ${IMG_I386_VMDK})
 fi
 
 if [ ${MK_AMD64_VHDX} = "yes" ]; then
   echo Compressing ${IMG_AMD64_VHDX}...
   (cd ${VHDXDIR} && \
-   ${ZIP} -9 ${IMAGEDIR}/`basename ${IMG_AMD64_VHDX} .vhdx`.zip  \
+   ${ZIP} -9 ${IMAGEDIR}/${ZIP_AMD64_VHDX} \
     ${IMG_AMD64_VHDX})
 fi
 
 if [ ${MK_I386_VHDX} = "yes" ]; then
   echo Compressing ${IMG_I386_VHDX} ...
   (cd ${VHDXDIR} && \
-   ${ZIP} -9 ${IMAGEDIR}/`basename ${IMG_I386_VHDX} .vhdx`.zip  \
+   ${ZIP} -9 ${IMAGEDIR}/${ZIP_I386_VHDX} \
     ${IMG_I386_VHDX})
 fi
 
