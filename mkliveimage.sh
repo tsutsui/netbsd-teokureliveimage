@@ -102,6 +102,8 @@ fi
 # tooldir settings
 #
 #NETBSDSRCDIR=/usr/src
+CURDIR=`pwd`
+NETBSDSRCDIR=${CURDIR}/src
 #TOOLDIR=/usr/tools/${MACHINE_ARCH}
 
 if [ -z ${NETBSDSRCDIR} ]; then
@@ -120,7 +122,7 @@ if [ -z ${TOOLDIR} ]; then
 fi
 
 if [ ! -d ${TOOLDIR} ]; then
-	echo 'set TOOLDIR first'; exit 1
+	echo "set TOOLDIR first (${TOOLDIR})"; exit 1
 fi
 if [ ! -x ${TOOLDIR}/bin/nbmake-${MACHINE} ]; then
 	echo 'build tools in ${TOOLDIR} first'; exit 1
@@ -133,11 +135,10 @@ fi
 #FTPHOST=ftp.jp.NetBSD.org
 #FTPHOST=ftp7.jp.NetBSD.org
 FTPHOST=cdn.NetBSD.org
-#FTPHOST=nyftp.NetBSD.org
-RELEASE=9.3
+#FTPHOST=nycdn.NetBSD.org
+RELEASE=10.0_RC1
 RELEASEDIR=pub/NetBSD/NetBSD-${RELEASE}
-#RELEASEDIR=pub/NetBSD-daily/netbsd-7/201507032200Z
-#RELEASEDIR=pub/NetBSD-daily/netbsd-8/201711301510Z
+#RELEASEDIR=pub/NetBSD-daily/netbsd-10/latest
 
 #
 # misc build settings
@@ -214,7 +215,7 @@ echo creating ${IMAGE_TYPE} image for ${MACHINE}...
 # get binary sets
 #
 URL_SETS=http://${FTPHOST}/${RELEASEDIR}/${MACHINE}/binary/sets
-SETS="${KERN_SET} modules base rescue etc comp games man misc tests text xbase xcomp xetc xfont xserver ${EXTRA_SETS}"
+SETS="${KERN_SET} modules base rescue etc comp games gpufw man misc tests text xbase xcomp xetc xfont xserver ${EXTRA_SETS}"
 #SETS="${KERN_SET} modules base rescue etc comp ${EXTRA_SETS}"
 #SETS="${KERN_SET} base rescue etc comp games man misc tests text xbase xcomp xetc xfont xserver ${EXTRA_SETS}"
 #SETS="${KERN_SET} base rescue etc comp ${EXTRA_SETS}"
