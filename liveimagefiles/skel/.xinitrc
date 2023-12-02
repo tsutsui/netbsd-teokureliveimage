@@ -32,9 +32,6 @@ fi
 #  This is invoked via ~/.jwmrc
 #/usr/pkg/sbin/wpa_gui -t &
 
-# for webkit-gtk and adobe-flash-plugin
-#export MOZ_PLUGIN_PATH=/usr/pkg/lib/netscape/plugins
-
 # iBus
 if [ ! -f ${HOME}/.config/dconf/user ]; then
 	# set mozc-jp as the default inputmethod
