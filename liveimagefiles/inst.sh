@@ -45,7 +45,6 @@ PACKAGES=" \
 	kterm mlterm \
 	git-base \
 	${RUBY_PKGPREFIX}-mikutter \
-	${RUBY_PKGPREFIX}-mikutter-plugins-twitter \
 	sayaka \
 	nanotodon \
 	mozilla-rootcerts \
