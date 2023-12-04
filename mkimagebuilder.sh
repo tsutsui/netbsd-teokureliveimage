@@ -190,7 +190,7 @@ IMAGE=${WORKDIR}/liveimage-${MACHINE}-${IMAGE_TYPE}-${REVISION}.img
 #
 # target image size settings
 #
-IMAGEMB=300			# minimum
+IMAGEMB=320			# minimum
 IMAGESECTORS=$((${IMAGEMB} * 1024 * 1024 / 512))
 # no swap
 
@@ -271,7 +271,7 @@ export PATH=/sbin:/usr/sbin:/bin:/usr/bin:/usr/pkg/sbin:/usr/pkg/bin
 export PATH=\${PATH}:/usr/X11R7/bin:/usr/local/sbin:/usr/local/bin
 set -o emacs
 stty erase ^H
-mount -o async /dev/wd1a /targetroot
+mount -o async /dev/dk1 /targetroot || mount -o async /dev/wd1a /targetroot
 mount -r /dev/wd2a /targetroot/mnt
 chroot /targetroot /bin/sh /mnt/inst.sh
 IFNAME=\`ifconfig -l | awk '{print \$1}'\`
