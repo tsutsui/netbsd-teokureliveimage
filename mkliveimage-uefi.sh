@@ -242,6 +242,10 @@ WORKIMG=${WORKDIR}/work.img
 WORKFSTAB=${WORKDIR}/work.fstab
 WORKSPEC=${WORKDIR}/work.spec
 
+# GPT label names for fstab(5)
+GPTROOTLABEL=${DISKNAME}_root
+GPTSWAPLABEL=${DISKNAME}_swap
+
 echo creating ${IMAGE_TYPE} image for ${MACHINE}...
 
 echo Removing ${WORKDIR}...
@@ -291,9 +295,11 @@ if [ "${USE_GPT}" = "yes" ]; then
 	    || err ${DD}
 	${TOOL_GPT} ${WORKMBR} create
 	${TOOL_GPT} ${WORKMBR} add -a 1m -s ${EFISECTORS} -t efi -l "EFI system"
-	${TOOL_GPT} ${WORKMBR} add -a 1m -s ${FSSECTORS} -t ffs
+	${TOOL_GPT} ${WORKMBR} add -a 1m -s ${FSSECTORS} \
+	    -t ffs -l ${GPTROOTLABEL}
 	if [ "${OMIT_SWAPIMG}x" != "yesx" ]; then
-		${TOOL_GPT} ${WORKMBR} add -a 1m -s ${SWAPSECTORS} -t swap
+		${TOOL_GPT} ${WORKMBR} add -a 1m -s ${SWAPSECTORS} \
+		    -t swap -l ${GPTSWAPLABEL}
 	fi
 	${DD} if=${WORKMBR} of=${WORKMBRTRUNC} count=${LABELSECTORS} \
 	    || err ${DD}
@@ -339,13 +345,9 @@ tmpfs		/var/shm	tmpfs	rw,-sram%25	0 0
 EOF
 
 if [ "${USE_GPT}" = "yes" ]; then
-	BOOTDISK_UUID=`${TOOL_GPT} ${WORKMBR} show -i 2 | \
-		${TOOL_AWK} '/^GUID/ {print $2}'`
-	SWAPDISK_UUID=`${TOOL_GPT} ${WORKMBR} show -i 3 | \
-		${TOOL_AWK} '/^GUID/ {print $2}'`
 	${TOOL_SED} \
-		-e "s/ROOT.a/NAME=${BOOTDISK_UUID}/"			\
-		-e "s/ROOT.b/NAME=${SWAPDISK_UUID}/"			\
+		-e "s/ROOT.a/ROOT./"					\
+		-e "s/ROOT.b/NAME=${GPTSWAPLABEL}/"			\
 		< ${WORKFSTAB} > ${TARGETROOTDIR}/etc/fstab
 else
 	${CP} ${WORKFSTAB}  ${TARGETROOTDIR}/etc/fstab
