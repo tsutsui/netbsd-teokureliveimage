@@ -291,9 +291,9 @@ if [ "${USE_GPT}" = "yes" ]; then
 	    || err ${DD}
 	${TOOL_GPT} ${WORKMBR} create
 	${TOOL_GPT} ${WORKMBR} add -a 1m -s ${EFISECTORS} -t efi -l "EFI system"
-        ${TOOL_GPT} ${WORKMBR} add -a 1m -s ${FSSECTORS} -t ffs
+	${TOOL_GPT} ${WORKMBR} add -a 1m -s ${FSSECTORS} -t ffs
 	if [ "${OMIT_SWAPIMG}x" != "yesx" ]; then
-        	${TOOL_GPT} ${WORKMBR} add -a 1m -s ${SWAPSECTORS} -t swap
+		${TOOL_GPT} ${WORKMBR} add -a 1m -s ${SWAPSECTORS} -t swap
 	fi
 	${DD} if=${WORKMBR} of=${WORKMBRTRUNC} count=${LABELSECTORS} \
 	    || err ${DD}
@@ -422,8 +422,8 @@ if [ "${USE_GPT}" = "yes" ]; then
 	${CP} ${TARGETROOTDIR}/usr/mdec/bootia32.efi ${WORKEFIDIR}/EFI/boot
 	${RM} -f ${WORKEFI}
 	${TOOL_MAKEFS} -M ${EFISIZE} -m ${EFISIZE} \
-            -B ${TARGET_ENDIAN} -t msdos -o fat_type=32,sectors_per_cluster=1 \
-            ${WORKEFI} ${WORKEFIDIR} \
+	    -B ${TARGET_ENDIAN} -t msdos -o fat_type=32,sectors_per_cluster=1 \
+	    ${WORKEFI} ${WORKEFIDIR} \
 	    || err ${TOOL_MAKEFS}
 fi
 
