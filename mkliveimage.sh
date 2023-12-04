@@ -193,9 +193,15 @@ IMAGE=${WORKDIR}/liveimage-${MACHINE}-${IMAGE_TYPE}-${REVISION}.img
 # target image size settings
 #
 IMAGEMB=5120			# 5120MB (4GB isn't enough for 8.0 + 2018Q2)
-EFIMB=36			# min size of FAT32 (recommended for sanity)
 SWAPMB=512			# 512MB
-GPTMB=1				# 1MB (for the secondary GPT table/header)
+
+if [ "${USE_GPT}" = "yes" ]; then
+	EFIMB=36		# min size of FAT32 (recommended for sanity)
+	GPTMB=1			# 1MB (for the secondary GPT table/header)
+else
+	EFIMB=0
+	GPTMB=0
+fi
 
 IMAGESECTORS=$((${IMAGEMB} * 1024 * 1024 / 512))
 EFISIZE=$((${EFIMB} * 1024 * 1024))
