@@ -78,6 +78,7 @@ if [ "${MACHINE}" = "amd64" ]; then
  PRIMARY_BOOT=bootxx_ffsv1
  SECONDARY_BOOT=boot
  SECONDARY_BOOT_ARG= # nothing
+ EFIBOOT="bootx64.efi bootia32.efi"
 fi
 
 if [ "${MACHINE}" = "i386" ]; then
@@ -95,6 +96,7 @@ if [ "${MACHINE}" = "i386" ]; then
  PRIMARY_BOOT=bootxx_ffsv1
  SECONDARY_BOOT=boot
  SECONDARY_BOOT_ARG= # nothing
+ EFIBOOT="bootx64.efi bootia32.efi"
 fi
 
 if [ -z ${MACHINE_ARCH} ]; then
@@ -421,8 +423,9 @@ if [ "${USE_GPT}" = "yes" ]; then
 	${RM} -rf ${WORKEFIDIR}
 	${MKDIR} -p ${WORKEFIDIR}
 	${MKDIR} -p ${WORKEFIDIR}/EFI/boot
-	${CP} ${TARGETROOTDIR}/usr/mdec/bootx64.efi ${WORKEFIDIR}/EFI/boot
-	${CP} ${TARGETROOTDIR}/usr/mdec/bootia32.efi ${WORKEFIDIR}/EFI/boot
+	for boot in ${EFIBOOT}; do
+		${CP} ${TARGETROOTDIR}/usr/mdec/${boot} ${WORKEFIDIR}/EFI/boot
+	done
 	${RM} -f ${WORKEFI}
 	${TOOL_MAKEFS} -M ${EFISIZE} -m ${EFISIZE} \
 	    -B ${TARGET_ENDIAN} -t msdos -o fat_type=32,sectors_per_cluster=1 \
