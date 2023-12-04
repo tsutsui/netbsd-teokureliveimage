@@ -22,12 +22,12 @@
 # (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 # THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-BOOTDISK=`dmesg -t | sed -n -e '/^boot device: /s/.*: //p' | tail -1`
+BOOTDISK=$(dmesg -t | sed -n -e '/^boot device: /s/.*: //p' | tail -1)
 
 echo Start expanding fs size upto the actual disk size...
 
 # make sure we are on ${BOOTDISK} on root
-ROOTDEV=`sysctl -n kern.root_device`
+ROOTDEV=$(sysctl -n kern.root_device)
 if [ "${ROOTDEV}"X != ${BOOTDISK}X ] ; then
 	echo Error: root file system device is not ${BOOTDISK}
 	exit 1
@@ -48,7 +48,7 @@ fi
 disklabel -r ${BOOTDISK} > /tmp/disklabel.${BOOTDISK}
 
 # check disk name in disklabel
-DISKNAME=`sed -n -e '/^disk: /s/.*: //p' /tmp/disklabel.${BOOTDISK}`
+DISKNAME=$(sed -n -e '/^disk: /s/.*: //p' /tmp/disklabel.${BOOTDISK})
 if [ "${DISKNAME}"X != "TeokureLiveImage"X ]; then
 	echo Error: unexpected disk name: ${DISKNAME}
 	exit 1
@@ -81,7 +81,7 @@ if [ ${PART0END} -ne ${ORIGIMAGESECTORS} ]; then
 fi
 
 # check original image size in label
-TOTALSECTORS=`sed -n -e '/^total sectors: /s/.*: //p' /tmp/disklabel.${BOOTDISK}`
+TOTALSECTORS=$(sed -n -e '/^total sectors: /s/.*: //p' /tmp/disklabel.${BOOTDISK})
 if [ ${TOTALSECTORS} -ne ${ORIGIMAGESECTORS} ]; then
 	echo Error: unexpected total sectors in disklabel: ${TOTALSECTORS}
 	echo Expected original total sectors: ${ORIGIMAGESECTORS}
@@ -89,13 +89,13 @@ if [ ${TOTALSECTORS} -ne ${ORIGIMAGESECTORS} ]; then
 fi
 
 # get actual disk size from dmesg
-BOOTDISKDMSG=`dmesg -t | grep "^${BOOTDISK}: .* sectors$" | tail -1`
+BOOTDISKDMSG=$(dmesg -t | grep "^${BOOTDISK}: .* sectors$" | tail -1)
 if [ "${BOOTDISKDMSG}"X = "X" ]; then
 	echo Error: cannot find ${BOOTDISK} in dmesg
 	exit 1
 fi
 
-IMAGESECTORS=`echo ${BOOTDISKDMSG} | awk '{print $(NF-1)}'`
+IMAGESECTORS=$(echo ${BOOTDISKDMSG} | awk '{print $(NF-1)}')
 
 echo Original image size: ${ORIGIMAGESECTORS} sectors
 echo Target ${BOOTDISK} disk size: ${IMAGESECTORS} sectors
