@@ -70,12 +70,16 @@ if [ "${MACHINE}" = "amd64" ]; then
  KERN_SET=kern-GENERIC
  SUFFIX_SETS=tar.xz
  EXTRA_SETS= # nothing
- USE_MBR=yes
+ #USE_MBR=yes
+ USE_MBR=no
+ USE_GPT=yes
+ USE_GPTMBR=yes
  OMIT_SWAPIMG=no	# include swap partition in output image for emulators
  RTC_LOCALTIME=yes	# use rtclocaltime=YES in rc.d(8) for Windows machines
  PRIMARY_BOOT=bootxx_ffsv1
  SECONDARY_BOOT=boot
  SECONDARY_BOOT_ARG= # nothing
+ EFIBOOT="bootx64.efi bootia32.efi"
 fi
 
 if [ "${MACHINE}" = "i386" ]; then
@@ -86,15 +90,24 @@ if [ "${MACHINE}" = "i386" ]; then
  SUFFIX_SETS=tgz
  EXTRA_SETS= # nothing
  USE_MBR=yes
+ #USE_MBR=no
+ #USE_GPT=yes
+ #USE_GPTMBR=yes
  OMIT_SWAPIMG=no	# include swap partition in output image for emulators
  RTC_LOCALTIME=yes	# use rtclocaltime=YES in rc.d(8) for Windows machines
  PRIMARY_BOOT=bootxx_ffsv1
  SECONDARY_BOOT=boot
  SECONDARY_BOOT_ARG= # nothing
+ EFIBOOT="bootx64.efi bootia32.efi"
 fi
 
 if [ -z ${MACHINE_ARCH} ]; then
 	echo "Unsupported MACHINE (${MACHINE})"
+	exit 1
+fi
+
+if [ "${USE_GPT}" = "yes" ] && [ "${OMIT_SWAPIMG}" = "yes" ]; then
+	echo "Cannot omit swap if USE_GPT=yes"
 	exit 1
 fi
 
@@ -145,8 +158,10 @@ RELEASEDIR=pub/NetBSD/NetBSD-${RELEASE}
 #
 
 # tools binaries
+TOOL_AWK=${TOOLDIR}/bin/nbawk
 TOOL_DISKLABEL=${TOOLDIR}/bin/nbdisklabel
 TOOL_FDISK=${TOOLDIR}/bin/${MACHINE_GNU_PLATFORM}-fdisk
+TOOL_GPT=${TOOLDIR}/bin/nbgpt
 TOOL_INSTALLBOOT=${TOOLDIR}/bin/nbinstallboot
 TOOL_MAKEFS=${TOOLDIR}/bin/nbmakefs
 TOOL_SED=${TOOLDIR}/bin/nbsed
@@ -178,19 +193,25 @@ IMAGE=${WORKDIR}/liveimage-${MACHINE}-${IMAGE_TYPE}-${REVISION}.img
 # target image size settings
 #
 IMAGEMB=5120			# 5120MB (4GB isn't enough for 8.0 + 2018Q2)
+EFIMB=36			# min size of FAT32 (recommended for sanity)
 SWAPMB=512			# 512MB
+GPTMB=1				# 1MB (for the secondary GPT table/header)
+
 IMAGESECTORS=$((${IMAGEMB} * 1024 * 1024 / 512))
+EFISIZE=$((${EFIMB} * 1024 * 1024))
+EFISECTORS=$((${EFISIZE} / 512))
+GPTSECTORS=$((${GPTMB} * 1024 * 1024 / 512))
 SWAPSECTORS=$((${SWAPMB} * 1024 * 1024 / 512))
 
 LABELSECTORS=0
-if [ "${USE_MBR}" = "yes" ]; then
+if [ "${USE_MBR}" = "yes" ] || [ "${USE_GPT}" = "yes" ]; then
 #	LABELSECTORS=63		# historical
 #	LABELSECTORS=32		# aligned
 	LABELSECTORS=2048	# align 1MiB for modern flash
 fi
-BSDPARTSECTORS=$((${IMAGESECTORS} - ${LABELSECTORS}))
-FSSECTORS=$((${IMAGESECTORS} - ${SWAPSECTORS} - ${LABELSECTORS}))
-FSOFFSET=${LABELSECTORS}
+BSDPARTSECTORS=$((${IMAGESECTORS} - ${LABELSECTORS} - ${EFISECTORS} - ${GPTSECTORS}))
+FSSECTORS=$((${IMAGESECTORS} - ${SWAPSECTORS} - ${LABELSECTORS} - ${EFISECTORS} - ${GPTSECTORS}))
+FSOFFSET=$((${LABELSECTORS} + ${EFISECTORS}))
 SWAPOFFSET=$((${LABELSECTORS} + ${FSSECTORS}))
 FSSIZE=$((${FSSECTORS} * 512))
 HEADS=64
@@ -214,6 +235,9 @@ DENSITY=8192
 WORKMBR=${WORKDIR}/work.mbr
 WORKMBRTRUNC=${WORKDIR}/work.mbr.truncated
 WORKSWAP=${WORKDIR}/work.swap
+WORKEFI=${WORKDIR}/work.efi
+WORKEFIDIR=${WORKDIR}/work.efidir
+WORKGPT=${WORKDIR}/work.gpt
 WORKFS=${WORKDIR}/work.rootfs
 WORKLABEL=${WORKDIR}/work.diskproto
 WORKIMG=${WORKDIR}/work.img
@@ -221,6 +245,10 @@ WORKIMG=${WORKDIR}/work.img
 # temprary work files for rootfs
 WORKFSTAB=${WORKDIR}/work.fstab
 WORKSPEC=${WORKDIR}/work.spec
+
+# GPT label names for fstab(5)
+GPTROOTLABEL=${DISKNAME}_root
+GPTSWAPLABEL=${DISKNAME}_swap
 
 echo creating ${IMAGE_TYPE} image for ${MACHINE}...
 
@@ -263,6 +291,27 @@ if [ "${USE_MBR}" = "yes" ]; then
 	    || err ${DD}
 fi
 
+# prepare the primary and secondary GPT partition
+if [ "${USE_GPT}" = "yes" ]; then
+	echo creating GPT headers and tables...
+	${DD} if=/dev/zero of=${WORKMBR} count=1 \
+	    seek=$((${IMAGESECTORS} - 1)) \
+	    || err ${DD}
+	${TOOL_GPT} ${WORKMBR} create
+	${TOOL_GPT} ${WORKMBR} add -a 1m -s ${EFISECTORS} -t efi -l "EFI system"
+	${TOOL_GPT} ${WORKMBR} add -a 1m -s ${FSSECTORS} \
+	    -t ffs -l ${GPTROOTLABEL}
+	if [ "${OMIT_SWAPIMG}x" != "yesx" ]; then
+		${TOOL_GPT} ${WORKMBR} add -a 1m -s ${SWAPSECTORS} \
+		    -t swap -l ${GPTSWAPLABEL}
+	fi
+	${DD} if=${WORKMBR} of=${WORKMBRTRUNC} count=${LABELSECTORS} \
+	    || err ${DD}
+	${DD} if=${WORKMBR} of=${WORKGPT} \
+	    skip=$((${IMAGESECTORS} - ${GPTSECTORS})) count=${GPTSECTORS} \
+	    || err ${DD}
+fi
+
 #
 # create targetroot
 #
@@ -298,7 +347,15 @@ procfs		/proc		procfs	rw		0 0
 tmpfs		/tmp		tmpfs	rw,-s=128M	0 0
 tmpfs		/var/shm	tmpfs	rw,-sram%25	0 0
 EOF
-${CP} ${WORKFSTAB}  ${TARGETROOTDIR}/etc/fstab
+
+if [ "${USE_GPT}" = "yes" ]; then
+	${TOOL_SED} \
+		-e "s/ROOT.a/ROOT./"					\
+		-e "s/ROOT.b/NAME=${GPTSWAPLABEL}/"			\
+		< ${WORKFSTAB} > ${TARGETROOTDIR}/etc/fstab
+else
+	${CP} ${WORKFSTAB}  ${TARGETROOTDIR}/etc/fstab
+fi
 
 echo Setting liveimage specific configurations in /etc/rc.conf...
 ${CAT} ${TARGETROOTDIR}/etc/rc.conf | \
@@ -337,6 +394,7 @@ if [ ${HAVE_EXPANDFS_SCRIPT}x = "yesx" ]; then
 		-e "s/@@MBRNETBSD@@/${MBRNETBSD}/"			\
 		-e "s/@@IMAGEMB@@/${IMAGEMB}/"				\
 		-e "s/@@SWAPMB@@/${SWAPMB}/"				\
+		-e "s/@@GPTMB@@/${GPTMB}/"				\
 		-e "s/@@HEADS@@/${HEADS}/"				\
 		-e "s/@@SECTORS@@/${SECTORS}/"				\
 		< ./${EXPANDFS_SH}.in > ${TARGETROOTDIR}/${EXPANDFS_SH}
@@ -358,6 +416,25 @@ ${TOOL_INSTALLBOOT} -v -m ${MACHINE} ${WORKFS} \
     || err ${TOOL_INSTALLBOOT}
 fi
 
+#
+# create EFI system partition
+#
+if [ "${USE_GPT}" = "yes" ]; then
+	echo Creating EFI system partition...
+	echo Removing ${WORKEFIDIR}...
+	${RM} -rf ${WORKEFIDIR}
+	${MKDIR} -p ${WORKEFIDIR}
+	${MKDIR} -p ${WORKEFIDIR}/EFI/boot
+	for boot in ${EFIBOOT}; do
+		${CP} ${TARGETROOTDIR}/usr/mdec/${boot} ${WORKEFIDIR}/EFI/boot
+	done
+	${RM} -f ${WORKEFI}
+	${TOOL_MAKEFS} -M ${EFISIZE} -m ${EFISIZE} \
+	    -B ${TARGET_ENDIAN} -t msdos -o fat_type=32,sectors_per_cluster=1 \
+	    ${WORKEFI} ${WORKEFIDIR} \
+	    || err ${TOOL_MAKEFS}
+fi
+
 if [ "${OMIT_SWAPIMG}x" != "yesx" ]; then
 	echo Creating swap fs
 	${DD} if=/dev/zero of=${WORKSWAP} \
@@ -368,15 +445,23 @@ fi
 echo Copying target disk image...
 rm -f ${WORKIMG}
 ${TOUCH} ${WORKIMG}
-# add MBR partition region
+# add MBR and the primary GPT partition region
 if [ ${LABELSECTORS} != 0 ]; then
 	${CAT} ${WORKMBRTRUNC} >> ${WORKIMG} || err ${CAT}
+fi
+# add EFI FAT partition
+if [ "${USE_GPT}" = "yes" ]; then
+	${CAT} ${WORKEFI} >> ${WORKIMG} || err ${CAT}
 fi
 # add NetBSD root partition
 ${CAT} ${WORKFS} >> ${WORKIMG} || err ${CAT}
 # add swap
 if [ "${OMIT_SWAPIMG}x" != "yesx" ]; then
 	${CAT} ${WORKSWAP} >> ${WORKIMG} || err ${CAT}
+fi
+# add the secondary GPT table (at the end of the target image)
+if [ "${USE_GPT}" = "yes" ]; then
+	${CAT} ${WORKGPT} >> ${WORKIMG} || err ${CAT}
 fi
 
 if [ ! -z ${USE_SUNLABEL} ]; then
@@ -388,8 +473,16 @@ if [ ! -z ${USE_SUNLABEL} ]; then
 	    || err ${TOOL_SUNLABEL}
 fi
 
-echo Creating disklabel...
-${CAT} > ${WORKLABEL} <<EOF
+if [ "${USE_GPT}" = "yes" ]; then
+	echo Finalize GPT entries...
+	if [ "${USE_GPTMBR}" = "yes" ]; then
+	        ${TOOL_GPT} ${WORKIMG} biosboot -i 2 \
+		    -c ${TARGETROOT}/usr/mdec/gptmbr.bin
+	fi
+	${TOOL_GPT} ${WORKIMG} set -a bootme -i 2
+else
+	echo Creating disklabel...
+	${CAT} > ${WORKLABEL} <<EOF
 type: ESDI
 disk: ${DISKNAME}
 label: 
@@ -416,8 +509,9 @@ c:    ${BSDPARTSECTORS} ${FSOFFSET} unused 0 0
 d:    ${IMAGESECTORS} 0 unused 0 0
 EOF
 
-${TOOL_DISKLABEL} -R -F -M ${MACHINE} ${WORKIMG} ${WORKLABEL} \
-    || err ${TOOL_DISKLABEL}
+	${TOOL_DISKLABEL} -R -F -M ${MACHINE} ${WORKIMG} ${WORKLABEL} \
+	    || err ${TOOL_DISKLABEL}
+fi
 
 # XXX some ${MACHINE} needs disklabel for installboot
 #${TOOL_INSTALLBOOT} -vm ${MACHINE} ${WORKIMG} \
