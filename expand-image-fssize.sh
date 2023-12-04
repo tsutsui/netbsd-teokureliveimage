@@ -39,6 +39,21 @@ if (mount | grep -q ^/dev/${BOOTDISK}a) ; then
 	exit 1
 fi
 
+# get actual disk size from dmesg
+BOOTDISKDMSG=$(dmesg -t | grep "^${BOOTDISK}: .* sectors$" | tail -1)
+if [ "${BOOTDISKDMSG}"X = "X" ]; then
+	echo Error: cannot find ${BOOTDISK} in dmesg
+	exit 1
+fi
+
+IMAGESECTORS=$(echo ${BOOTDISKDMSG} | awk '{print $(NF-1)}')
+
+ORIGIMAGEMB=5120
+ORIGSWAPMB=512
+
+ORIGIMAGESECTORS=$((${ORIGIMAGEMB} * 1024 * 1024 / 512))
+ORIGSWAPSECTORS=$((${ORIGSWAPMB} * 1024 * 1024 / 512))
+
 # mount tmpfs to create work file
 if ! (mount | grep -q '^tmpfs on /tmp') ; then
 	mount_tmpfs -s 1M tmpfs /tmp
@@ -66,12 +81,6 @@ if [ ${PART0ID} != "169" ]; then
 	exit 1
 fi
 
-ORIGIMAGEMB=5120
-ORIGSWAPMB=512
-
-ORIGIMAGESECTORS=$((${ORIGIMAGEMB} * 1024 * 1024 / 512))
-ORIGSWAPSECTORS=$((${ORIGSWAPMB} * 1024 * 1024 / 512))
-
 # check fdisk partition size
 PART0END=$((${PART0START} + ${PART0SIZE}))
 if [ ${PART0END} -ne ${ORIGIMAGESECTORS} ]; then
@@ -87,15 +96,6 @@ if [ ${TOTALSECTORS} -ne ${ORIGIMAGESECTORS} ]; then
 	echo Expected original total sectors: ${ORIGIMAGESECTORS}
 	exit 1
 fi
-
-# get actual disk size from dmesg
-BOOTDISKDMSG=$(dmesg -t | grep "^${BOOTDISK}: .* sectors$" | tail -1)
-if [ "${BOOTDISKDMSG}"X = "X" ]; then
-	echo Error: cannot find ${BOOTDISK} in dmesg
-	exit 1
-fi
-
-IMAGESECTORS=$(echo ${BOOTDISKDMSG} | awk '{print $(NF-1)}')
 
 echo Original image size: ${ORIGIMAGESECTORS} sectors
 echo Target ${BOOTDISK} disk size: ${IMAGESECTORS} sectors
