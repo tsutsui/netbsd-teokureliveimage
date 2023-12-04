@@ -281,6 +281,27 @@ for set in ${SETS}; do
 	fi
 done
 
+#
+# create targetroot
+#
+echo Removing ${TARGETROOTDIR}...
+${RM} -rf ${TARGETROOTDIR}
+${MKDIR} -p ${TARGETROOTDIR}
+for set in ${SETS}; do
+	echo Extracting ${set}...
+	${TAR} -C ${TARGETROOTDIR} -zxf ${DOWNLOADDIR}/${set}.${SUFFIX_SETS} \
+	    || err ${TAR}
+done
+# XXX /var/spool/ftp/hidden is unreadable
+chmod u+r ${TARGETROOTDIR}/var/spool/ftp/hidden
+
+# copy secondary boot for bootstrap
+# XXX probabry more machine dependent
+if [ ! -z ${SECONDARY_BOOT} ]; then
+	echo Copying secondary boot...
+	${CP} ${TARGETROOTDIR}/usr/mdec/${SECONDARY_BOOT} ${TARGETROOTDIR}
+fi
+
 # prepare MBR partition
 if [ "${USE_MBR}" = "yes" ]; then
 	echo creating MBR labels...
@@ -316,27 +337,6 @@ if [ "${USE_GPT}" = "yes" ]; then
 	${DD} if=${WORKMBR} of=${WORKGPT} \
 	    skip=$((${IMAGESECTORS} - ${GPTSECTORS})) count=${GPTSECTORS} \
 	    || err ${DD}
-fi
-
-#
-# create targetroot
-#
-echo Removing ${TARGETROOTDIR}...
-${RM} -rf ${TARGETROOTDIR}
-${MKDIR} -p ${TARGETROOTDIR}
-for set in ${SETS}; do
-	echo Extracting ${set}...
-	${TAR} -C ${TARGETROOTDIR} -zxf ${DOWNLOADDIR}/${set}.${SUFFIX_SETS} \
-	    || err ${TAR}
-done
-# XXX /var/spool/ftp/hidden is unreadable
-chmod u+r ${TARGETROOTDIR}/var/spool/ftp/hidden
-
-# copy secondary boot for bootstrap
-# XXX probabry more machine dependent
-if [ ! -z ${SECONDARY_BOOT} ]; then
-	echo Copying secondary boot...
-	${CP} ${TARGETROOTDIR}/usr/mdec/${SECONDARY_BOOT} ${TARGETROOTDIR}
 fi
 
 #
