@@ -57,8 +57,8 @@ fi
 IMAGE_TYPE=raw
 MACHINE=$1
 
-HAVE_EXPANDFS_SCRIPT=no #yes	# put a script to expand image fssize
-EXPANDFS_SH=expand-image-fssize-uefi.sh
+HAVE_EXPANDFS_SCRIPT=yes	# put a script to expand image fssize
+EXPANDFS_SH=expand-image-fssize.sh
 
 #
 # target dependent info
@@ -390,6 +390,7 @@ if [ ${HAVE_EXPANDFS_SCRIPT}x = "yesx" ]; then
 		-e "s/@@MBRNETBSD@@/${MBRNETBSD}/"			\
 		-e "s/@@IMAGEMB@@/${IMAGEMB}/"				\
 		-e "s/@@SWAPMB@@/${SWAPMB}/"				\
+		-e "s/@@GPTMB@@/${GPTMB}/"				\
 		-e "s/@@HEADS@@/${HEADS}/"				\
 		-e "s/@@SECTORS@@/${SECTORS}/"				\
 		< ./${EXPANDFS_SH}.in > ${TARGETROOTDIR}/${EXPANDFS_SH}
