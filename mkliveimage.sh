@@ -1,7 +1,7 @@
 #! /bin/sh
 #
 # Copyright (c) 2009, 2010, 2011, 2012, 2013, 2014, 2015, 2016, 2017, 2018,
-#  2019 2020 Izumi Tsutsui.
+#  2019 2020, 2023 Izumi Tsutsui.
 # All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
@@ -163,6 +163,7 @@ MKDIR=mkdir
 RM=rm
 SH=sh
 TAR=tar
+TOUCH=touch
 
 # working directories
 if [ "${OBJDIR}"X = "X" ]; then
@@ -209,7 +210,23 @@ BLOCKSIZE=16384
 FRAGSIZE=4096
 DENSITY=8192
 
+# temporary image work files
+WORKMBR=${WORKDIR}/work.mbr
+WORKMBRTRUNC=${WORKDIR}/work.mbr.truncated
+WORKSWAP=${WORKDIR}/work.swap
+WORKFS=${WORKDIR}/work.rootfs
+WORKLABEL=${WORKDIR}/work.diskproto
+WORKIMG=${WORKDIR}/work.img
+
+# temprary work files for rootfs
+WORKFSTAB=${WORKDIR}/work.fstab
+WORKSPEC=${WORKDIR}/work.spec
+
 echo creating ${IMAGE_TYPE} image for ${MACHINE}...
+
+echo Removing ${WORKDIR}...
+${RM} -rf ${WORKDIR}
+${MKDIR} -p ${WORKDIR}
 
 #
 # get binary sets
@@ -251,15 +268,27 @@ if [ ! -z ${SECONDARY_BOOT} ]; then
 	${CP} ${TARGETROOTDIR}/usr/mdec/${SECONDARY_BOOT} ${TARGETROOTDIR}
 fi
 
+# prepare MBR partition
+if [ "${USE_MBR}" = "yes" ]; then
+	echo creating MBR labels...
+	${DD} if=/dev/zero of=${WORKMBR} count=1 \
+	    seek=$((${IMAGESECTORS} - 1)) \
+	    || err ${DD}
+	${TOOL_FDISK} -f -u \
+	    -b ${MBRCYLINDERS}/${MBRHEADS}/${MBRSECTORS} \
+	    -0 -a -s ${MBRNETBSD}/${FSOFFSET}/${BSDPARTSECTORS} \
+	    -i -c ${TARGETROOTDIR}/usr/mdec/mbr \
+	    -F ${WORKMBR} \
+	    || err ${TOOL_FDISK}
+	${DD} if=${WORKMBR} of=${WORKMBRTRUNC} count=${LABELSECTORS} \
+	    || err ${DD}
+fi
+
 #
 # create target fs
 #
-echo Removing ${WORKDIR}...
-${RM} -rf ${WORKDIR}
-${MKDIR} -p ${WORKDIR}
-
 echo Preparing /etc/fstab...
-${CAT} > ${WORKDIR}/fstab <<EOF
+${CAT} > ${WORKFSTAB} <<EOF
 ROOT.a		/		ffs	rw,log		1 1
 ROOT.b		none		none	sw		0 0
 kernfs		/kern		kernfs	rw		0 0
@@ -269,7 +298,7 @@ procfs		/proc		procfs	rw		0 0
 tmpfs		/tmp		tmpfs	rw,-s=128M	0 0
 tmpfs		/var/shm	tmpfs	rw,-sram%25	0 0
 EOF
-${CP} ${WORKDIR}/fstab  ${TARGETROOTDIR}/etc
+${CP} ${WORKFSTAB}  ${TARGETROOTDIR}/etc/fstab
 
 echo Setting liveimage specific configurations in /etc/rc.conf...
 ${CAT} ${TARGETROOTDIR}/etc/rc.conf | \
@@ -288,11 +317,11 @@ ln -sf /usr/share/zoneinfo/${TIMEZONE} ${TARGETROOTDIR}/etc/localtime
 
 echo Preparing spec file for makefs...
 ${CAT} ${TARGETROOTDIR}/etc/mtree/* | \
-	${TOOL_SED} -e 's/ size=[0-9]*//' > ${WORKDIR}/spec
+	${TOOL_SED} -e 's/ size=[0-9]*//' > ${WORKSPEC}
 ${SH} ${TARGETROOTDIR}/dev/MAKEDEV -s all | \
-	${TOOL_SED} -e '/^\. type=dir/d' -e 's,^\.,./dev,' >> ${WORKDIR}/spec
+	${TOOL_SED} -e '/^\. type=dir/d' -e 's,^\.,./dev,' >> ${WORKSPEC}
 # spec for optional files/dirs
-${CAT} >> ${WORKDIR}/spec <<EOF
+${CAT} >> ${WORKSPEC} <<EOF
 ./boot				type=file mode=0444
 ./cdrom				type=dir  mode=0755
 ./kern				type=dir  mode=0755
@@ -311,60 +340,43 @@ if [ ${HAVE_EXPANDFS_SCRIPT}x = "yesx" ]; then
 		-e "s/@@HEADS@@/${HEADS}/"				\
 		-e "s/@@SECTORS@@/${SECTORS}/"				\
 		< ./${EXPANDFS_SH}.in > ${TARGETROOTDIR}/${EXPANDFS_SH}
-	echo ./${EXPANDFS_SH}	type=file mode=755 >> ${WORKDIR}/spec
+	echo ./${EXPANDFS_SH}	type=file mode=755 >> ${WORKSPEC}
 fi
 
 echo Creating rootfs...
 ${TOOL_MAKEFS} -M ${FSSIZE} -m ${FSSIZE} \
 	-B ${TARGET_ENDIAN} \
-	-F ${WORKDIR}/spec -N ${TARGETROOTDIR}/etc \
+	-F ${WORKSPEC} -N ${TARGETROOTDIR}/etc \
 	-o bsize=${BLOCKSIZE},fsize=${FRAGSIZE},density=${DENSITY} \
-	${WORKDIR}/rootfs ${TARGETROOTDIR} \
+	${WORKFS} ${TARGETROOTDIR} \
 	|| err ${TOOL_MAKEFS}
 
 if [ ${PRIMARY_BOOT}x != "x" ]; then
 echo Installing bootstrap...
-${TOOL_INSTALLBOOT} -v -m ${MACHINE} ${WORKDIR}/rootfs \
+${TOOL_INSTALLBOOT} -v -m ${MACHINE} ${WORKFS} \
     ${TARGETROOTDIR}/usr/mdec/${PRIMARY_BOOT} ${SECONDARY_BOOT_ARG} \
     || err ${TOOL_INSTALLBOOT}
 fi
 
 if [ "${OMIT_SWAPIMG}x" != "yesx" ]; then
 	echo Creating swap fs
-	${DD} if=/dev/zero of=${WORKDIR}/swap \
+	${DD} if=/dev/zero of=${WORKSWAP} \
 	    seek=$((${SWAPSECTORS} - 1)) count=1 \
 	    || erro ${DD}
 fi
 
+echo Copying target disk image...
+rm -f ${WORKIMG}
+${TOUCH} ${WORKIMG}
+# add MBR partition region
 if [ ${LABELSECTORS} != 0 ]; then
-	echo creating MBR labels...
-	${DD} if=/dev/zero of=${IMAGE}.mbr count=1 \
-	    seek=$((${IMAGESECTORS} - 1)) \
-	    || err ${DD}
-	${TOOL_FDISK} -f -u \
-	    -b ${MBRCYLINDERS}/${MBRHEADS}/${MBRSECTORS} \
-	    -0 -a -s ${MBRNETBSD}/${FSOFFSET}/${BSDPARTSECTORS} \
-	    -i -c ${TARGETROOTDIR}/usr/mdec/mbr \
-	    -F ${IMAGE}.mbr \
-	    || err ${TOOL_FDISK}
-	${DD} if=${IMAGE}.mbr of=${WORKDIR}/mbrsectors count=${LABELSECTORS} \
-	    || err ${DD}
-	${RM} -f ${IMAGE}.mbr
-	echo Copying target disk image...
-	${CAT} ${WORKDIR}/mbrsectors ${WORKDIR}/rootfs > ${IMAGE} \
-	    || err ${CAT}
-	if [ "${OMIT_SWAPIMG}x" != "yesx" ]; then
-		${CAT} ${WORKDIR}/swap >> ${IMAGE} \
-		    || err ${CAT}
-	fi
-else
-	echo Copying target disk image...
-	${CP} ${WORKDIR}/rootfs ${IMAGE} \
-	    || err ${CP}
-	if [ "${OMIT_SWAPIMG}x" != "yesx" ]; then
-		${CAT} ${WORKDIR}/swap >> ${IMAGE} \
-		    || err ${CAT}
-	fi
+	${CAT} ${WORKMBRTRUNC} >> ${WORKIMG} || err ${CAT}
+fi
+# add NetBSD root partition
+${CAT} ${WORKFS} >> ${WORKIMG} || err ${CAT}
+# add swap
+if [ "${OMIT_SWAPIMG}x" != "yesx" ]; then
+	${CAT} ${WORKSWAP} >> ${WORKIMG} || err ${CAT}
 fi
 
 if [ ! -z ${USE_SUNLABEL} ]; then
@@ -372,12 +384,12 @@ if [ ! -z ${USE_SUNLABEL} ]; then
 	printf 'V ncyl %d\nV nhead %d\nV nsect %d\na %d %d/0/0\nb %d %d/0/0\nW\n' \
 	    ${CYLINDERS} ${HEADS} ${SECTORS} \
 	    ${FSOFFSET} ${FSCYLINDERS} ${FSCYLINDERS} ${SWAPCYLINDERS} | \
-	    ${TOOL_SUNLABEL} -nq ${IMAGE} \
+	    ${TOOL_SUNLABEL} -nq ${WORKIMG} \
 	    || err ${TOOL_SUNLABEL}
 fi
 
 echo Creating disklabel...
-${CAT} > ${WORKDIR}/labelproto <<EOF
+${CAT} > ${WORKLABEL} <<EOF
 type: ESDI
 disk: ${DISKNAME}
 label: 
@@ -404,13 +416,14 @@ c:    ${BSDPARTSECTORS} ${FSOFFSET} unused 0 0
 d:    ${IMAGESECTORS} 0 unused 0 0
 EOF
 
-${TOOL_DISKLABEL} -R -F -M ${MACHINE} ${IMAGE} ${WORKDIR}/labelproto \
+${TOOL_DISKLABEL} -R -F -M ${MACHINE} ${WORKIMG} ${WORKLABEL} \
     || err ${TOOL_DISKLABEL}
 
 # XXX some ${MACHINE} needs disklabel for installboot
-#${TOOL_INSTALLBOOT} -vm ${MACHINE} ${MACHINE}.img \
+#${TOOL_INSTALLBOOT} -vm ${MACHINE} ${WORKIMG} \
 #    ${TARGETROOTDIR}/usr/mdec/${PRIMARY_BOOT}
 
+mv ${WORKIMG} ${IMAGE}
 echo Creating image \"${IMAGE}\" complete.
 
 if [ "${TESTIMAGE}" != "yes" ]; then exit; fi
