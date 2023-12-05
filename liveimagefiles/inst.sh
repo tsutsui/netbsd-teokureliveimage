@@ -7,8 +7,15 @@ MACHINE=`uname -m`
 FILEDIR=/mnt
 
 # target root file system device
-BOOTDEV=`sysctl -r kern.root_device`
-ROOTFSDEV=/dev/${BOOTDEV}a
+ROOTDEV=`sysctl -r kern.root_device`
+case "${ROOTDEV}" in
+(dk[0-9]*)
+	ROOTPART=${ROOTDEV}
+	;;
+(*)
+	ROOTPART=${ROOTDEV}a
+	;;
+esac
 
 # default user settings
 UID=100
@@ -51,7 +58,7 @@ PACKAGES=" \
 	"
 
 echo "mounting target disk image..."
-mount -o async ${ROOTFSDEV} /
+mount -o async /dev/${ROOTPART} /
 
 echo "copying local /etc settings..."
 cp ${FILEDIR}/etc.${MACHINE}/ttys /etc
