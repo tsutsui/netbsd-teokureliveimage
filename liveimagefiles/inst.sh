@@ -97,12 +97,6 @@ echo xdm=YES				>> /etc/rc.conf
 echo dbus=YES				>> /etc/rc.conf   
 echo avahidaemon=NO			>> /etc/rc.conf
 
-# copy local fontconfig settings for pkgsrc fonts
-#cp ${FILEDIR}/etc/fonts/local.conf /etc/fonts
-
-# copy files for asound.conf
-#cp ${FILEDIR}/etc/asound.conf /etc
-
 # copy sample xorg.conf settings to workaround accelaration issue
 cp ${FILEDIR}/etc/xorg.conf.intel-uxa /etc/X11
 cp ${FILEDIR}/etc/xorg.conf.vesa /etc/X11
