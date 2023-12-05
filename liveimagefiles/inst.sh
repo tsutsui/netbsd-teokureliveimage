@@ -48,7 +48,6 @@ PACKAGES=" \
 	webp-pixbuf-loader \
 	sayaka \
 	nanotodon \
-	mozilla-rootcerts \
 	"
 
 echo "mounting target disk image..."
@@ -101,8 +100,8 @@ echo avahidaemon=NO			>> /etc/rc.conf
 cp ${FILEDIR}/etc/xorg.conf.intel-uxa /etc/X11
 cp ${FILEDIR}/etc/xorg.conf.vesa /etc/X11
 
-echo "installing mozilla CA root certificates..."
-/usr/pkg/sbin/mozilla-rootcerts install
+echo "rehash root certificates..."
+/usr/sbin/certctl rehash
 
 echo "updating fontconfig cache..."
 /usr/X11R7/bin/fc-cache
