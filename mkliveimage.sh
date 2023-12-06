@@ -98,7 +98,7 @@ if [ "${MACHINE}" = "i386" ]; then
  PRIMARY_BOOT=bootxx_ffsv1
  SECONDARY_BOOT=boot
  SECONDARY_BOOT_ARG= # nothing
- EFIBOOT="bootx64.efi bootia32.efi"
+ EFIBOOT="bootia32.efi"	# XXX: NetBSD/i386 doesn't provide bootx64.efi
 fi
 
 if [ -z ${MACHINE_ARCH} ]; then
