@@ -324,13 +324,14 @@ if [ "${USE_GPT}" = "yes" ]; then
 	${DD} if=/dev/zero of=${WORKMBR} count=1 \
 	    seek=$((${IMAGESECTORS} - 1)) \
 	    || err ${DD}
-	${TOOL_GPT} ${WORKMBR} create
-	${TOOL_GPT} ${WORKMBR} add -a 1m -s ${EFISECTORS} -t efi -l "EFI system"
+	${TOOL_GPT} ${WORKMBR} create || err ${TOOL_GPT}
+	${TOOL_GPT} ${WORKMBR} add -a 1m -s ${EFISECTORS} \
+	    -t efi -l "EFI system" || err ${TOOL_GPT}
 	${TOOL_GPT} ${WORKMBR} add -a 1m -s ${FSSECTORS} \
-	    -t ffs -l ${GPTROOTLABEL}
+	    -t ffs -l ${GPTROOTLABEL} || err ${TOOL_GPT}
 	if [ "${OMIT_SWAPIMG}x" != "yesx" ]; then
 		${TOOL_GPT} ${WORKMBR} add -a 1m -s ${SWAPSECTORS} \
-		    -t swap -l ${GPTSWAPLABEL}
+		    -t swap -l ${GPTSWAPLABEL} || err ${TOOL_GPT}
 	fi
 	${DD} if=${WORKMBR} of=${WORKMBRTRUNC} count=${LABELSECTORS} \
 	    || err ${DD}
@@ -483,9 +484,9 @@ if [ "${USE_GPT}" = "yes" ]; then
 	echo Finalize GPT entries...
 	if [ "${USE_GPTMBR}" = "yes" ]; then
 	        ${TOOL_GPT} ${WORKIMG} biosboot -i 2 \
-		    -c ${TARGETROOT}/usr/mdec/gptmbr.bin
+		    -c ${TARGETROOT}/usr/mdec/gptmbr.bin || err ${TOOL_GPT}
 	fi
-	${TOOL_GPT} ${WORKIMG} set -a bootme -i 2
+	${TOOL_GPT} ${WORKIMG} set -a bootme -i 2 || err ${TOOL_GPT}
 else
 	echo Creating disklabel...
 	${CAT} > ${WORKLABEL} <<EOF
