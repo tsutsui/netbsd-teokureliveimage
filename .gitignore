@@ -8,5 +8,6 @@ targetroot.*
 vbox
 vbox-*
 vdi
+vhdx
 vmdk
 work.*
