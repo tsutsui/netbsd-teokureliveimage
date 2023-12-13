@@ -114,6 +114,7 @@ echo Checking file system...
 fsck_ffs -p /dev/r${ROOTPART}
 
 # update GPT partitions
+echo Updating GPT partitions...
 gpt resizedisk ${BLOCKDEV}
 gpt remove -i 3 ${BLOCKDEV}		# remove original swap partitoin
 gpt add -a 1m -b ${SWAPOFFSET} -s ${SWAPSECTORS} -i 3 \
