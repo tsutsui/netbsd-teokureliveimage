@@ -32,8 +32,8 @@ rm -f ${IMAGE_PACKAGESDIR}/i386/*.tgz ${IMAGE_PACKAGESDIR}/x86_64/*.tgz
 
 for pkg in ${PACKAGES}; do
 	echo Copying ${pkg}.tgz
-	if [ ! -f ${PACKAGESDIR_I386}/${pkg}.tgz -o \
-	     ! -f ${PACKAGESDIR_X86_64}/${pkg}.tgz ]; then
+	if [ ! -f ${PACKAGESDIR_I386}/${pkg}.tgz ] || \
+	   [ ! -f ${PACKAGESDIR_X86_64}/${pkg}.tgz ]; then
 		echo Error: ${pkg} is not found.
 		exit 1
 	fi
