@@ -158,7 +158,6 @@ RELEASEDIR=pub/NetBSD/NetBSD-${RELEASE}
 #
 
 # tools binaries
-TOOL_AWK=${TOOLDIR}/bin/nbawk
 TOOL_DISKLABEL=${TOOLDIR}/bin/nbdisklabel
 TOOL_FDISK=${TOOLDIR}/bin/${MACHINE_GNU_PLATFORM}-fdisk
 TOOL_GPT=${TOOLDIR}/bin/nbgpt
