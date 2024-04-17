@@ -328,10 +328,8 @@ if [ "${USE_GPT}" = "yes" ]; then
 	    -t efi -l "EFI system" || err ${TOOL_GPT}
 	${TOOL_GPT} ${WORKMBR} add -a 1m -s ${FSSECTORS} \
 	    -t ffs -l ${GPTROOTLABEL} || err ${TOOL_GPT}
-	if [ "${OMIT_SWAPIMG}x" != "yesx" ]; then
-		${TOOL_GPT} ${WORKMBR} add -a 1m -s ${SWAPSECTORS} \
-		    -t swap -l ${GPTSWAPLABEL} || err ${TOOL_GPT}
-	fi
+	${TOOL_GPT} ${WORKMBR} add -a 1m -s ${SWAPSECTORS} \
+	    -t swap -l ${GPTSWAPLABEL} || err ${TOOL_GPT}
 	${DD} if=${WORKMBR} of=${WORKMBRTRUNC} count=${LABELSECTORS} \
 	    || err ${DD}
 	${DD} if=${WORKMBR} of=${WORKGPT} \
