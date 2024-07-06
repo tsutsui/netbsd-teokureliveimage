@@ -1,6 +1,6 @@
 #! /bin/sh
 #
-# Copyright (c) 2013, 2023 Izumi Tsutsui.  All rights reserved.
+# Copyright (c) 2013, 2023, 2024 Izumi Tsutsui.  All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions
@@ -89,7 +89,7 @@ fi
 
 echo ${GPTROOTLABEL} found in ${BOOTDISK} GPT partition.
 
-LASTSECTORS=$(($(gpt show ${BLOCKDEV} | grep 'Sec GPT header' | awk '{print $1}') + 1))
+LASTSECTORS=$(($(gpt show ${BLOCKDEV} | awk '/NetBSD swap/ { getline; print $1 }') + ${ORIGGPTSECTORS}))
 
 if [ ${LASTSECTORS} -ne ${ORIGIMAGESECTORS} ]; then
 	echo Error: unexpected image size in GPT partition : ${LASTSECTORS}
