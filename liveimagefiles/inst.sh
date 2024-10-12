@@ -43,7 +43,7 @@ PACKAGES=" \
 	twemoji-color-font-ttf \
 	jisx0212fonts jisx0213fonts \
 	jwm \
-	wm-icons \
+	tango-icon-theme \
 	ibus \
 	adwaita-icon-theme \
 	arandr \
