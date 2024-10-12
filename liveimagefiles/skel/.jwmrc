@@ -1,38 +1,48 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0"?>
 <JWM>
 
     <!-- The root menu. -->
     <RootMenu onroot="12">
-        <Program icon="terminal.png" label="xterm">xterm</Program>
-        <Program icon="terminal.png" label="kterm">kterm</Program>
-        <Program icon="terminal.png" label="mlterm">mlterm</Program>
-        <Menu icon="folder.png" label="Applications">
-            <Program icon="calculator.png" label="Calculator">xcalc</Program>
-            <Program icon="gimp.png" label="Gimp">gimp</Program>
-            <Program icon="editor.png" label="emacs">emacs</Program>
-            <Program icon="editor.png" label="medit">medit</Program>
-            <Program icon="www.png" label="Firefox">firefox</Program>
+        <Program icon="utilities-terminal" label="xterm">xterm</Program>
+        <Program icon="utilities-terminal" label="kterm">kterm</Program>
+        <Program icon="utilities-terminal" label="mlterm">mlterm</Program>
+        <Menu icon="folder" label="Applications">
+<!--
+            <Program icon="sound" label="Audacious">audacious</Program>
+ -->
+            <Program icon="calc" label="Calculator">xcalc</Program>
+            <Program icon="web-browser" label="Firefox">firefox</Program>
+<!--
+            <Program icon="image" label="Gimp">gimp</Program>
+            <Program icon="email" label="Mail">claws-mail</Program>
+            <Program icon="system-file-manager" label="ROX">rox ~</Program>
+ -->
+            <Program icon="accessories-text-editor" label="emacs">emacs</Program>
+            <Program icon="accessories-text-editor" label="medit">medit</Program>
             <Program icon="/usr/pkg/share/mikutter/core/skin/data/icon_alternative.png" label="mikutter">mikutter</Program>
         </Menu>
-        <Menu icon="folder.png" label="Utilities">
-            <Program icon="font.png" label="Fonts">xfontsel</Program>
-            <Program icon="window.png" label="Window Properties">
+        <Menu icon="folder" label="Utilities">
+            <Program icon="font" label="Fonts">xfontsel</Program>
+            <Program icon="info" label="Window Properties">
                 xprop | xmessage -file -
             </Program>
-            <Program icon="window.png" label="Window Information">
+            <Program icon="info" label="Window Information">
                 xwininfo | xmessage -file -
             </Program>
-            <Program icon="window.png" label="Screen Layout Editor">
+            <Program icon="preferences-system-windows" label="Screen Layout Editor">
                 arandr
             </Program>
         </Menu>
         <Separator/>
-        <Program icon="lock.png" label="Lock">
-            xlock -mode blank
+        <Program icon="lock" label="Lock">
+<!--
+           xscreensaver-command -lock
+ -->
+           xlock -mode blank
         </Program>
         <Separator/>
-        <Restart label="Restart" icon="restart.png"/>
-        <Exit label="Exit" confirm="true" icon="quit.png"/>
+        <Restart label="Restart" icon="reload"/>
+        <Exit label="Exit" confirm="true" icon="exit"/>
     </RootMenu>
 
     <!-- Options for program groups. -->
@@ -56,14 +66,14 @@
 
     <!-- Tray at the bottom. -->
 <!--
-    <Tray x="0" y="-1" autohide="off">
+    <Tray x="0" y="-1" autohide="off" delay="1000">
  -->
     <Tray x="0" y="-1" height="32" autohide="off">
 
-        <TrayButton icon="jwm-blue">root:1</TrayButton>
 <!--
-        <TrayButton label="BSD">root:1</TrayButton>
+        <TrayButton label="JWM">root:1</TrayButton>
  -->
+        <TrayButton icon="jwm-blue">root:1</TrayButton>
         <Spacer width="2"/>
         <TrayButton label="_">showdesktop</TrayButton>
         <Spacer width="2"/>
@@ -72,7 +82,14 @@
 
         <TaskList maxwidth="256"/>
 
+<!--
+        <Swallow width="32" height="32" name="xclock">xclock</Swallow>
+ -->
+
         <Dock/>
+<!--
+        <Clock format="%l:%M %p"><Button mask="123">exec:xclock</Button></Clock>
+ -->
 
         <!-- Additional Swallow attribute: height -->
         <Swallow name="xload" height="16" width="64">
@@ -88,55 +105,51 @@
     <StartupCommand>/usr/pkg/sbin/wpa_gui -t</StartupCommand>
 
     <!-- Visual Styles -->
-    <WindowStyle>
+    <WindowStyle decorations="motif">
 <!--
-        <Font>Sans-9:bold</Font>
+        <Font>Sans-12:bold</Font>
  -->
         <Font>VL PGothic-12:bold</Font>
         <Width>4</Width>
-        <Height>21</Height>
-        <Corner>3</Corner>
+        <Corner>0</Corner>
         <Foreground>#FFFFFF</Foreground>
         <Background>#555555</Background>
-        <Outline>#000000</Outline>
         <Opacity>0.5</Opacity>
         <Active>
             <Foreground>#FFFFFF</Foreground>
             <Background>#0077CC</Background>
-            <Outline>#000000</Outline>
             <Opacity>1.0</Opacity>
         </Active>
     </WindowStyle>
-
-    <TaskListStyle list="desktop" group="false"/>
-
+    <TrayStyle decorations="motif">
 <!--
-    <TrayStyle group="true" list="all">
- -->
-    <TrayStyle group="false" list="desktop">
-<!--
-        <Font>Sans-9</Font>
+        <Font>Sans-12</Font>
  -->
         <Font>VL PGothic-12:bold</Font>
         <Background>#333333</Background>
         <Foreground>#FFFFFF</Foreground>
-        <Outline>#000000</Outline>
         <Opacity>0.75</Opacity>
     </TrayStyle>
-    <TaskListStyle>
 <!--
-      <Font>Sans-9</Font>
+    <TaskListStyle list="all" group="true">
+ -->
+    <TaskListStyle list="desktop" group="false">
+<!--
+      <Font>Sans-12</Font>
  -->
       <Font>VL PGothic-11:bold</Font>
       <Active>
         <Foreground>#FFFFFF</Foreground>
         <Background>#555555</Background>
       </Active>
+      <Minimized>
+        <Foreground>#FFFFFF</Foreground>
+        <Background>#111111</Background>
+      </Minimized>
       <Foreground>#FFFFFF</Foreground>
       <Background>#333333</Background>
     </TaskListStyle>
     <PagerStyle>
-        <Outline>#000000</Outline>
         <Foreground>#555555</Foreground>
         <Background>#333333</Background>
         <Text>#FFFFFF</Text>
@@ -145,14 +158,13 @@
             <Background>#004488</Background>
         </Active>
     </PagerStyle>
-    <MenuStyle>
+    <MenuStyle decorations="motif">
 <!--
-        <Font>Sans-9</Font>
+        <Font>Sans-12</Font>
  -->
         <Font>VL PGothic-11:bold</Font>
         <Foreground>#FFFFFF</Foreground>
         <Background>#333333</Background>
-        <Outline>#000000</Outline>
         <Active>
             <Foreground>#FFFFFF</Foreground>
             <Background>#0077CC</Background>
@@ -161,7 +173,7 @@
     </MenuStyle>
     <PopupStyle>
 <!--
-        <Font>Sans-9</Font>
+        <Font>Sans-12</Font>
  -->
         <Font>VL PGothic-11</Font>
         <Foreground>#000000</Foreground>
@@ -173,13 +185,22 @@
          for icons in multiple paths.
       -->
     <IconPath>
-<!--
-        /usr/pkg/share/icons/wm-icons/32x32-aquafusion
- -->
-        /usr/pkg/share/icons/wm-icons/16x16-aquafusion
+      /usr/pkg/share/icons/Tango/scalable/actions
     </IconPath>
     <IconPath>
-        /usr/pkg/share/jwm
+      /usr/pkg/share/icons/Tango/scalable/apps
+    </IconPath>
+    <IconPath>
+      /usr/pkg/share/icons/Tango/scalable/places
+    </IconPath>
+    <IconPath>
+      /usr/pkg/share/icons/Tango/scalable/status
+    </IconPath>
+    <IconPath>
+      /usr/pkg/share/icons/Tango/scalable/mimetypes
+    </IconPath>
+    <IconPath>
+      /usr/pkg/share/jwm
     </IconPath>
 
     <!-- Virtual Desktops -->
@@ -238,6 +259,7 @@
     <Key mask="A" key="Up">udesktop</Key>
     <Key mask="A" key="Down">ddesktop</Key>
 
+    <!-- Mouse bindings -->
 <!--
     <Key mask="C" key="comma">prev</Key>
     <Key mask="C" key="period">next</Key>
@@ -245,26 +267,32 @@
 
     <Mouse context="root" button="4">ldesktop</Mouse>
     <Mouse context="root" button="5">rdesktop</Mouse>
+
     <Mouse context="title" button="1">move</Mouse>
     <Mouse context="title" button="2">move</Mouse>
     <Mouse context="title" button="3">window</Mouse>
     <Mouse context="title" button="4">shade</Mouse>
     <Mouse context="title" button="5">shade</Mouse>
     <Mouse context="title" button="11">maximize</Mouse>
+
     <Mouse context="icon" button="1">window</Mouse>
     <Mouse context="icon" button="2">move</Mouse>
     <Mouse context="icon" button="3">window</Mouse>
     <Mouse context="icon" button="4">shade</Mouse>
     <Mouse context="icon" button="5">shade</Mouse>
+
     <Mouse context="border" button="1">resize</Mouse>
     <Mouse context="border" button="2">move</Mouse>
     <Mouse context="border" button="3">window</Mouse>
+
     <Mouse context="close" button="-1">close</Mouse>
     <Mouse context="close" button="2">move</Mouse>
     <Mouse context="close" button="-3">close</Mouse>
+
     <Mouse context="maximize" button="-1">maximize</Mouse>
     <Mouse context="maximize" button="-2">maxv</Mouse>
     <Mouse context="maximize" button="-3">maxh</Mouse>
+
     <Mouse context="minimize" button="-1">minimize</Mouse>
     <Mouse context="minimize" button="2">move</Mouse>
     <Mouse context="minimize" button="-3">shade</Mouse>
