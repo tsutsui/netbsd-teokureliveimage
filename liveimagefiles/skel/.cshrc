@@ -68,4 +68,7 @@ if ($?prompt) then
 	set mch = `hostname -s`
 	#set prompt = "${mch:q}: {\!} "
 	set prompt = "${mch:q}-% "
+
+	# Configure the shell (on su(1) etc.) to load .shrc at startup time.
+	setenv ENV ~/.shrc
 endif
