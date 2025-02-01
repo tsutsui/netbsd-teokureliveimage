@@ -87,13 +87,13 @@ RM=rm
 # target image size settings
 #
 FSMB=1500
-FSSECTORS=$((${FSMB} * 1024 * 1024 / 512))
-FSSIZE=$((${FSSECTORS} * 512))
+FSSECTORS=$((FSMB * 1024 * 1024 / 512))
+FSSIZE=$((FSSECTORS * 512))
 FSOFFSET=0
 
 HEADS=64
 SECTORS=32
-CYLINDERS=$((${FSSECTORS} / ( ${HEADS} * ${SECTORS} ) ))
+CYLINDERS=$((FSSECTORS / (HEADS * SECTORS) ))
 
 # makefs(8) parameters
 TARGET_ENDIAN=le
@@ -122,7 +122,7 @@ flags:
 bytes/sector: 512
 sectors/track: ${SECTORS}
 tracks/cylinder: ${HEADS}
-sectors/cylinder: $((${HEADS} * ${SECTORS}))
+sectors/cylinder: $((HEADS * SECTORS))
 cylinders: ${CYLINDERS}
 total sectors: ${FSSECTORS}
 rpm: 3600

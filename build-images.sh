@@ -237,7 +237,7 @@ fi
 echo Preparing compressed image files...
 IMAGEMB=5120			# 5120MB (4GB isn't enough for 8.0 + 2018Q2)
 SWAPMB=512			# 512MB
-RAWMB=$((${IMAGEMB} - ${SWAPMB}))
+RAWMB=$((IMAGEMB - SWAPMB))
 
 ${RM} -rf ${IMAGEDIR}
 ${MKDIR} -p ${IMAGEDIR}

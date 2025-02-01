@@ -191,17 +191,17 @@ IMAGE=${WORKDIR}/liveimage-${MACHINE}-${IMAGE_TYPE}-${REVISION}.img
 # target image size settings
 #
 IMAGEMB=400			# minimum
-IMAGESECTORS=$((${IMAGEMB} * 1024 * 1024 / 512))
+IMAGESECTORS=$((IMAGEMB * 1024 * 1024 / 512))
 # no swap
 
 BSDPARTSECTORS=${IMAGESECTORS}
 FSSECTORS=${IMAGESECTORS}
 FSOFFSET=0
-FSSIZE=$((${FSSECTORS} * 512))
+FSSIZE=$((FSSECTORS * 512))
 HEADS=64
 SECTORS=32
-CYLINDERS=$((${IMAGESECTORS} / ( ${HEADS} * ${SECTORS} ) ))
-FSCYLINDERS=$((${FSSECTORS} / ( ${HEADS} * ${SECTORS} ) ))
+CYLINDERS=$((IMAGESECTORS / (HEADS * SECTORS) ))
+FSCYLINDERS=$((FSSECTORS / (HEADS * SECTORS) ))
 
 # makefs(8) parameters
 BLOCKSIZE=16384
@@ -329,7 +329,7 @@ flags:
 bytes/sector: 512
 sectors/track: ${SECTORS}
 tracks/cylinder: ${HEADS}
-sectors/cylinder: $((${HEADS} * ${SECTORS}))
+sectors/cylinder: $((HEADS * SECTORS))
 cylinders: ${CYLINDERS}
 total sectors: ${IMAGESECTORS}
 rpm: 3600

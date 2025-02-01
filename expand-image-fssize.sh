@@ -66,9 +66,9 @@ ORIGIMAGEMB=5120
 ORIGSWAPMB=512
 ORIGGPTMB=1
 
-ORIGIMAGESECTORS=$((${ORIGIMAGEMB} * 1024 * 1024 / 512))
-ORIGSWAPSECTORS=$((${ORIGSWAPMB} * 1024 * 1024 / 512))
-ORIGGPTSECTORS=$((${ORIGGPTMB} * 1024 * 1024 / 512))
+ORIGIMAGESECTORS=$((ORIGIMAGEMB * 1024 * 1024 / 512))
+ORIGSWAPSECTORS=$((ORIGSWAPMB * 1024 * 1024 / 512))
+ORIGGPTSECTORS=$((ORIGGPTMB * 1024 * 1024 / 512))
 
 if [ "${USE_GPT}" = "yes" ]; then
 
@@ -89,7 +89,7 @@ fi
 
 echo ${GPTROOTLABEL} found in ${BOOTDISK} GPT partition.
 
-LASTSECTORS=$(($(gpt show ${BLOCKDEV} | awk '/NetBSD swap/ { getline; print $1 }') + ${ORIGGPTSECTORS}))
+LASTSECTORS=$(($(gpt show ${BLOCKDEV} | awk '/NetBSD swap/ { getline; print $1 }') + ORIGGPTSECTORS))
 
 if [ ${LASTSECTORS} -ne ${ORIGIMAGESECTORS} ]; then
 	echo Error: unexpected image size in GPT partition : ${LASTSECTORS}
@@ -107,7 +107,7 @@ fi
 
 # calculate new disk parameters
 SWAPSECTORS=${ORIGSWAPSECTORS}
-SWAPOFFSET=$((${IMAGESECTORS} - ${ORIGGPTSECTORS} - ${ORIGSWAPSECTORS}))
+SWAPOFFSET=$((IMAGESECTORS - ORIGGPTSECTORS - ORIGSWAPSECTORS))
 
 # check original fs
 echo Checking file system...
@@ -151,7 +151,7 @@ if [ ${PART0ID} != "169" ]; then
 fi
 
 # check fdisk partition size
-PART0END=$((${PART0START} + ${PART0SIZE}))
+PART0END=$((PART0START + PART0SIZE))
 if [ ${PART0END} -ne ${ORIGIMAGESECTORS} ]; then
 	echo Error: unexpected MBR partition size: ${PART0END}
 	echo Expected original image size: ${ORIGIMAGESECTORS}
@@ -178,14 +178,14 @@ fi
 SWAPSECTORS=${ORIGSWAPSECTORS}
 
 FSOFFSET=${PART0START}
-BSDPARTSECTORS=$((${IMAGESECTORS} - ${FSOFFSET}))
-FSSECTORS=$((${IMAGESECTORS} - ${SWAPSECTORS} - ${FSOFFSET}))
-SWAPOFFSET=$((${FSOFFSET} + ${FSSECTORS}))
+BSDPARTSECTORS=$((IMAGESECTORS - FSOFFSET))
+FSSECTORS=$((IMAGESECTORS - SWAPSECTORS - FSOFFSET))
+SWAPOFFSET=$((FSOFFSET + FSSECTORS))
 HEADS=64
 SECTORS=32
-CYLINDERS=$((${IMAGESECTORS} / (${HEADS} * ${SECTORS} ) ))
+CYLINDERS=$((IMAGESECTORS / (HEADS * SECTORS) ))
 
-MBRCYLINDERS=$((${IMAGESECTORS} / ( ${BHEAD} * ${BSEC} ) ))
+MBRCYLINDERS=$((IMAGESECTORS / (BHEAD * BSEC) ))
 
 # prepare new disklabel proto
 sed -e "s/^cylinders: [0-9]*$/cylinders: ${CYLINDERS}/" \

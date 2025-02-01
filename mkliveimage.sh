@@ -202,11 +202,11 @@ else
 	GPTMB=0
 fi
 
-IMAGESECTORS=$((${IMAGEMB} * 1024 * 1024 / 512))
-EFISIZE=$((${EFIMB} * 1024 * 1024))
-EFISECTORS=$((${EFISIZE} / 512))
-GPTSECTORS=$((${GPTMB} * 1024 * 1024 / 512))
-SWAPSECTORS=$((${SWAPMB} * 1024 * 1024 / 512))
+IMAGESECTORS=$((IMAGEMB * 1024 * 1024 / 512))
+EFISIZE=$((EFIMB * 1024 * 1024))
+EFISECTORS=$((EFISIZE / 512))
+GPTSECTORS=$((GPTMB * 1024 * 1024 / 512))
+SWAPSECTORS=$((SWAPMB * 1024 * 1024 / 512))
 
 LABELSECTORS=0
 if [ "${USE_MBR}" = "yes" ] || [ "${USE_GPT}" = "yes" ]; then
@@ -214,21 +214,21 @@ if [ "${USE_MBR}" = "yes" ] || [ "${USE_GPT}" = "yes" ]; then
 #	LABELSECTORS=32		# aligned
 	LABELSECTORS=2048	# align 1MiB for modern flash
 fi
-BSDPARTSECTORS=$((${IMAGESECTORS} - ${LABELSECTORS} - ${EFISECTORS} - ${GPTSECTORS}))
-FSSECTORS=$((${IMAGESECTORS} - ${SWAPSECTORS} - ${LABELSECTORS} - ${EFISECTORS} - ${GPTSECTORS}))
-FSOFFSET=$((${LABELSECTORS} + ${EFISECTORS}))
-SWAPOFFSET=$((${LABELSECTORS} + ${FSSECTORS}))
-FSSIZE=$((${FSSECTORS} * 512))
+BSDPARTSECTORS=$((IMAGESECTORS - LABELSECTORS - EFISECTORS - GPTSECTORS))
+FSSECTORS=$((IMAGESECTORS - SWAPSECTORS - LABELSECTORS - EFISECTORS - GPTSECTORS))
+FSOFFSET=$((LABELSECTORS + EFISECTORS))
+SWAPOFFSET=$((LABELSECTORS + FSSECTORS))
+FSSIZE=$((FSSECTORS * 512))
 HEADS=64
 SECTORS=32
-CYLINDERS=$((${IMAGESECTORS} / ( ${HEADS} * ${SECTORS} ) ))
-FSCYLINDERS=$((${FSSECTORS} / ( ${HEADS} * ${SECTORS} ) ))
-SWAPCYLINDERS=$((${SWAPSECTORS} / ( ${HEADS} * ${SECTORS} ) ))
+CYLINDERS=$((IMAGESECTORS / (HEADS * SECTORS) ))
+FSCYLINDERS=$((FSSECTORS / (HEADS * SECTORS) ))
+SWAPCYLINDERS=$((SWAPSECTORS / (HEADS * SECTORS) ))
 
 # fdisk(8) parameters
 MBRSECTORS=63
 MBRHEADS=255
-MBRCYLINDERS=$((${IMAGESECTORS} / ( ${MBRHEADS} * ${MBRSECTORS} ) ))
+MBRCYLINDERS=$((IMAGESECTORS / ( MBRHEADS * MBRSECTORS ) ))
 MBRNETBSD=169
 
 # makefs(8) parameters
@@ -305,7 +305,7 @@ fi
 if [ "${USE_MBR}" = "yes" ]; then
 	echo creating MBR labels...
 	${DD} if=/dev/zero of=${WORKMBR} count=1 \
-	    seek=$((${IMAGESECTORS} - 1)) \
+	    seek=$((IMAGESECTORS - 1)) \
 	    || err ${DD}
 	${TOOL_FDISK} -f -u \
 	    -b ${MBRCYLINDERS}/${MBRHEADS}/${MBRSECTORS} \
@@ -321,7 +321,7 @@ fi
 if [ "${USE_GPT}" = "yes" ]; then
 	echo creating GPT headers and tables...
 	${DD} if=/dev/zero of=${WORKMBR} count=1 \
-	    seek=$((${IMAGESECTORS} - 1)) \
+	    seek=$((IMAGESECTORS - 1)) \
 	    || err ${DD}
 	${TOOL_GPT} ${WORKMBR} create || err ${TOOL_GPT}
 	${TOOL_GPT} ${WORKMBR} add -a 1m -s ${EFISECTORS} \
@@ -333,7 +333,7 @@ if [ "${USE_GPT}" = "yes" ]; then
 	${DD} if=${WORKMBR} of=${WORKMBRTRUNC} count=${LABELSECTORS} \
 	    || err ${DD}
 	${DD} if=${WORKMBR} of=${WORKGPT} \
-	    skip=$((${IMAGESECTORS} - ${GPTSECTORS})) count=${GPTSECTORS} \
+	    skip=$((IMAGESECTORS - GPTSECTORS)) count=${GPTSECTORS} \
 	    || err ${DD}
 fi
 
@@ -442,7 +442,7 @@ fi
 if [ "${OMIT_SWAPIMG}x" != "yesx" ]; then
 	echo Creating swap fs
 	${DD} if=/dev/zero of=${WORKSWAP} \
-	    seek=$((${SWAPSECTORS} - 1)) count=1 \
+	    seek=$((SWAPSECTORS - 1)) count=1 \
 	    || erro ${DD}
 fi
 
@@ -494,7 +494,7 @@ flags:
 bytes/sector: 512
 sectors/track: ${SECTORS}
 tracks/cylinder: ${HEADS}
-sectors/cylinder: $((${HEADS} * ${SECTORS}))
+sectors/cylinder: $((HEADS * SECTORS))
 cylinders: ${CYLINDERS}
 total sectors: ${IMAGESECTORS}
 rpm: 3600
