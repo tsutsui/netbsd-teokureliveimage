@@ -16,7 +16,7 @@ if [ -f REVISION ]; then
 	. ./REVISION
 fi
 if [ "${REVISION}"X = "X" ]; then
-	REVISION=`date +%C%y%m%d`
+	REVISION=$(date +%C%y%m%d)
 fi
 
 if [ ! -f list/packages-${REVISION}.list ]; then
@@ -24,7 +24,7 @@ if [ ! -f list/packages-${REVISION}.list ]; then
 	exit 1
 fi
 
-PACKAGES=`cat list/packages-${REVISION}.list`
+PACKAGES=$(cat list/packages-${REVISION}.list)
 IMAGE_PACKAGESDIR=liveimagefiles/packages
 
 echo Removing old binaries...

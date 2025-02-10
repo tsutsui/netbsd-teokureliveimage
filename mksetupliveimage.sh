@@ -27,7 +27,7 @@ if [ -f REVISION ]; then
 	. ./REVISION
 fi
 if [ "${REVISION}"X = "X" ]; then
-	REVISION=`date +%C%y%m%d`
+	REVISION=$(date +%C%y%m%d)
 fi
 
 err()
@@ -58,9 +58,9 @@ if [ -z ${NETBSDSRCDIR} ]; then
 fi
 
 if [ -z ${TOOLDIR} ]; then
-	_HOST_OSNAME=`uname -s`
-	_HOST_OSREL=`uname -r`
-	_HOST_ARCH=`uname -p 2> /dev/null || uname -m`
+	_HOST_OSNAME=$(uname -s)
+	_HOST_OSREL=$(uname -r)
+	_HOST_ARCH=$(uname -p 2> /dev/null || uname -m)
 	TOOLDIRNAME=tooldir.${_HOST_OSNAME}-${_HOST_OSREL}-${_HOST_ARCH}
 	TOOLDIR=${NETBSDSRCDIR}/obj.${MACHINE}/${TOOLDIRNAME}
 	if [ ! -d ${TOOLDIR} ]; then

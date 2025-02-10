@@ -1,7 +1,7 @@
 #! /bin/sh
 #
 # Copyright (c) 2009, 2010, 2011, 2012, 2013, 2014, 2015, 2016, 2017, 2018,
-#  2019 2020 Izumi Tsutsui.
+#  2019, 2020, 2025 Izumi Tsutsui.
 # All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
@@ -54,7 +54,7 @@ if [ -f REVISION ]; then
 	. ./REVISION
 fi
 if [ "${REVISION}"X = "X" ]; then
-	REVISION=`date +%C%y%m%d`
+	REVISION=$(date +%C%y%m%d)
 fi
 
 DISKNAME=TeokureBuilder
@@ -124,9 +124,9 @@ if [ -z ${NETBSDSRCDIR} ]; then
 fi
 
 if [ -z ${TOOLDIR} ]; then
-	_HOST_OSNAME=`uname -s`
-	_HOST_OSREL=`uname -r`
-	_HOST_ARCH=`uname -p 2> /dev/null || uname -m`
+	_HOST_OSNAME=$(uname -s)
+	_HOST_OSREL=$(uname -r)
+	_HOST_ARCH=$(uname -p 2> /dev/null || uname -m)
 	TOOLDIRNAME=tooldir.${_HOST_OSNAME}-${_HOST_OSREL}-${_HOST_ARCH}
 	TOOLDIR=${NETBSDSRCDIR}/obj.${MACHINE}/${TOOLDIRNAME}
 	if [ ! -d ${TOOLDIR} ]; then
@@ -274,7 +274,7 @@ stty erase ^H
 mount -o async /dev/dk1 /targetroot || mount -o async /dev/wd1a /targetroot
 mount -r /dev/wd2a /targetroot/mnt
 chroot /targetroot /bin/sh /mnt/inst.sh
-IFNAME=\`ifconfig -l | awk '{print \$1}'\`
+IFNAME=\$(ifconfig -l | awk '{print \$1}')
 if [ "\${IFNAME}"x = "vioif0"x ]; then
 	cp /targetroot/mnt/etc/xorg.conf.vesa /targetroot/etc/X11/xorg.conf
 fi

@@ -1,7 +1,7 @@
 #! /bin/sh
 #
 # Copyright (c) 2009, 2010, 2011, 2012, 2013, 2014, 2015, 2016, 2017, 2018,
-#  2019 2020, 2023 Izumi Tsutsui.
+#  2019, 2020, 2023, 2025 Izumi Tsutsui.
 # All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
@@ -28,7 +28,7 @@ if [ -f REVISION ]; then
 	. ./REVISION
 fi
 if [ "${REVISION}"X = "X" ]; then
-	REVISION=`date +%C%y%m%d`
+	REVISION=$(date +%C%y%m%d)
 fi
 
 DISKNAME=TeokureLiveImage
@@ -115,7 +115,7 @@ fi
 # tooldir settings
 #
 #NETBSDSRCDIR=/usr/src
-CURDIR=`pwd`
+CURDIR=$(pwd)
 NETBSDSRCDIR=${CURDIR}/src
 #TOOLDIR=/usr/tools/${MACHINE_ARCH}
 
@@ -124,9 +124,9 @@ if [ -z ${NETBSDSRCDIR} ]; then
 fi
 
 if [ -z ${TOOLDIR} ]; then
-	_HOST_OSNAME=`uname -s`
-	_HOST_OSREL=`uname -r`
-	_HOST_ARCH=`uname -p 2> /dev/null || uname -m`
+	_HOST_OSNAME=$(uname -s)
+	_HOST_OSREL=$(uname -r)
+	_HOST_ARCH=$(uname -p 2> /dev/null || uname -m)
 	TOOLDIRNAME=tooldir.${_HOST_OSNAME}-${_HOST_OSREL}-${_HOST_ARCH}
 	TOOLDIR=${NETBSDSRCDIR}/obj.${MACHINE}/${TOOLDIRNAME}
 	if [ ! -d ${TOOLDIR} ]; then

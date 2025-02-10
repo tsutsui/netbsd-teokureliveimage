@@ -7,7 +7,7 @@ if [ -f REVISION ]; then
 	. ./REVISION
 fi
 if [ "${REVISION}"X = "X" ]; then
-	REVISION=`date +%C%y%m%d`
+	REVISION=$(date +%C%y%m%d)
 fi
 
 err()
@@ -16,7 +16,7 @@ err()
 	exit 1
 }
 
-CURDIR=`pwd`
+CURDIR=$(pwd)
 # assume proper symlinks are prepared in ${CURDIR}
 NETBSDSRCDIR=${CURDIR}/src
 OBJDIR=${CURDIR}
@@ -50,12 +50,12 @@ QEMU_OPT="-m 1024 -nographic"
 QEMU_IMG=/usr/pkg/bin/qemu-img
 
 # tooldir settings
-_HOST_OSNAME=`uname -s`
-_HOST_OSREL=`uname -r`
-_HOST_ARCH=`uname -p 2> /dev/null || uname -m`
+_HOST_OSNAME=$(uname -s)
+_HOST_OSREL=$(uname -r)
+_HOST_ARCH=$(uname -p 2> /dev/null || uname -m)
 # XXX see PR toolchain/54100
 if [ "${_HOST_ARCH}"X = "x86_64X" ]; then
-	_HOST_ARCH=`uname -m`
+	_HOST_ARCH=$(uname -m)
 fi
 TOOLDIRNAME=tooldir.${_HOST_OSNAME}-${_HOST_OSREL}-${_HOST_ARCH}
 
@@ -86,32 +86,32 @@ IMG_I386_VMDK=liveimage-i386-vmdk-${REVISION}.vmdk
 IMG_I386_VHDX=liveimage-i386-vhdx-${REVISION}.vhdx
 IMG_SETUP=setupliveimage-${REVISION}.fs
 if [ ${MK_AMD64_VDI} = "yes" ]; then
-  ZIP_AMD64_VDI=`basename ${IMG_AMD64_VDI} .vdi`.zip
+  ZIP_AMD64_VDI=$(basename ${IMG_AMD64_VDI} .vdi).zip
 else
   ZIP_AMD64_VDI=
 fi
 if [ ${MK_AMD64_VMDK} = "yes" ]; then
-  ZIP_AMD64_VMDK=`basename ${IMG_AMD64_VMDK} .vmdk`.zip
+  ZIP_AMD64_VMDK=$(basename ${IMG_AMD64_VMDK} .vmdk).zip
 else
   ZIP_AMD64_VMDK=
 fi
 if [ ${MK_AMD64_VHDX} = "yes" ]; then
-  ZIP_AMD64_VHDX=`basename ${IMG_AMD64_VHDX} .vhdx`.zip
+  ZIP_AMD64_VHDX=$(basename ${IMG_AMD64_VHDX} .vhdx).zip
 else
   ZIP_AMD64_VHDX=
 fi
 if [ ${MK_I386_VDI} = "yes" ]; then
-  ZIP_I386_VDI=`basename ${IMG_I386_VDI} .vdi`.zip
+  ZIP_I386_VDI=$(basename ${IMG_I386_VDI} .vdi).zip
 else
   ZIP_I386_VDI=
 fi
 if [ ${MK_I386_VMDK} = "yes" ]; then
-  ZIP_I386_VMDK=`basename ${IMG_I386_VMDK} .vmdk`.zip
+  ZIP_I386_VMDK=$(basename ${IMG_I386_VMDK} .vmdk).zip
 else
   ZIP_I386_VMDK=
 fi
 if [ ${MK_I386_VHDX} = "yes" ]; then
-  ZIP_I386_VHDX=`basename ${IMG_I386_VHDX} .vhdx`.zip
+  ZIP_I386_VHDX=$(basename ${IMG_I386_VHDX} .vhdx).zip
 else
   ZIP_I386_VHDX=
 fi

@@ -1,13 +1,13 @@
 #! /bin/sh
 
-MACHINE_ARCH=`uname -p`
-MACHINE=`uname -m`
+MACHINE_ARCH=$(uname -p)
+MACHINE=$(uname -m)
 
 # set directory where this setupliveimage.img is mounted
 FILEDIR=/mnt
 
 # target root file system device
-ROOTDEV=`sysctl -r kern.root_device`
+ROOTDEV=$(sysctl -r kern.root_device)
 case "${ROOTDEV}" in
 (dk[0-9]*)
 	ROOTPART=${ROOTDEV}
@@ -117,7 +117,7 @@ useradd -m \
 	-g $GROUP \
 	-G wheel \
 	-s $SHELL \
-	-p `pwhash $PASSWORD` \
+	-p $(pwhash $PASSWORD) \
 	$USER
 
 echo "done."
