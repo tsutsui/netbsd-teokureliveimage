@@ -1,4 +1,4 @@
-#	$NetBSD: dot.cshrc,v 1.8 2018/03/01 06:12:09 snj Exp $
+#	$NetBSD: dot.cshrc,v 1.10 2025/02/02 03:32:02 tsutsui Exp $
 #
 # This is the default .cshrc file.
 # Users are expected to edit it to meet their own needs.
@@ -27,7 +27,15 @@ setenv	EDITOR	vi
 # Set the pager. This is used by, among other things, man(1) for
 # showing man pages. The default is "more". Another reasonable choice
 # (included with the system by default) is "less".
-#setenv	PAGER	more
+#setenv	PAGER	less
+
+# Many modern terminal emulators don't provide a way to disable
+# alternate screen switching (like xterm's titeInhibit).  less(1) has
+# its own option (-X) for that that you can use to alleviate the pain,
+# as PAGER is the most common scenario for hitting this.  Add other
+# flags according to taste.
+#setenv	LESS	"-i -M -X"
+
 
 # Set your default printer, if desired.
 #setenv	PRINTER	change-this-to-a-printer
