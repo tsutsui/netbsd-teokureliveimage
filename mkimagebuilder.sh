@@ -91,7 +91,8 @@ if [ "${MACHINE}" = "amd64" ]; then
  KERN_SET=kern-GENERIC
  SUFFIX_SETS=tar.xz
  EXTRA_SETS= # nothing
- PRIMARY_BOOT=bootxx_ffsv1
+ MAKEFSOPTIONS="-o version=2"
+ PRIMARY_BOOT=bootxx_ffsv2
  SECONDARY_BOOT=boot
  SECONDARY_BOOT_ARG= # nothing
 fi
@@ -103,7 +104,8 @@ if [ "${MACHINE}" = "i386" ]; then
  KERN_SET=kern-GENERIC
  SUFFIX_SETS=tgz
  EXTRA_SETS= # nothing
- PRIMARY_BOOT=bootxx_ffsv1
+ MAKEFSOPTIONS="-o version=2"
+ PRIMARY_BOOT=bootxx_ffsv2
  SECONDARY_BOOT=boot
  SECONDARY_BOOT_ARG= # nothing
 fi
@@ -306,6 +308,7 @@ ${TOOL_MAKEFS} -M ${FSSIZE} -m ${FSSIZE} \
 	-B ${TARGET_ENDIAN} \
 	-F ${WORKDIR}/spec -N ${TARGETROOTDIR}/etc \
 	-o bsize=${BLOCKSIZE},fsize=${FRAGSIZE},density=${DENSITY} \
+	${MAKEFSOPTIONS} \
 	${WORKDIR}/rootfs ${TARGETROOTDIR} \
 	|| err ${TOOL_MAKEFS}
 

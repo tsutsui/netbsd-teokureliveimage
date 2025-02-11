@@ -76,7 +76,8 @@ if [ "${MACHINE}" = "amd64" ]; then
  USE_GPTMBR=yes
  OMIT_SWAPIMG=no	# include swap partition in output image for emulators
  RTC_LOCALTIME=yes	# use rtclocaltime=YES in rc.d(8) for Windows machines
- PRIMARY_BOOT=bootxx_ffsv1
+ MAKEFSOPTIONS="-o version=2"
+ PRIMARY_BOOT=bootxx_ffsv2
  SECONDARY_BOOT=boot
  SECONDARY_BOOT_ARG= # nothing
  EFIBOOT="bootx64.efi bootia32.efi"
@@ -95,7 +96,8 @@ if [ "${MACHINE}" = "i386" ]; then
  #USE_GPTMBR=yes
  OMIT_SWAPIMG=no	# include swap partition in output image for emulators
  RTC_LOCALTIME=yes	# use rtclocaltime=YES in rc.d(8) for Windows machines
- PRIMARY_BOOT=bootxx_ffsv1
+ MAKEFSOPTIONS="-o version=2"
+ PRIMARY_BOOT=bootxx_ffsv2
  SECONDARY_BOOT=boot
  SECONDARY_BOOT_ARG= # nothing
  EFIBOOT="bootia32.efi"	# XXX: NetBSD/i386 doesn't provide bootx64.efi
@@ -410,6 +412,7 @@ ${TOOL_MAKEFS} -M ${FSSIZE} -m ${FSSIZE} \
 	-B ${TARGET_ENDIAN} \
 	-F ${WORKSPEC} -N ${TARGETROOTDIR}/etc \
 	-o bsize=${BLOCKSIZE},fsize=${FRAGSIZE},density=${DENSITY} \
+	${MAKEFSOPTIONS} \
 	${WORKFS} ${TARGETROOTDIR} \
 	|| err ${TOOL_MAKEFS}
 
