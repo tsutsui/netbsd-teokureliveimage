@@ -1,6 +1,9 @@
 ! prefer anthy-elisp on Emacs
 Emacs.UseXIM:			false
 
+! xterm settings to enable sixel
+XTerm*decGraphicsID:		340
+
 ! kterm settings
 KTerm*reversewraparound:	true
 KTerm*reverseautowraparound:	true
