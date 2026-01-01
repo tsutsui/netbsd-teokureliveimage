@@ -49,6 +49,9 @@ export PERL_BADLANG=0
 # Set XAPPLRESDIR for some pkgsrc binaries
 export XAPPLRESDIR=/usr/pkg/lib/X11/app-defaults
 
+# Set BLOCKSIZE for human readable output of df(1) and pstat(8) etc.
+export BLOCKSIZE=1k
+
 # Set the search path for programs.
 PATH=$HOME/bin:/bin:/sbin:/usr/bin:/usr/sbin:/usr/X11R7/bin:/usr/pkg/bin
 PATH=${PATH}:/usr/pkg/sbin:/usr/games:/usr/local/bin:/usr/local/sbin

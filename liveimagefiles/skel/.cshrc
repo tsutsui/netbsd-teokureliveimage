@@ -49,6 +49,9 @@ setenv	PERL_BADLANG 0
 # Set XAPPLRESDIR for some pkgsrc binaries
 setenv	XAPPLRESDIR /usr/pkg/lib/X11/app-defaults
 
+# Set BLOCKSIZE for human readable output of df(1) and pstat(8) etc.
+setenv	BLOCKSIZE 1k
+
 # Set the search path for programs.
 set path = (~/bin /bin /sbin /usr/{bin,sbin,X11R7/bin,pkg/{,s}bin,games} \
 	    /usr/local/{,s}bin)
