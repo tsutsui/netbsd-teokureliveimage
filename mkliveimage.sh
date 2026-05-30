@@ -69,7 +69,7 @@ if [ "${MACHINE}" = "amd64" ]; then
  TARGET_ENDIAN=le
  KERN_SET=kern-GENERIC
  SUFFIX_SETS=tar.xz
- EXTRA_SETS= # nothing
+ EXTRA_SETS=base32
  #USE_MBR=yes
  USE_MBR=no
  USE_GPT=yes
@@ -151,7 +151,7 @@ fi
 #FTPHOST=ftp7.jp.NetBSD.org
 FTPHOST=cdn.NetBSD.org
 #FTPHOST=nycdn.NetBSD.org
-RELEASE=10.1
+RELEASE=11.0_RC4
 RELEASEDIR=pub/NetBSD/NetBSD-${RELEASE}
 #RELEASEDIR=pub/NetBSD-daily/netbsd-10/latest
 
