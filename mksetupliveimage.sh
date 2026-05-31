@@ -86,7 +86,7 @@ RM=rm
 #
 # target image size settings
 #
-FSMB=1500
+FSMB=1900
 FSSECTORS=$((FSMB * 1024 * 1024 / 512))
 FSSIZE=$((FSSECTORS * 512))
 FSOFFSET=0
