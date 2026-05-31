@@ -193,7 +193,7 @@ IMAGE=${WORKDIR}/liveimage-${MACHINE}-${IMAGE_TYPE}-${REVISION}.img
 #
 # target image size settings
 #
-IMAGEMB=5120			# 5120MB (4GB isn't enough for 8.0 + 2018Q2)
+IMAGEMB=6144			# 6144MB (5GB isn't enough for 11.0 + 2026Q1)
 SWAPMB=512			# 512MB
 
 if [ "${USE_GPT}" = "yes" ]; then
